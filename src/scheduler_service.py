@@ -18,10 +18,10 @@ from .bot_service import bot_instance
 def job_morning_pushups():
     today = app_logic.get_today_data()
     msg = (
-        f"🌅 <b>[07:00 SÁNG] — 50 CÁI CHỐNG ĐẨY KHỞI ĐỘNG!</b>\n\n"
-        f"Dậy đi chiến binh! Ngày thứ <b>{today['day_num']}/{today['total_days']}</b> của Winter Arc.\n"
-        f"Làm ngay 50 cái chống đẩy để kích hoạt cơ thể trước khi chuẩn bị lên công ty.\n"
-        f"Không tìm lý do, bắt đầu ngay!"
+        f"🌅 <b>[07:00 AM] — 50 PUSHUPS MORNING WARMUP!</b>\n\n"
+        f"Wake up warrior! Day <b>{today['day_num']}/{today['total_days']}</b> of Winter Arc.\n"
+        f"Do your 50 pushups right now to activate your body and mindset.\n"
+        f"Zero excuses. Begin now!"
     )
     bot_instance.send_broadcast(msg, with_buttons=True)
 
@@ -29,25 +29,25 @@ def job_evening_briefing():
     today = app_logic.get_today_data()
     weekday_idx = date.today().weekday()
     
-    if weekday_idx in (1, 3, 5): # T3, T5, T7
-        detail = "💻 <b>Trọng tâm tối nay: LÀM ĐỒ ÁN + 2 TIẾNG TIẾNG ANH.</b>\nTối ưu hóa từng phút, không lướt điện thoại vô bổ!"
-    else: # T2, T4, T6, CN
-        detail = "🏋️ <b>Trọng tâm tối nay: THỂ DỤC (20:30 – 21:30) + 2 TIẾNG TIẾNG ANH.</b>\nĂn uống nhẹ nhàng để sẵn sàng cho ca tập 20:30!"
+    if weekday_idx in (1, 3, 5): # Tue, Thu, Sat
+        detail = "💻 <b>Tonight's Focus: CAPSTONE PROJECT + 2 HOURS ENGLISH.</b>\nOptimize every hour, zero mindless doomscrolling!"
+    else: # Mon, Wed, Fri, Sun
+        detail = "🏋️ <b>Tonight's Focus: WORKOUT (20:30 – 21:30) + 2 HOURS ENGLISH.</b>\nLight nutrition and hydrate for tonight's session!"
 
     msg = (
-        f"🌆 <b>[18:00 TAN LÀM] — KẾ HOẠCH TÁC CHIẾN TỐI NAY</b>\n\n"
+        f"🌆 <b>[18:00 PM] — EVENING ACTION PLAN</b>\n\n"
         f"{detail}\n\n"
-        f"<i>Tiến độ hiện tại: {today['completed_count']}/{today['total_tasks']} nhiệm vụ.</i>"
+        f"<i>Current Progress: {today['completed_count']}/{today['total_tasks']} protocols.</i>"
     )
     bot_instance.send_broadcast(msg, with_buttons=True)
 
 def job_workout_reminder():
     weekday_idx = date.today().weekday()
-    if weekday_idx in (0, 2, 4, 6): # Chỉ nhắc vào các tối rảnh T2, T4, T6, CN
+    if weekday_idx in (0, 2, 4, 6): # Mon, Wed, Fri, Sun
         msg = (
-            f"⚡ <b>[20:25] — 5 PHÚT NỮA VÀO CA TẬP THỂ DỤC!</b>\n\n"
-            f"Khung giờ: <b>20:30 – 21:30</b>.\n"
-            f"Bỏ điện thoại xuống, bật playlist nhạc tập, khởi động khớp và chiến hết mình trong 60 phút!"
+            f"⚡ <b>[20:25] — 5 MINUTES TO WORKOUT SESSION!</b>\n\n"
+            f"Window: <b>20:30 – 21:30</b>.\n"
+            f"Put the phone down, play your workout music, stretch, and give 100% intensity for 60 minutes!"
         )
         bot_instance.send_broadcast(msg, with_buttons=True)
 
@@ -57,15 +57,15 @@ def job_night_review():
     stk = today.get("streak_info", {})
     rate = today.get("completion_rate", 0)
 
-    # 1. Đánh giá chuỗi hôm nay
+    # 1. Streak Evaluation
     if rate == 100:
-        streak_result = "🔥 <b>XUẤT SẮC: Bạn đã hoàn thành 100% nhiệm vụ! Đạt Chuỗi Lửa bất bại!</b>"
+        streak_result = "🔥 <b>OUTSTANDING: 100% Completion achieved! Flame Streak ignited!</b>"
     elif rate >= 50:
-        streak_result = f"⚪ <b>CẢNH BÁO: Bạn hoàn thành {rate}% (Chuỗi Xám: {stk.get('consecutive_grey', 1)}/3). Cần cố gắng hơn để giữ chuỗi!</b>"
+        streak_result = f"⚪ <b>WARNING: {rate}% completed (Grey Streak: {stk.get('consecutive_grey', 1)}/3). Push harder tomorrow to protect your streak!</b>"
     else:
-        streak_result = "💀 <b>BẠN ĐÃ KHÔNG HOÀN THÀNH ĐỦ 50% NHIỆM VỤ! Chuỗi kỷ luật đã bị đặt lại về 0!</b>"
+        streak_result = "💀 <b>LESS THAN 50% COMPLETED! Streak has reset to 0! Rebound tomorrow!</b>"
 
-    # 2. Kiểm tra thăng cấp Level (Ngày cuối cùng của Level: ngày 30, 60 hoặc 90)
+    # 2. Level Milestone
     level_milestone_msg = ""
     day_in_lvl = lvl.get("day_in_level", 1)
     current_lvl = lvl.get("level", 1)
@@ -73,64 +73,68 @@ def job_night_review():
     if day_in_lvl == 30:
         next_lvl = current_lvl + 1
         level_milestone_msg = (
-            f"\n\n🎉 <b>CHÚC MỪNG CHIẾN BINH — HOÀN THÀNH CHẶNG 30 NGÀY!</b>\n"
-            f"🏆 Bạn đã hoàn thành toàn bộ chặng <b>{lvl.get('title')}</b>!\n"
-            f"Ngày mai bạn sẽ chính thức bước chân vào <b>LEVEL {next_lvl}</b> với bản lĩnh kiên cường hơn!"
+            f"\n\n🎉 <b>CONGRATULATIONS WARRIOR — 30-DAY PHASE COMPLETE!</b>\n"
+            f"🏆 You conquered <b>{lvl.get('title')}</b>!\n"
+            f"Tomorrow you advance to <b>LEVEL {next_lvl}</b>!"
         )
     elif day_in_lvl == 1 and today["day_num"] > 1:
         level_milestone_msg = (
-            f"\n\n👑 <b>CHÀO ĐÓN BẠN ĐẾN VỚI {lvl.get('badge')}!</b>\n"
+            f"\n\n👑 <b>WELCOME TO {lvl.get('badge')}!</b>\n"
             f"<i>{lvl.get('desc')}</i>"
         )
 
     msg = (
-        f"🌙 <b>[22:30] — TỔNG KẾT NGÀY & KHÓA SỔ KỶ LUẬT</b>\n\n"
-        f"📅 Ngày <b>{today['day_num']}/{today['total_days']}</b> ({today['weekday']})\n"
-        f"🏆 Cấp độ: <b>{lvl.get('badge')}</b> — {lvl.get('title')}\n"
-        f"🎯 Tiến độ hôm nay: <b>{today['completed_count']}/{today['total_tasks']} ({rate}%)</b>\n\n"
+        f"🌙 <b>[22:30] — DAILY REVIEW & DISCIPLINE CLOSE</b>\n\n"
+        f"📅 Day <b>{today['day_num']}/{today['total_days']}</b> ({today['weekday']})\n"
+        f"🏆 Level: <b>{lvl.get('badge')}</b> — {lvl.get('title')}\n"
+        f"🎯 Progress: <b>{today['completed_count']}/{today['total_tasks']} ({rate}%)</b>\n\n"
         f"{streak_result}\n\n"
-        f"• Tiếng Anh: {today['english_minutes']}/120 phút\n"
-        f"• No Nut Streak: {today['nonut_streak']} ngày 🔥"
+        f"• English: {today['english_minutes']}/120 mins\n"
+        f"• No Nut Streak: {today['nonut_streak']} days 🔥"
         f"{level_milestone_msg}"
     )
     bot_instance.send_broadcast(msg, with_buttons=True)
 
 
+def job_weekly_review():
+    from . import ai_service
+    weekly_data = app_logic.get_weekly_summary()
+    msg = ai_service.generate_weekly_review(weekly_data)
+    bot_instance.send_broadcast(msg, with_buttons=False)
+
 def job_custom_protocol_reminder(proto_id):
-    """Bắn thông báo Telegram khi đến giờ hẹn riêng của một mục tiêu To-Do/Protocol"""
+    """Telegram reminder for custom scheduled protocol time"""
     try:
         protocols = app_logic.load_protocols()
         proto = next((p for p in protocols if p.get("id") == proto_id), None)
         if not proto or proto.get("active") is False:
             return
 
-        # Kiểm tra xem hôm nay có nằm trong lịch tác chiến của task không
         weekday_idx = date.today().weekday()
         schedule_days = proto.get("days", [0, 1, 2, 3, 4, 5, 6])
         if weekday_idx not in schedule_days:
             return
 
-        # Kiểm tra xem mục tiêu này hôm nay đã hoàn thành chưa (nếu xong rồi thì không làm phiền)
         today = app_logic.get_today_data()
         task_in_today = next((t for t in today.get("tasks", []) if t["id"] == proto_id), None)
         if task_in_today and task_in_today.get("completed"):
-            print(f"[SCHEDULER] Bỏ qua nhắc nhở '{proto.get('name')}' vì đã hoàn thành trước đó.")
+            print(f"[SCHEDULER] Skipping reminder for '{proto.get('name')}' as it's already completed.")
             return
 
         remind_time = proto.get("remind_time", "")
-        name = proto.get("name", "Nhiệm vụ kỷ luật")
+        name = proto.get("name", "Protocol")
         icon = proto.get("icon", "🎯")
         time_desc = proto.get("time_desc", "")
 
-        desc_text = f"\n📌 <i>Ghi chú: {time_desc}</i>" if time_desc else ""
+        desc_text = f"\n📌 <i>Note: {time_desc}</i>" if time_desc else ""
 
         msg = (
-            f"⏰ <b>[{remind_time}] — ĐẾN GIỜ: {name.upper()}!</b>\n\n"
-            f"{icon} Mục tiêu: <b>{name}</b>{desc_text}\n\n"
-            f"⚡ <i>Kỷ luật tạo nên bản lĩnh — Bắt đầu ngay bây giờ!</i>\n"
-            f"<i>Bấm nút bên dưới để xác nhận hoàn thành ngay trên iPhone:</i>"
+            f"⏰ <b>[{remind_time}] — TIME FOR: {name.upper()}!</b>\n\n"
+            f"Protocol: <b>{name}</b>{desc_text}\n\n"
+            f"⚡ <i>Discipline builds identity — execute now!</i>\n"
+            f"<i>Tap below to check off immediately:</i>"
         )
-        print(f"[SCHEDULER] Đang gửi thông báo Telegram cho mục tiêu: {name} (Lúc {remind_time})")
+        print(f"[SCHEDULER] Sending reminder for: {name} at {remind_time}")
         bot_instance.send_broadcast(msg, with_buttons=True)
     except Exception as e:
         print(f"[SCHEDULER Protocol Reminder Error]: {e}")
@@ -158,6 +162,7 @@ class SchedulerService:
         schedule.every().day.at(t_evening).do(job_evening_briefing)
         schedule.every().day.at(t_workout).do(job_workout_reminder)
         schedule.every().day.at(t_night).do(job_night_review)
+        schedule.every().sunday.at("21:00").do(job_weekly_review)
 
         # 2. Các mốc giờ nhắc nhở riêng của từng protocol (remind_time)
         custom_count = 0

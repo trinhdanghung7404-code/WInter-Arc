@@ -76,18 +76,31 @@ class ManagerApi:
     def send_test_telegram(self):
         """Gửi tin nhắn test tới Telegram iPhone"""
         success, msg = bot_instance.send_broadcast(
-            "⚡ <b>[TEST] KẾT NỐI TỪ PROTOCOL MANAGER THÀNH CÔNG!</b>\n\n"
-            "Danh sách mục tiêu của bạn đã được cập nhật.",
+            "⚡ <b>[TEST] PROTOCOL MANAGER TEST PING</b>\n\n"
+            "Your discipline protocols have been synchronized.",
             with_buttons=True
         )
         return {"success": success, "message": msg}
 
+    def test_ai_coach(self):
+        """Kiểm tra kết nối AI Coach và gửi thông điệp thử sang Telegram"""
+        from src import ai_service
+        success, reply = ai_service.test_ai_connection()
+        if success:
+            bot_instance.send_broadcast(
+                f"🛡️ <b>[AI COACH KẾT NỐI THÀNH CÔNG]</b>\n\n<i>\"{reply}\"</i>",
+                with_buttons=False
+            )
+            return {"success": True, "message": reply}
+        else:
+            return {"success": False, "message": reply}
+
 def main():
-    print("[MANAGER] Đang mở màn hình quản lý Winter Arc Protocol Manager...")
+    print("[MANAGER] Starting Winter Arc Protocol Manager...")
     api = ManagerApi()
     
     window = webview.create_window(
-        title="Winter Arc Protocol Manager // Quản Lý Mục Tiêu Kỷ Luật",
+        title="Winter Arc Protocol Manager // Discipline Protocols",
         url=MANAGER_HTML,
         width=980,
         height=760,

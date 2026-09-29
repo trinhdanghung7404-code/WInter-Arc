@@ -2,7 +2,7 @@
   "protocols": [
     {
       "id": "pushups",
-      "name": "Chống đẩy 50 cái",
+      "name": "50 Pushups",
       "icon": "💪",
       "type": "todo",
       "days": [
@@ -14,12 +14,12 @@
         5,
         6
       ],
-      "time_desc": "Sáng sớm",
+      "time_desc": "Early morning",
       "active": true
     },
     {
       "id": "english",
-      "name": "Học Tiếng Anh",
+      "name": "English Study",
       "icon": "📚",
       "type": "timer",
       "target_minutes": 120,
@@ -32,12 +32,12 @@
         5,
         6
       ],
-      "time_desc": "Mục tiêu 120p",
+      "time_desc": "Target 120m",
       "active": true
     },
     {
       "id": "project",
-      "name": "Làm Đồ Án",
+      "name": "Capstone Project",
       "icon": "💻",
       "type": "timer",
       "target_minutes": 90,
@@ -46,12 +46,12 @@
         3,
         5
       ],
-      "time_desc": "Tối T3, T5, T7",
+      "time_desc": "Tue, Thu, Sat evenings",
       "active": true
     },
     {
       "id": "sleep",
-      "name": "Ngủ đủ 7-8h / trước 23:00",
+      "name": "Sleep 7-8h / Before 23:00",
       "icon": "🌙",
       "type": "retro",
       "days": [
@@ -63,12 +63,12 @@
         5,
         6
       ],
-      "time_desc": "Đánh giá giấc ngủ hôm qua",
+      "time_desc": "Review yesterday's sleep",
       "active": true
     },
     {
       "id": "nonut",
-      "name": "Kỷ luật No Nut",
+      "name": "Discipline No Nut",
       "icon": "🔥",
       "type": "retro",
       "days": [
@@ -80,12 +80,12 @@
         5,
         6
       ],
-      "time_desc": "Đánh giá hôm qua",
+      "time_desc": "Review yesterday",
       "active": true
     },
     {
       "id": "detox_mxh",
-      "name": "Không dùng đt trước khi ngủ",
+      "name": "No Screen Before Bed",
       "icon": "📵",
       "type": "retro",
       "days": [
@@ -97,7 +97,7 @@
         5,
         6
       ],
-      "time_desc": "Tối hôm qua",
+      "time_desc": "Yesterday evening",
       "active": true
     },
     {

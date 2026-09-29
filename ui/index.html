@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Winter Arc iOS Widgets</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body class="ios-body">
 
@@ -17,7 +17,7 @@
       <div class="ios-card card-rings">
         <div class="rings-grid">
           <!-- Ring 1: Pushups -->
-          <div class="ring-box" id="ring-box-pushups" title="50 Chống đẩy">
+          <div class="ring-box" id="ring-box-pushups" title="50 Pushups">
             <svg class="ring-svg" viewBox="0 0 36 36">
               <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <path id="ring-pushups" class="ring-fill green" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
@@ -30,7 +30,7 @@
           </div>
 
           <!-- Ring 2: English -->
-          <div class="ring-box" id="ring-box-english" title="2h Tiếng Anh">
+          <div class="ring-box" id="ring-box-english" title="2h English">
             <svg class="ring-svg" viewBox="0 0 36 36">
               <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <path id="ring-english" class="ring-fill cyan" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
@@ -44,7 +44,7 @@
           </div>
 
           <!-- Ring 3: Sleep Recovery -->
-          <div class="ring-box" id="ring-box-sleep" title="Giấc ngủ phục hồi 7-8h">
+          <div class="ring-box" id="ring-box-sleep" title="Sleep Recovery 7-8h">
             <svg class="ring-svg" viewBox="0 0 36 36">
               <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <path id="ring-sleep" class="ring-fill purple" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
@@ -74,13 +74,13 @@
       <!-- WIDGET 2: APPLE CALENDAR / COUNTDOWN (Exact white calendar widget from reference) -->
       <div class="ios-card card-calendar">
         <div class="cal-header">
-          <span class="cal-weekday" id="cal-weekday">Thứ Hai</span>
-          <span class="cal-month" id="cal-month">TH 10</span>
+          <span class="cal-weekday" id="cal-weekday">Monday</span>
+          <span class="cal-month" id="cal-month">OCT</span>
         </div>
         <div class="cal-number" id="cal-day-num">01</div>
         <div class="cal-footer">
-          <span class="cal-target" id="cal-target-sub">Ngày 1/92</span>
-          <span class="cal-streak-text" id="cal-streak-badge">🔥 0d</span>
+          <span class="cal-target" id="cal-target-sub">Day 1/90</span>
+          <span class="cal-streak-text" id="cal-streak-badge">0d</span>
         </div>
       </div>
 
@@ -91,23 +91,23 @@
       <div class="timer-head">
         <div class="timer-tabs" id="timer-tabs-container">
           <!-- Dynamic Timer Tabs rendered from protocols.json -->
-          <button class="t-tab active" data-type="english">📚 Tiếng Anh</button>
-          <button class="t-tab" data-type="project">💻 Đồ Án</button>
+          <button class="t-tab active" data-type="english">English</button>
+          <button class="t-tab" data-type="project">Project</button>
         </div>
         <div class="timer-top-btns">
-          <button id="btn-pin" class="btn-pin active" title="Đang ghim trên cùng (Bấm để bỏ ghim)">
+          <button id="btn-pin" class="btn-pin active" title="Always on top (Click to toggle)">
             <svg class="pin-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="17" x2="12" y2="22"></line>
               <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
             </svg>
           </button>
-          <button id="btn-open-manager-top" class="ios-mini-icon" title="Cài đặt & Quản lý mục tiêu">
+          <button id="btn-open-manager-top" class="ios-mini-icon" title="Settings & Protocol Manager">
             <svg class="gear-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
           </button>
-          <button id="btn-hide-tray" class="ios-mini-icon" title="Thu gọn xuống khay hệ thống (Chạy ngầm)">
+          <button id="btn-hide-tray" class="ios-mini-icon" title="Minimize to system tray (Run in background)">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
@@ -118,33 +118,39 @@
       <div class="timer-body">
         <div class="timer-time-wrap">
           <div class="timer-display"><span id="timer-min">120</span>:<span id="timer-sec">00</span></div>
-          <div class="timer-accum-clean" id="timer-accum">0/120p</div>
+          <div class="timer-accum-clean" id="timer-accum">0/120m</div>
         </div>
         <div class="timer-ctrls">
-          <button id="btn-timer-play" class="btn-play-round" title="Bắt đầu / Tạm dừng">▶</button>
-          <button id="btn-timer-reset" class="btn-reset-round" title="Đặt lại">↺</button>
+          <button id="btn-timer-play" class="btn-play-round" title="Start / Pause">▶</button>
+          <button id="btn-timer-reset" class="btn-reset-round" title="Reset">↺</button>
         </div>
       </div>
     </div>
 
     <!-- BOTTOM ROW: THE PROTOCOL CHECKLIST -->
 
-    <!-- 1. COMPACT PROTOCOL BAR (Hiển thị khi ở chế độ Rút Gọn) -->
-    <div class="card-protocol-compact hidden" id="protocol-compact-bar" title="Bấm vào để mở rộng checklist nhiệm vụ">
+    <!-- 1. COMPACT PROTOCOL BAR (Compact Mode) -->
+    <div class="card-protocol-compact hidden" id="protocol-compact-bar" title="Click to expand protocols checklist">
       <div class="compact-left">
-        <span class="compact-glyph">🎯</span>
-        <span class="compact-title" id="compact-status-text">Đang tải nhiệm vụ...</span>
+        <span class="compact-glyph">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+        </span>
+        <span class="compact-title" id="compact-status-text">Loading protocols...</span>
       </div>
       <span class="compact-expand-arrow">▾</span>
     </div>
 
-    <!-- 2. EXPANDED PROTOCOL CARD (Hiển thị khi ở chế độ Mở Rộng) -->
+    <!-- 2. EXPANDED PROTOCOL CARD (Expanded Mode) -->
     <div class="ios-card card-protocol" id="protocol-expanded-card">
       <div class="protocol-head">
-        <div class="protocol-title">MỤC TIÊU HÔM NAY</div>
+        <div class="protocol-title">TODAY'S PROTOCOLS</div>
         <div class="protocol-head-right">
           <span class="protocol-stat" id="protocol-stat">0/6 (0%)</span>
-          <button id="btn-collapse-protocol" class="btn-collapse-pill" title="Thu gọn bảng checklist">▲</button>
+          <button id="btn-collapse-protocol" class="btn-collapse-pill" title="Collapse checklist">▲</button>
         </div>
       </div>
 
@@ -159,24 +165,24 @@
   <div id="settings-modal" class="modal-backdrop hidden">
     <div class="modal-card-ios">
       <div class="modal-head-ios">
-        <span>⚙️ KẾT NỐI IPHONE TELEGRAM</span>
+        <span>TELEGRAM CONNECTION</span>
         <button id="btn-close-modal" class="btn-close-ios">✕</button>
       </div>
       <div class="modal-body-ios">
         <label>Telegram Bot Token:</label>
-        <input type="text" id="input-token" placeholder="Dán Token từ @BotFather..." />
-        <small>Tìm @BotFather trên Telegram ➔ gửi /newbot để lấy Token.</small>
+        <input type="text" id="input-token" placeholder="Paste Token from @BotFather..." />
+        <small>Find @BotFather on Telegram ➔ send /newbot to obtain Token.</small>
 
         <label style="margin-top: 8px;">Telegram Chat ID:</label>
-        <input type="text" id="input-chat" placeholder="Tự động nhận khi bạn bấm /start" />
+        <input type="text" id="input-chat" placeholder="Auto-detected when you send /start" />
 
         <div class="modal-actions-ios">
-          <button id="btn-save-cfg" class="btn-save-ios">Lưu Cài Đặt</button>
+          <button id="btn-save-cfg" class="btn-save-ios">Save Settings</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>

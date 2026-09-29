@@ -14,21 +14,21 @@ let isCompactMode = false;
 
 const fallbackApi = {
   get_today: async () => ({
-    date_str: "2026-10-01",
-    yesterday_str: "2026-09-30",
-    weekday: "Thứ Năm",
+    date_str: "2026-09-29",
+    yesterday_str: "2026-09-28",
+    weekday: "Tuesday",
     day_num: 1,
-    total_days: 92,
+    total_days: 90,
     tasks: [
-      { id: "pushups", name: "50 cái chống đẩy", icon: "💪", type: "todo", completed: false, time_desc: "Khởi động buổi sáng" },
-      { id: "english", name: "Học Tiếng Anh", icon: "🇬🇧", type: "timer", target_minutes: 120, completed: false },
-      { id: "project", name: "Làm Đồ Án", icon: "💻", type: "timer", target_minutes: 90, completed: false },
-      { id: "nonut", name: "Kỷ luật No Nut (Hôm qua)", icon: "🚫", type: "retro", completed: false, time_desc: "Đánh giá 24h trọn vẹn hôm qua" },
-      { id: "detox_mxh", name: "Không lướt đt trước khi ngủ", icon: "📵", type: "retro", completed: false, time_desc: "Đánh giá buổi tối hôm qua" }
+      { id: "pushups", name: "50 Pushups", icon: "💪", type: "todo", completed: false, time_desc: "Morning warmup" },
+      { id: "english", name: "English Study", icon: "🇬🇧", type: "timer", target_minutes: 120, completed: false },
+      { id: "project", name: "Capstone Project", icon: "💻", type: "timer", target_minutes: 90, completed: false },
+      { id: "nonut", name: "Discipline No Nut (Yesterday)", icon: "🚫", type: "retro", completed: false, time_desc: "Full 24h evaluation" },
+      { id: "detox_mxh", name: "No Screen Before Bed", icon: "📵", type: "retro", completed: false, time_desc: "Yesterday evening evaluation" }
     ],
     timer_tasks: [
-      { id: "english", name: "Học Tiếng Anh", icon: "🇬🇧", target_minutes: 120, studied_minutes: 0, completed: false },
-      { id: "project", name: "Làm Đồ Án", icon: "💻", target_minutes: 90, studied_minutes: 0, completed: false }
+      { id: "english", name: "English Study", icon: "🇬🇧", target_minutes: 120, studied_minutes: 0, completed: false },
+      { id: "project", name: "Capstone Project", icon: "💻", target_minutes: 90, studied_minutes: 0, completed: false }
     ],
     completed_count: 0,
     total_tasks: 5,
@@ -44,12 +44,12 @@ const fallbackApi = {
   get_pin_status: async () => isAlwaysOnTop,
   set_compact_mode: async (compact) => compact,
   open_manager: async () => {
-    alert("Vui lòng khởi động manager.bat trong thư mục để quản lý mục tiêu!");
+    alert("Please run manager.bat in the folder to manage protocols!");
     return true;
   },
   get_config: async () => ({ telegram: { bot_token: "", chat_id: "" } }),
   save_config: async (cfg) => true,
-  send_test_telegram: async () => ({ success: false, message: "Hãy nhập Bot Token trước" })
+  send_test_telegram: async () => ({ success: false, message: "Please enter Bot Token first" })
 };
 
 function getApi() {
@@ -79,11 +79,37 @@ function renderToday(data) {
   if (!data) return;
 
   // 1. Calendar Widget
-  document.getElementById('cal-weekday').innerText = data.weekday || "Thứ Hai";
-  document.getElementById('cal-month').innerText = "TH 10";
-  document.getElementById('cal-day-num').innerText = String(data.day_num || 1).padStart(2, '0');
-  document.getElementById('cal-target-sub').innerText = `Ngày ${data.day_num || 1}/${data.total_days || 92}`;
-  document.getElementById('cal-streak-badge').innerText = `🔥 ${data.nonut_streak || 0}d`;
+  const now = new Date();
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+  document.getElementById('cal-weekday').innerText = data.weekday || daysOfWeek[now.getDay()];
+  document.getElementById('cal-month').innerText = months[now.getMonth()];
+  document.getElementById('cal-day-num').innerText = String(now.getDate()).padStart(2, '0');
+
+  const lvl = data.level_info || {};
+  const stk = data.streak_info || {};
+  const lvlBadge = lvl.icon ? `${lvl.icon} LV.${lvl.level || 1}` : `LV.${lvl.level || 1}`;
+
+  document.getElementById('cal-target-sub').innerText = `${lvlBadge} • Day ${data.day_num || 1}/${data.total_days || 90}`;
+  
+  const streakBadge = document.getElementById('cal-streak-badge');
+  if (streakBadge) {
+    if (stk.type === 'grey') {
+      streakBadge.innerText = `⚪ ${stk.streak || 0}d (${stk.consecutive_grey}/3)`;
+      streakBadge.style.color = '#a1a1aa';
+      streakBadge.title = `Grey streak: ${stk.consecutive_grey}/3 days of partial completion (50-99%). Streak will reset if > 3 consecutive days!`;
+    } else if (stk.streak > 0) {
+      streakBadge.innerText = `🔥 ${stk.streak}d`;
+      streakBadge.style.color = '#ff9f0a';
+      streakBadge.title = `Flame streak: ${stk.streak} consecutive days at 100% completion!`;
+    } else {
+      streakBadge.innerText = `0d`;
+      streakBadge.style.color = 'var(--text-muted)';
+      streakBadge.title = `No streak yet. Complete at least 50% of today's protocols to ignite your streak!`;
+    }
+  }
+
 
 function getRingSvg(id) {
   const tid = (id || '').toLowerCase();
@@ -122,7 +148,7 @@ function getRingSvg(id) {
 
     if (t && box && fill) {
       box.style.display = 'flex';
-      box.title = `${t.name} (${t.completed ? 'Hoàn thành' : 'Chưa xong'})`;
+      box.title = `${t.name} (${t.completed ? 'Completed' : 'Pending'})`;
       const iconSpan = box.querySelector('.ring-icon');
       if (iconSpan) iconSpan.innerHTML = getRingSvg(t.id);
 
@@ -142,7 +168,7 @@ function getRingSvg(id) {
     }
   });
 
-  // 3. Dynamic Focus Timer Tabs (Sinh tự động từ timer_tasks trong protocols.json)
+  // 3. Dynamic Focus Timer Tabs
   renderTimerTabs(data.timer_tasks || []);
 
   // 4. Protocol Widget
@@ -151,10 +177,10 @@ function getRingSvg(id) {
     statEl.innerText = `${data.completed_count || 0}/${data.total_tasks || 0} (${data.completion_rate || 0}%)`;
   }
 
-  // Cập nhật thanh tóm tắt khi ở chế độ Rút Gọn (Compact)
+  // Update compact bar summary (clean text, no redundant emoji)
   const compactStatus = document.getElementById('compact-status-text');
   if (compactStatus) {
-    compactStatus.innerText = `🎯 ${data.completed_count || 0}/${data.total_tasks || 0} (${data.completion_rate || 0}%)`;
+    compactStatus.innerText = `${data.completed_count || 0}/${data.total_tasks || 0} (${data.completion_rate || 0}%)`;
   }
 
   // Render Protocol Checklist
@@ -164,7 +190,7 @@ function getRingSvg(id) {
   if (tasksList.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; padding: 12px 5px; color: #64748b; font-size: 0.65rem;">
-        Chưa có nhiệm vụ hôm nay.
+        No protocols scheduled for today.
       </div>
     `;
     return;
@@ -366,9 +392,9 @@ function renderTaskBadge(task) {
 
     let tagHtml = '';
     if (task.type === 'retro') {
-      tagHtml = `<span class="tag-retro">Hôm qua</span>`;
+      tagHtml = `<span class="tag-retro">Yesterday</span>`;
     } else if (task.type === 'timer') {
-      tagHtml = `<span class="tag-timer">${task.target_minutes || 60}p</span>`;
+      tagHtml = `<span class="tag-timer">${task.target_minutes || 60}m</span>`;
     }
 
     row.innerHTML = `
@@ -396,12 +422,12 @@ function renderTimerTabs(timerTasks) {
     if (!timerRunning) {
       currentTimerTaskId = 'focus';
       currentTimerTargetMinutes = 25;
-      document.getElementById('timer-accum').innerText = `Mục tiêu: 25p`;
+      document.getElementById('timer-accum').innerText = `Target: 25m`;
     }
     return;
   }
 
-  // Đảm bảo task hiện tại hợp lệ
+  // Ensure active task exists
   const activeExists = timerTasks.some(t => t.id === currentTimerTaskId);
   if (!activeExists) {
     currentTimerTaskId = timerTasks[0].id;
@@ -438,18 +464,18 @@ function renderTimerTabs(timerTasks) {
       }
       const studied = t.studied_minutes || 0;
       const accumEl = document.getElementById('timer-accum');
-      if (accumEl) accumEl.innerText = `${studied}/${currentTimerTargetMinutes}p`;
+      if (accumEl) accumEl.innerText = `${studied}/${currentTimerTargetMinutes}m`;
     };
 
     tabsContainer.appendChild(btn);
   });
 
-  // Cập nhật nhãn thời gian đã học
+  // Update accumulated focus time label
   const activeTask = timerTasks.find(t => t.id === currentTimerTaskId);
   if (activeTask) {
     const studied = activeTask.studied_minutes || 0;
     const accumEl = document.getElementById('timer-accum');
-    if (accumEl) accumEl.innerText = `${studied}/${activeTask.target_minutes || 60}p`;
+    if (accumEl) accumEl.innerText = `${studied}/${activeTask.target_minutes || 60}m`;
   }
 }
 
@@ -490,7 +516,7 @@ function startTimer() {
       }
     } else {
       pauseTimer();
-      alert(`🎉 Chúc mừng! Bạn đã hoàn thành phiên tập trung!`);
+      alert(`Focus session completed! Great job!`);
       loadData();
     }
   }, 1000);
@@ -523,7 +549,7 @@ async function applyCompactMode(compact) {
     if (expandedCard) expandedCard.classList.add('hidden');
     if (toggleBtn) {
       toggleBtn.innerText = '↕';
-      toggleBtn.title = 'Mở rộng checklist';
+      toggleBtn.title = 'Expand checklist';
       toggleBtn.classList.remove('active');
     }
   } else {
@@ -531,7 +557,7 @@ async function applyCompactMode(compact) {
     if (expandedCard) expandedCard.classList.remove('hidden');
     if (toggleBtn) {
       toggleBtn.innerText = '▲';
-      toggleBtn.title = 'Thu gọn checklist';
+      toggleBtn.title = 'Collapse checklist';
       toggleBtn.classList.add('active');
     }
   }
@@ -601,10 +627,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!pinBtn) return;
     if (isAlwaysOnTop) {
       pinBtn.classList.add('active');
-      pinBtn.setAttribute('title', 'Đang ghim trên cùng (Bấm để bỏ ghim)');
+      pinBtn.setAttribute('title', 'Always on top (Click to unpin)');
     } else {
       pinBtn.classList.remove('active');
-      pinBtn.setAttribute('title', 'Chưa ghim (Bấm để ghim lên trên cùng)');
+      pinBtn.setAttribute('title', 'Unpinned (Click to keep on top)');
     }
   }
 
@@ -616,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePinUi(pinned);
       }
     } catch (e) {
-      console.warn("Lỗi kiểm tra trạng thái ghim:", e);
+      console.warn("Pin status sync error:", e);
     }
   }
   syncPinStatus();
@@ -633,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
           updatePinUi(!isAlwaysOnTop);
         }
       } catch (err) {
-        console.error("Lỗi toggle ghim:", err);
+        console.error("Toggle pin error:", err);
       }
     };
   }
@@ -645,33 +671,33 @@ document.addEventListener('DOMContentLoaded', () => {
     applyCompactMode(savedCompact);
   });
 
-  // Mở Màn Hình Quản Lý Mục Tiêu (Dedicated Protocol Manager)
+  // Open Dedicated Protocol Manager
   const openManagerAction = async () => {
     try {
       const api = getApi();
       if (api.open_manager) {
         await api.open_manager();
       } else {
-        alert("Khởi động file manager.bat trong thư mục để mở màn hình quản lý!");
+        alert("Please run manager.bat in the folder to open Protocol Manager!");
       }
     } catch (e) {
       console.error("Open manager error:", e);
     }
   };
 
-  // Nút trên Header của Card Protocol
+  // Header button on Protocol Card
   const btnOpenManager = document.getElementById('btn-open-manager');
   if (btnOpenManager) btnOpenManager.onclick = openManagerAction;
 
-  // Nút bánh răng trên Timer Header
+  // Gear button on Timer Header
   const btnOpenManagerTop = document.getElementById('btn-open-manager-top');
   if (btnOpenManagerTop) btnOpenManagerTop.onclick = openManagerAction;
 
-  // Nút to ở đáy Protocol Checklist
+  // Bottom button on Protocol Checklist
   const btnOpenManagerBottom = document.getElementById('btn-open-manager-bottom');
   if (btnOpenManagerBottom) btnOpenManagerBottom.onclick = openManagerAction;
 
-  // Nút thu gọn xuống khay hệ thống (Tray)
+  // Minimize to tray
   const btnHideTray = document.getElementById('btn-hide-tray');
   if (btnHideTray) {
     btnHideTray.onclick = async (e) => {
@@ -687,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Settings Modal (Telegram iPhone)
+  // Settings Modal (Telegram)
   const modal = document.getElementById('settings-modal');
   const btnSettings = document.getElementById('btn-settings');
   if (btnSettings && modal) {
@@ -716,7 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       await api.save_config(cfg);
       modal.classList.add('hidden');
-      alert("Đã lưu cài đặt Telegram!");
+      alert("Telegram settings saved!");
     };
   }
 
@@ -727,9 +753,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const api = getApi();
       const res = await api.send_test_telegram();
       if (res && res.success) {
-        alert("✅ Đã bắn thông báo sang iPhone thành công!");
+        alert("Test notification sent successfully!");
       } else {
-        alert(`⚠️ Thông báo: ${res ? res.message : 'Hãy nhập Bot Token trước nhé!'}`);
+        alert(`Notification: ${res ? res.message : 'Please enter Bot Token first'}`);
       }
     };
   }

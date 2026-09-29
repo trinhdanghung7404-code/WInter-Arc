@@ -28,17 +28,17 @@ class WinterArcBot:
         
         for task in today_data["tasks"]:
             status_icon = "✅" if task["completed"] else "⬜"
-            btn_text = f"{status_icon} {task['icon']} {task['name']}"
+            btn_text = f"{status_icon} {task['name']}"
             callback_data = f"toggle:{task['id']}"
             markup.add(types.InlineKeyboardButton(btn_text, callback_data=callback_data))
 
-        markup.add(types.InlineKeyboardButton("🔄 Làm mới trạng thái", callback_data="refresh"))
+        markup.add(types.InlineKeyboardButton("🔄 Refresh Status", callback_data="refresh"))
         return markup, today_data
 
     def start_polling(self):
         token, chat_id = self.get_token_and_chat()
         if not token:
-            print("[BOT] Chưa cấu hình Telegram Bot Token trong config.json. Bot đang chờ...")
+            print("[BOT] Telegram Bot Token not configured in config.json. Bot is idle...")
             return
 
         try:
@@ -47,7 +47,7 @@ class WinterArcBot:
             self.is_running = True
             
             def poll_worker():
-                print("[BOT] Telegram Bot đã khởi động lắng nghe...")
+                print("[BOT] Telegram Bot started polling...")
                 while self.is_running:
                     try:
                         self.bot.infinity_polling(timeout=10, long_polling_timeout=5)
@@ -77,19 +77,18 @@ class WinterArcBot:
         @self.bot.message_handler(commands=['start', 'help'])
         def handle_start(message):
             chat_id = str(message.chat.id)
-            # Tự động lưu Chat ID của người dùng vào cấu hình
             cfg = app_logic.load_config()
             cfg.setdefault("telegram", {})["chat_id"] = chat_id
             app_logic.save_config(cfg)
 
             keyboard, today = self.build_task_keyboard()
             welcome_msg = (
-                f"❄️ <b>WINTER ARC PROTOCOL — ĐÃ KẾT NỐI IPHONE!</b>\n\n"
-                f"Chào Chiến Binh! Máy tính và iPhone của bạn đã đồng bộ thành công.\n"
+                f"❄️ <b>WINTER ARC PROTOCOL — CONNECTED!</b>\n\n"
+                f"Welcome! Your desktop widget and Telegram bot are synchronized.\n"
                 f"📅 <b>{today['weekday']} ({today['date_str']})</b>\n"
-                f"🔥 <b>Winter Arc:</b> Ngày {today['day_num']}/{today['total_days']}\n"
-                f"⚡ <b>Chuỗi No Nut:</b> {today['nonut_streak']} ngày\n\n"
-                f"<i>Bấm các nút bên dưới để check-in trực tiếp:</i>"
+                f"🔥 <b>Winter Arc:</b> Day {today['day_num']}/{today['total_days']}\n"
+                f"⚡ <b>Streak:</b> {today['winter_arc_streak']} days\n\n"
+                f"<i>Tap below to check off your protocols:</i>"
             )
             self.bot.send_message(chat_id, welcome_msg, reply_markup=keyboard)
 
@@ -98,20 +97,48 @@ class WinterArcBot:
             keyboard, today = self.build_task_keyboard()
             lvl = today.get("level_info", {})
             stk = today.get("streak_info", {})
-            stk_badge = stk.get("badge", f"🔥 {today['winter_arc_streak']} ngày")
+            stk_badge = stk.get("badge", f"🔥 {today['winter_arc_streak']} days")
             warning_text = f"\n⚠️ <i>{stk.get('warning_msg')}</i>\n" if stk.get("warning") else ""
 
             status_text = (
-                f"📊 <b>BÁO CÁO TIẾN ĐỘ WINTER ARC</b>\n"
-                f"📅 {today['weekday']} — Ngày <b>{today['day_num']}/{today['total_days']}</b>\n"
-                f"🏆 <b>Cấp độ:</b> {lvl.get('badge', 'LEVEL 1')} — {lvl.get('title', 'Tân Binh')}\n"
-                f"   <i>(Ngày {lvl.get('day_in_level', 1)}/30 của chặng này)</i>\n\n"
-                f"⚡ <b>Chuỗi Kỷ Luật:</b> {stk_badge}{warning_text}\n"
-                f"🔥 <b>No Nut Streak:</b> {today['nonut_streak']} ngày\n"
-                f"🎯 <b>Nhiệm vụ hôm nay:</b> {today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)\n"
-                f"🇬🇧 Tiếng Anh đã học: <b>{today['english_minutes']}/120 phút</b>"
+                f"📊 <b>WINTER ARC PROGRESS REPORT</b>\n"
+                f"📅 {today['weekday']} — Day <b>{today['day_num']}/{today['total_days']}</b>\n"
+                f"🏆 <b>Level:</b> {lvl.get('badge', 'LEVEL 1')} — {lvl.get('title', 'Recruit')}\n"
+                f"   <i>(Day {lvl.get('day_in_level', 1)}/30 of this phase)</i>\n\n"
+                f"⚡ <b>Discipline Streak:</b> {stk_badge}{warning_text}\n"
+                f"🔥 <b>No Nut Streak:</b> {today['nonut_streak']} days\n"
+                f"🎯 <b>Today's Protocols:</b> {today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)\n"
+                f"📖 English Studied: <b>{today['english_minutes']}/120 mins</b>\n\n"
+                f"<i>Commands: /weekly (7-day report), /monthly (Phase report)</i>"
             )
             self.bot.send_message(message.chat.id, status_text, reply_markup=keyboard)
+
+        @self.bot.message_handler(commands=['weekly', 'week'])
+        def handle_weekly(message):
+            from . import ai_service
+            self.bot.send_chat_action(message.chat.id, "typing")
+            weekly_data = app_logic.get_weekly_summary()
+            review_text = ai_service.generate_weekly_review(weekly_data)
+            self.bot.send_message(message.chat.id, review_text)
+
+        @self.bot.message_handler(commands=['monthly', 'month'])
+        def handle_monthly(message):
+            from . import ai_service
+            self.bot.send_chat_action(message.chat.id, "typing")
+            monthly_data = app_logic.get_monthly_summary()
+            review_text = ai_service.generate_monthly_review(monthly_data)
+            self.bot.send_message(message.chat.id, review_text)
+
+        @self.bot.message_handler(func=lambda m: m.text and not m.text.startswith('/'))
+        def handle_user_chat(message):
+            from . import ai_service
+            if not ai_service.is_ai_enabled():
+                # Nếu chưa gắn AI key thì chỉ phản hồi nhẹ
+                return
+            self.bot.send_chat_action(message.chat.id, "typing")
+            today = app_logic.get_today_data()
+            reply = ai_service.chat_with_coach(message.text, today)
+            self.bot.reply_to(message, reply)
 
         @self.bot.callback_query_handler(func=lambda call: True)
         def handle_callback(call):
@@ -121,30 +148,28 @@ class WinterArcBot:
                     task_id = data.split(":", 1)[1]
                     updated = app_logic.toggle_task(task_id)
                     
-                    # Tìm tên task để hiện alert
                     task_name = task_id
                     for t in updated["tasks"]:
                         if t["id"] == task_id:
-                            status_str = "Hoàn thành ✅" if t["completed"] else "Đã bỏ chọn ⬜"
+                            status_str = "Completed ✅" if t["completed"] else "Unchecked ⬜"
                             task_name = f"{t['name']}: {status_str}"
                             break
 
                     self.bot.answer_callback_query(call.id, text=task_name)
                     
-                    # Cập nhật lại giao diện tin nhắn với các nút mới
                     new_keyboard, today = self.build_task_keyboard()
                     lvl = today.get("level_info", {})
                     stk = today.get("streak_info", {})
-                    stk_badge = stk.get("badge", f"🔥 {today['winter_arc_streak']} ngày")
+                    stk_badge = stk.get("badge", f"🔥 {today['winter_arc_streak']} days")
                     warning_text = f"\n⚠️ <i>{stk.get('warning_msg')}</i>" if stk.get("warning") else ""
 
                     new_text = (
-                        f"📊 <b>CẬP NHẬT TIẾN ĐỘ HÔM NAY</b>\n"
-                        f"📅 {today['weekday']} — Ngày {today['day_num']}/{today['total_days']}\n"
-                        f"🏆 {lvl.get('badge', 'LEVEL 1')} (Ngày {lvl.get('day_in_level', 1)}/30)\n"
-                        f"⚡ Chuỗi: <b>{stk_badge}</b>{warning_text}\n"
-                        f"🎯 Hoàn thành: <b>{today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)</b>\n\n"
-                        f"<i>Tick ngay trên tin nhắn này:</i>"
+                        f"📊 <b>TODAY'S PROGRESS UPDATE</b>\n"
+                        f"📅 {today['weekday']} — Day {today['day_num']}/{today['total_days']}\n"
+                        f"🏆 {lvl.get('badge', 'LEVEL 1')} (Day {lvl.get('day_in_level', 1)}/30)\n"
+                        f"⚡ Streak: <b>{stk_badge}</b>{warning_text}\n"
+                        f"🎯 Completed: <b>{today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)</b>\n\n"
+                        f"<i>Tap below to check off your protocols:</i>"
                     )
                     self.bot.edit_message_text(
                         chat_id=call.message.chat.id,
@@ -155,7 +180,7 @@ class WinterArcBot:
 
                 elif data == "refresh":
                     new_keyboard, today = self.build_task_keyboard()
-                    self.bot.answer_callback_query(call.id, text="Đã làm mới dữ liệu!")
+                    self.bot.answer_callback_query(call.id, text="Data refreshed!")
                     self.bot.edit_message_reply_markup(
                         chat_id=call.message.chat.id,
                         message_id=call.message.message_id,

@@ -5,15 +5,15 @@
 // ==============================================================================
 
 const fallbackProtocols = [
-  { id: "pushups", name: "50 cái chống đẩy", icon: "💪", type: "todo", days: [0,1,2,3,4,5,6], time_desc: "Khởi động buổi sáng", active: true },
-  { id: "english", name: "Học Tiếng Anh", icon: "🇬🇧", type: "timer", target_minutes: 120, days: [0,1,2,3,4,5,6], time_desc: "Mục tiêu 120 phút", active: true },
-  { id: "project", name: "Làm Đồ Án", icon: "💻", type: "timer", target_minutes: 90, days: [1,3,5], time_desc: "Tối T3, T5, T7", active: true },
-  { id: "workout", name: "Thể dục 20:30 – 21:30", icon: "🏋️", type: "todo", days: [0,2,4,6], time_desc: "Tối T2, T4, T6, CN", active: true },
-  { id: "nonut", name: "Kỷ luật No Nut (Hôm qua)", icon: "🚫", type: "retro", days: [0,1,2,3,4,5,6], time_desc: "Đánh giá 24h trọn vẹn hôm qua", active: true },
-  { id: "detox_mxh", name: "Không lướt đt trước khi ngủ", icon: "📵", type: "retro", days: [0,1,2,3,4,5,6], time_desc: "Đánh giá buổi tối hôm qua", active: true }
+  { id: "pushups", name: "50 Pushups", icon: "💪", type: "todo", days: [0,1,2,3,4,5,6], time_desc: "Morning warmup", active: true },
+  { id: "english", name: "English Study", icon: "🇬🇧", type: "timer", target_minutes: 120, days: [0,1,2,3,4,5,6], time_desc: "Target 120 mins", active: true },
+  { id: "project", name: "Capstone Project", icon: "💻", type: "timer", target_minutes: 90, days: [1,3,5], time_desc: "Tue, Thu, Sat evenings", active: true },
+  { id: "workout", name: "Workout 20:30 – 21:30", icon: "🏋️", type: "todo", days: [0,2,4,6], time_desc: "Mon, Wed, Fri, Sun evenings", active: true },
+  { id: "nonut", name: "Discipline No Nut (Yesterday)", icon: "🚫", type: "retro", days: [0,1,2,3,4,5,6], time_desc: "Full 24h evaluation", active: true },
+  { id: "detox_mxh", name: "No Screen Before Bed", icon: "📵", type: "retro", days: [0,1,2,3,4,5,6], time_desc: "Yesterday evening evaluation", active: true }
 ];
 
-const DAY_NAMES = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 function getApi() {
   if (window.pywebview && window.pywebview.api) {
@@ -44,10 +44,10 @@ function getApi() {
 // Format schedule days helper
 // -----------------------------------------------------------------------------
 function formatScheduleDays(days) {
-  if (!days || days.length === 0) return "Chưa thiết lập";
-  if (days.length === 7) return "Hàng Ngày (T2 ➔ CN)";
-  if (days.length === 5 && days.every(d => [0, 1, 2, 3, 4].includes(d))) return "Thứ 2 ➔ Thứ 6";
-  return days.map(d => DAY_NAMES[d] || `T${d + 2}`).join(", ");
+  if (!days || days.length === 0) return "Not scheduled";
+  if (days.length === 7) return "Everyday (Mon – Sun)";
+  if (days.length === 5 && days.every(d => [0, 1, 2, 3, 4].includes(d))) return "Mon – Fri";
+  return days.map(d => DAY_NAMES[d] || `D${d + 1}`).join(", ");
 }
 
 // -----------------------------------------------------------------------------
@@ -182,8 +182,8 @@ function renderManagerBadge(item) {
       </svg></div>`;
   }
 
-  // Default Fallback: Clean Target SVG (TUYỆT ĐỐI KHÔNG HIỆN EMOJI)
-  return `<div class="mgr-badge badge-target" title="${escapeHtml(item.name || 'Mục tiêu')}">
+  // Default Fallback: Clean Target SVG (No raw emojis)
+  return `<div class="mgr-badge badge-target" title="${escapeHtml(item.name || 'Protocol')}">
     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2">
       <circle cx="12" cy="12" r="10"/>
       <circle cx="12" cy="12" r="6"/>
@@ -206,14 +206,14 @@ async function loadProtocols() {
     if (!protocols || protocols.length === 0) {
       container.innerHTML = `
         <div style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.8rem;">
-          Chưa có mục tiêu nào. Hãy thêm mục tiêu đầu tiên ở cột bên phải!
+          No active protocols yet. Add your first protocol on the right!
         </div>
       `;
-      badge.innerText = "0 mục";
+      badge.innerText = "0 items";
       return;
     }
 
-    badge.innerText = `${protocols.length} mục`;
+    badge.innerText = `${protocols.length} item${protocols.length > 1 ? 's' : ''}`;
     container.innerHTML = "";
 
     protocols.forEach((item) => {
@@ -222,21 +222,21 @@ async function loadProtocols() {
       
       let typeLabel = "To-Do";
       let typeClass = "todo";
-      let extraDetail = "";
 
       if (item.type === "timer") {
-        typeLabel = `Timer ${item.target_minutes || 60}p`;
+        typeLabel = `Timer ${item.target_minutes || 60}m`;
         typeClass = "timer";
-        extraDetail = ` • Mục tiêu ${item.target_minutes || 60} phút`;
       } else if (item.type === "retro") {
-        typeLabel = "Xác nhận hôm qua";
+        typeLabel = "Yesterday Retro";
         typeClass = "retro";
-        extraDetail = " • Đánh giá ngày hôm trước";
       }
 
       const scheduleStr = formatScheduleDays(item.days);
       const remindTag = item.remind_time 
-        ? `<span class="item-remind-tag" title="Bắn thông báo Telegram lúc ${escapeHtml(item.remind_time)}">⏰ ${escapeHtml(item.remind_time)}</span>` 
+        ? `<span class="item-remind-tag" title="Telegram reminder at ${escapeHtml(item.remind_time)}">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 2px;">
+              <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+            </svg>${escapeHtml(item.remind_time)}</span>` 
         : '';
 
       card.innerHTML = `
@@ -247,12 +247,17 @@ async function loadProtocols() {
             <div class="item-tags">
               <span class="tag-badge ${typeClass}">${typeLabel}</span>
               ${remindTag}
-              <span class="item-schedule">📅 ${scheduleStr}${item.time_desc ? ' • ' + escapeHtml(item.time_desc) : ''}</span>
+              <span class="item-schedule">${scheduleStr}${item.time_desc ? ' • ' + escapeHtml(item.time_desc) : ''}</span>
             </div>
           </div>
         </div>
         <div class="item-actions">
-          <button class="btn-del" title="Xóa mục tiêu này" data-id="${item.id}">🗑️</button>
+          <button class="btn-del" title="Delete protocol" data-id="${item.id}">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
         </div>
       `;
 
@@ -260,10 +265,10 @@ async function loadProtocols() {
       const delBtn = card.querySelector(".btn-del");
       delBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        if (confirm(`Bạn có chắc chắn muốn xóa mục tiêu: "${item.name}"?`)) {
+        if (confirm(`Are you sure you want to delete protocol: "${item.name}"?`)) {
           const api = getApi();
           await api.delete_protocol(item.id);
-          showToast(`Đã xóa "${item.name}"`);
+          showToast(`Deleted "${item.name}"`);
           loadProtocols();
         }
       });
@@ -273,22 +278,25 @@ async function loadProtocols() {
 
   } catch (err) {
     console.error("Load protocols error:", err);
-    container.innerHTML = `<div style="color: var(--apple-red); font-size: 0.75rem;">Lỗi tải dữ liệu: ${err.message}</div>`;
+    container.innerHTML = `<div style="color: var(--apple-red); font-size: 0.75rem;">Error loading data: ${err.message}</div>`;
   }
 }
 
 // -----------------------------------------------------------------------------
-// Load Telegram Config
+// Load Telegram & AI Config
 // -----------------------------------------------------------------------------
 async function loadTelegramConfig() {
   try {
     const api = getApi();
     const cfg = await api.get_config();
     const tg = cfg.telegram || {};
+    const ai = cfg.ai || {};
     document.getElementById("tg-token-input").value = tg.bot_token || "";
     document.getElementById("tg-chat-input").value = tg.chat_id || "";
+    const aiInput = document.getElementById("ai-token-input");
+    if (aiInput) aiInput.value = ai.api_key || "";
   } catch (e) {
-    console.error("Load TG config error:", e);
+    console.error("Load TG/AI config error:", e);
   }
 }
 
@@ -296,14 +304,23 @@ async function saveTelegramConfig() {
   try {
     const api = getApi();
     const cfg = await api.get_config();
+    const curTg = cfg.telegram || {};
+    const inputToken = document.getElementById("tg-token-input").value.trim();
+    const inputChat = document.getElementById("tg-chat-input").value.trim();
+    const inputAi = (document.getElementById("ai-token-input")?.value || "").trim();
+
     cfg.telegram = {
-      bot_token: document.getElementById("tg-token-input").value.trim(),
-      chat_id: document.getElementById("tg-chat-input").value.trim()
+      bot_token: inputToken || curTg.bot_token || "",
+      chat_id: inputChat || curTg.chat_id || ""
+    };
+    cfg.ai = {
+      api_key: inputAi || (cfg.ai?.api_key || ""),
+      provider: (inputAi || cfg.ai?.api_key || "").startsWith("sk-") ? "openai" : "gemini"
     };
     await api.save_config(cfg);
-    showToast("✅ Đã lưu cấu hình Telegram thành công!");
+    showToast("Settings saved successfully!");
   } catch (e) {
-    alert("Lỗi lưu Telegram: " + e.message);
+    alert("Error saving settings: " + e.message);
   }
 }
 
@@ -413,7 +430,7 @@ function setupForm() {
   addBtn.addEventListener("click", async () => {
     const name = document.getElementById("input-name").value.trim();
     if (!name) {
-      alert("Vui lòng nhập tên mục tiêu / thói quen!");
+      alert("Please enter a protocol name!");
       document.getElementById("input-name").focus();
       return;
     }
@@ -437,14 +454,14 @@ function setupForm() {
     });
 
     if (selectedDays.length === 0) {
-      alert("Vui lòng chọn ít nhất 1 ngày trong tuần!");
+      alert("Please select at least 1 day of the week!");
       return;
     }
 
     const timeDesc = document.getElementById("input-time-desc").value.trim();
     const remindTime = remindTimeInput ? remindTimeInput.value.trim() : "";
 
-    // Sinh ID duy nhất dựa trên tên và timestamp
+    // Generate unique ID based on name and timestamp
     const cleanId = name.toLowerCase()
       .replace(/[^a-z0-9]/g, "_")
       .slice(0, 15) + "_" + Math.floor(Date.now() / 1000).toString().slice(-4);
@@ -455,7 +472,7 @@ function setupForm() {
       icon: icon,
       type: selectedType,
       days: selectedDays,
-      time_desc: timeDesc || (selectedType === "retro" ? "Đánh giá 24h trọn vẹn hôm qua" : "Hàng ngày"),
+      time_desc: timeDesc || (selectedType === "retro" ? "Full 24h evaluation" : "Daily"),
       active: true
     };
 
@@ -469,12 +486,12 @@ function setupForm() {
 
     try {
       addBtn.disabled = true;
-      addBtn.innerText = "⏳ Đang lưu...";
+      addBtn.innerText = "Saving...";
       
       const api = getApi();
       await api.add_protocol(newProtocol);
 
-      showToast(`🎉 Đã thêm mục tiêu: "${name}" vào protocols.json!`);
+      showToast(`Protocol "${name}" saved!`);
 
       // Reset form
       document.getElementById("input-name").value = "";
@@ -493,10 +510,10 @@ function setupForm() {
       await loadProtocols();
 
     } catch (err) {
-      alert("Lỗi khi thêm mục tiêu: " + err.message);
+      alert("Error adding protocol: " + err.message);
     } finally {
       addBtn.disabled = false;
-      addBtn.innerHTML = `<span>➕ LƯU VÀO PROTOCOLS.JSON</span>`;
+      addBtn.innerHTML = `<span>SAVE PROTOCOL</span>`;
     }
   });
 
@@ -504,7 +521,7 @@ function setupForm() {
   document.getElementById("btn-refresh").addEventListener("click", () => {
     loadProtocols();
     loadTelegramConfig();
-    showToast("Đã làm mới danh sách!");
+    showToast("Protocols refreshed");
   });
 
   // Save Telegram
@@ -516,14 +533,35 @@ function setupForm() {
     pingBtn.addEventListener("click", async () => {
       const api = getApi();
       if (api.send_test_telegram) {
-        pingBtn.innerText = "⏳ Đang bắn...";
+        pingBtn.innerText = "Sending...";
         const res = await api.send_test_telegram();
-        pingBtn.innerText = "📲 Bắn Thử";
+        pingBtn.innerText = "Test Ping";
         if (res && res.success) {
-          showToast("✅ Đã bắn thông báo sang iPhone thành công!");
+          showToast("Test notification sent successfully!");
         } else {
-          alert(`⚠️ Thông báo: ${res ? res.message : 'Hãy nhập Bot Token trước'}`);
+          alert(`Notification: ${res ? res.message : 'Please enter Bot Token first'}`);
         }
+      }
+    });
+  }
+
+  // Test AI Coach
+  const testAiBtn = document.getElementById("btn-test-ai");
+  if (testAiBtn) {
+    testAiBtn.addEventListener("click", async () => {
+      const api = getApi();
+      if (api.test_ai_coach) {
+        testAiBtn.innerText = "Analyzing...";
+        const res = await api.test_ai_coach();
+        testAiBtn.innerText = "Test AI Coach";
+        if (res && res.success) {
+          showToast("AI Coach active!");
+          alert(`🛡️ AI Coach Test Quote:\n\n"${res.message}"\n\n(A test message was broadcasted to your Telegram!)`);
+        } else {
+          alert(`⚠️ AI Coach: ${res ? res.message : 'Please enter a valid Gemini API Key'}`);
+        }
+      } else {
+        alert("AI Coach feature is ready! Save your API key and restart app.");
       }
     });
   }

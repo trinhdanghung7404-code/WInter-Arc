@@ -275,16 +275,22 @@ def get_screen_bounds():
         return 1920, 1080
 
 def main():
-    print("[SYSTEM] Khởi động Winter Arc Apple Widgets...")
-    bot_instance.start_polling()
-    scheduler_instance.start()
+    cfg = app_logic.load_config()
+    cloud_url = (cfg.get("cloud_url") or "").strip()
 
-    # Kéo dữ liệu mới nhất từ Cloud về nếu có cấu hình cloud_url
-    try:
-        from src import cloud_sync
-        cloud_sync.sync_down()
-    except Exception:
-        pass
+    if cloud_url:
+        print(f"[SYSTEM] Chế độ Cloud đang bật ({cloud_url}). Bot & Scheduler được ủy quyền cho Render chạy 24/7.")
+        # Kéo dữ liệu mới nhất từ Cloud về
+        try:
+            from src import cloud_sync
+            cloud_sync.sync_down()
+        except Exception:
+            pass
+    else:
+        print("[SYSTEM] Chế độ Local: Khởi chạy Bot Telegram & Scheduler trên máy tính...")
+        bot_instance.start_polling()
+        scheduler_instance.start()
+
 
     screen_w, screen_h = get_screen_bounds()
     pos_x = max(20, screen_w - WIN_WIDTH - 25)

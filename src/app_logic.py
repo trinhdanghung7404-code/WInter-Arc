@@ -8,7 +8,7 @@ CONFIG_PATH = os.path.join(DATA_DIR, "config.json")
 STORAGE_PATH = os.path.join(DATA_DIR, "storage.json")
 PROTOCOLS_PATH = os.path.join(DATA_DIR, "protocols.json")
 
-WEEKDAY_VI = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
+WEEKDAY_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 def load_config():
     if not os.path.exists(CONFIG_PATH):
@@ -22,6 +22,11 @@ def load_config():
 def save_config(cfg):
     with open(CONFIG_PATH, "w", encoding="utf-8") as f:
         json.dump(cfg, f, ensure_ascii=False, indent=2)
+    try:
+        from . import cloud_sync
+        cloud_sync.sync_config_up()
+    except Exception:
+        pass
 
 def load_storage():
     if not os.path.exists(STORAGE_PATH):
@@ -120,7 +125,7 @@ def get_today_data():
     today_str = today.strftime("%Y-%m-%d")
     yesterday_str = yesterday.strftime("%Y-%m-%d")
     weekday_idx = today.weekday()
-    weekday_name = WEEKDAY_VI[weekday_idx]
+    weekday_name = WEEKDAY_EN[weekday_idx]
     
     storage = load_storage()
     history = storage.setdefault("history", {})
@@ -146,13 +151,13 @@ def get_today_data():
         tid = t["id"]
         t_type = t.get("type", "todo")
         
-        # Nếu là loại retro (xác nhận hôm qua): kiểm tra trạng thái trong bản ghi của ngày hôm qua
+        # Retro: check yesterday's record
         if t_type == "retro":
             is_done = yesterday_record["tasks"].get(tid, False)
-            eval_date_label = f"Hôm qua ({yesterday.strftime('%d/%m')})"
+            eval_date_label = f"Yesterday ({yesterday.strftime('%b %d')})"
         else:
             is_done = day_record["tasks"].get(tid, False)
-            eval_date_label = "Hôm nay"
+            eval_date_label = "Today"
 
         if is_done:
             completed_count += 1
@@ -438,21 +443,21 @@ def calculate_level_info(day_num, total_days=90):
     
     level_metadata = {
         1: {
-            "title": "Tân Binh (Khởi Động)",
+            "title": "Recruit (Foundation)",
             "badge": "🌱 LEVEL 1",
-            "desc": "Giai đoạn 30 ngày đầu: Phá vỡ thói quen cũ và xây dựng nền tảng kỷ luật",
+            "desc": "First 30 days: Breaking old habits and forging baseline discipline",
             "icon": "🌱"
         },
         2: {
-            "title": "Chiến Binh (Kỷ Luật Thép)",
+            "title": "Warrior (Iron Discipline)",
             "badge": "⚡ LEVEL 2",
-            "desc": "Giai đoạn 30 ngày giữa: Định hình thói quen thép, tốc độ và sức bền",
+            "desc": "Middle 30 days: Solidifying iron habits, speed, and endurance",
             "icon": "⚡"
         },
         3: {
-            "title": "Bậc Thầy (Bất Khả Chiến Bại)",
+            "title": "Master (Apex Command)",
             "badge": "👑 LEVEL 3",
-            "desc": "Giai đoạn 30 ngày cuối: Đạt trạng thái tối thượng, làm chủ bản thân hoàn toàn",
+            "desc": "Final 30 days: Reaching apex state, complete self-mastery",
             "icon": "👑"
         }
     }
@@ -513,3 +518,113 @@ def get_90_day_matrix():
         })
 
     return matrix
+
+
+def get_weekly_summary():
+    """Tổng hợp dữ liệu 7 ngày gần nhất để gửi cho AI Coach phân tích"""
+    storage = load_storage()
+    history = storage.get("history", {})
+    today = date.today()
+    
+    days_stat = []
+    total_assigned = 0
+    total_done = 0
+    flame_days = 0
+    grey_days = 0
+    missed_days = 0
+    total_english_mins = 0
+
+    for i in range(6, -1, -1):
+        d = today - timedelta(days=i)
+        d_str = d.strftime("%Y-%m-%d")
+        weekday_name = WEEKDAY_EN[d.weekday()]
+        rec = history.get(d_str, {})
+        tasks_done = rec.get("tasks", {})
+        focus_times = rec.get("focus_times", {})
+        
+        task_defs = get_task_definitions_for_date(d)
+        cnt_total = len(task_defs)
+        cnt_done = sum(1 for t in task_defs if tasks_done.get(t["id"], False))
+        rate = int((cnt_done / cnt_total) * 100) if cnt_total else 0
+        
+        total_assigned += cnt_total
+        total_done += cnt_done
+        total_english_mins += focus_times.get("english", 0)
+
+        if rate == 100 and cnt_total > 0:
+            flame_days += 1
+            tag = "🔥 100%"
+        elif rate >= 50:
+            grey_days += 1
+            tag = f"⚪ {rate}%"
+        else:
+            missed_days += 1
+            tag = f"💀 {rate}%"
+
+        days_stat.append(f"• {weekday_name} ({d.strftime('%d/%m')}): {cnt_done}/{cnt_total} ({tag})")
+
+    overall_rate = int((total_done / total_assigned) * 100) if total_assigned else 0
+    day_num, total_days = get_day_number(today)
+    level_info = calculate_level_info(day_num, total_days)
+    streak_info = calculate_winter_arc_streak(history)
+
+    return {
+        "days_stat": days_stat,
+        "total_assigned": total_assigned,
+        "total_done": total_done,
+        "overall_rate": overall_rate,
+        "flame_days": flame_days,
+        "grey_days": grey_days,
+        "missed_days": missed_days,
+        "english_minutes": total_english_mins,
+        "current_streak": streak_info.get("streak", 0),
+        "level_info": level_info
+    }
+
+
+def get_monthly_summary():
+    """Tổng hợp dữ liệu chặng 30 ngày (hoặc toàn bộ các ngày tính đến nay)"""
+    storage = load_storage()
+    history = storage.get("history", {})
+    today = date.today()
+    day_num, total_days = get_day_number(today)
+    level_info = calculate_level_info(day_num, total_days)
+
+    flame_count = 0
+    grey_count = 0
+    missed_count = 0
+    total_english_mins = 0
+
+    # Lấy 30 ngày gần nhất
+    days_to_check = min(30, day_num)
+    for i in range(days_to_check - 1, -1, -1):
+        d = today - timedelta(days=i)
+        d_str = d.strftime("%Y-%m-%d")
+        rec = history.get(d_str, {})
+        tasks_done = rec.get("tasks", {})
+        focus_times = rec.get("focus_times", {})
+        
+        task_defs = get_task_definitions_for_date(d)
+        cnt_total = len(task_defs)
+        cnt_done = sum(1 for t in task_defs if tasks_done.get(t["id"], False))
+        rate = int((cnt_done / cnt_total) * 100) if cnt_total else 0
+
+        total_english_mins += focus_times.get("english", 0)
+
+        if rate == 100 and cnt_total > 0:
+            flame_count += 1
+        elif rate >= 50:
+            grey_count += 1
+        else:
+            missed_count += 1
+
+    return {
+        "level": level_info.get("level", 1),
+        "title": level_info.get("title", "Recruit"),
+        "day_num": day_num,
+        "flame_count": flame_count,
+        "grey_count": grey_count,
+        "missed_count": missed_count,
+        "english_minutes": total_english_mins
+    }
+

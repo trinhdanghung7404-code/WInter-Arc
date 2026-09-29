@@ -20,5 +20,9 @@
     "width": 360,
     "height": 560
   },
-  "cloud_url": "https://winter-arc-bot.onrender.com/"
+  "cloud_url": "https://winter-arc-bot.onrender.com/",
+  "ai": {
+    "api_key": "AQ.Ab8RN6IV7wSU4-q_0G3zTZx3IGlNmwlDzycl49hUxfEXzhJ8yw",
+    "provider": "gemini"
+  }
 }

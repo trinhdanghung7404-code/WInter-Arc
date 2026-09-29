@@ -72,3 +72,21 @@ def sync_protocols_up():
             pass
 
     threading.Thread(target=worker, daemon=True).start()
+
+def sync_config_up():
+    """Đẩy cấu hình (AI key, Telegram, v.v.) từ Local lên Cloud"""
+    cloud_url = get_cloud_url()
+    if not cloud_url:
+        return
+
+    def worker():
+        try:
+            cfg = app_logic.load_config()
+            clean_cfg = {k: v for k, v in cfg.items() if k != "cloud_url"}
+            requests.post(f"{cloud_url}/api/sync", json={"config": clean_cfg}, timeout=10)
+            print("[CLOUD SYNC] Đã đẩy config lên Cloud!")
+        except Exception:
+            pass
+
+    threading.Thread(target=worker, daemon=True).start()
+
