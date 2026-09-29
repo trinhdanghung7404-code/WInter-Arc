@@ -1,0 +1,36 @@
+{
+  "streaks": {
+    "nonut": 0,
+    "winter_arc": 0
+  },
+  "history": {
+    "2026-09-28": {
+      "tasks": {
+        "english": false,
+        "pushups": false,
+        "workout": false
+      },
+      "english_minutes": 0,
+      "project_minutes": 0,
+      "notes": ""
+    },
+    "2026-09-27": {
+      "tasks": {
+        "nonut": false
+      },
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-09-29": {
+      "tasks": {
+        "pushups": false
+      },
+      "focus_times": {},
+      "notes": ""
+    }
+  },
+  "focus_today": {
+    "english_seconds": 0,
+    "project_seconds": 0
+  }
+}

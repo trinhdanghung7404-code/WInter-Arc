@@ -1,0 +1,375 @@
+import json
+import os
+from datetime import datetime, date, timedelta
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CONFIG_PATH = os.path.join(DATA_DIR, "config.json")
+STORAGE_PATH = os.path.join(DATA_DIR, "storage.json")
+PROTOCOLS_PATH = os.path.join(DATA_DIR, "protocols.json")
+
+WEEKDAY_VI = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
+
+def load_config():
+    if not os.path.exists(CONFIG_PATH):
+        return {}
+    try:
+        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def save_config(cfg):
+    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+def load_storage():
+    if not os.path.exists(STORAGE_PATH):
+        return {"streaks": {"nonut": 0, "winter_arc": 0}, "history": {}}
+    try:
+        with open(STORAGE_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"streaks": {"nonut": 0, "winter_arc": 0}, "history": {}}
+
+def save_storage(data):
+    with open(STORAGE_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def load_protocols():
+    """Đọc danh sách mục tiêu từ file protocols.json (hoàn toàn không hardcode)"""
+    if not os.path.exists(PROTOCOLS_PATH):
+        return []
+    try:
+        with open(PROTOCOLS_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data.get("protocols", [])
+    except Exception as e:
+        print(f"[Protocols Load Error]: {e}")
+        return []
+
+def save_protocols(protocols_list):
+    """Lưu danh sách mục tiêu vào file protocols.json"""
+    with open(PROTOCOLS_PATH, "w", encoding="utf-8") as f:
+        json.dump({"protocols": protocols_list}, f, ensure_ascii=False, indent=2)
+    try:
+        from . import cloud_sync
+        cloud_sync.sync_protocols_up()
+    except Exception:
+        pass
+
+def add_protocol(new_item):
+    """Thêm một mục tiêu mới vào file protocols.json"""
+    protocols = load_protocols()
+    # Tự động sinh ID nếu chưa có
+    if not new_item.get("id"):
+        new_item["id"] = "task_" + str(int(datetime.now().timestamp()))
+    new_item.setdefault("active", True)
+    protocols.append(new_item)
+    save_protocols(protocols)
+    return protocols
+
+def delete_protocol(item_id):
+    """Xóa mục tiêu theo ID khỏi file protocols.json"""
+    protocols = load_protocols()
+    protocols = [p for p in protocols if p.get("id") != item_id]
+    save_protocols(protocols)
+    return protocols
+
+def update_protocol(item_id, updated_fields):
+    """Cập nhật mục tiêu trong file protocols.json"""
+    protocols = load_protocols()
+    for p in protocols:
+        if p.get("id") == item_id:
+            p.update(updated_fields)
+            break
+    save_protocols(protocols)
+    return protocols
+
+def get_day_number(target_date=None):
+    cfg = load_config()
+    start_str = cfg.get("start_date", "2026-10-01")
+    try:
+        start_dt = datetime.strptime(start_str, "%Y-%m-%d").date()
+    except Exception:
+        start_dt = date(2026, 10, 1)
+        
+    curr_date = target_date or date.today()
+    delta = (curr_date - start_dt).days + 1
+    total = cfg.get("total_days", 92)
+    return max(1, delta), total
+
+def get_task_definitions_for_date(curr_date):
+    """Lấy danh sách nhiệm vụ hợp lệ cho một ngày cụ thể dựa trên protocols.json"""
+    all_protocols = load_protocols()
+    weekday = curr_date.weekday() # 0 = T2 ... 6 = CN
+
+    tasks_for_day = []
+    for p in all_protocols:
+        if not p.get("active", True):
+            continue
+        days = p.get("days", [0, 1, 2, 3, 4, 5, 6])
+        if weekday in days:
+            tasks_for_day.append(p)
+
+    return tasks_for_day
+
+def get_today_data():
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+    today_str = today.strftime("%Y-%m-%d")
+    yesterday_str = yesterday.strftime("%Y-%m-%d")
+    weekday_idx = today.weekday()
+    weekday_name = WEEKDAY_VI[weekday_idx]
+    
+    storage = load_storage()
+    history = storage.setdefault("history", {})
+    
+    day_record = history.setdefault(today_str, {
+        "tasks": {},
+        "focus_times": {},
+        "notes": ""
+    })
+    
+    yesterday_record = history.setdefault(yesterday_str, {
+        "tasks": {},
+        "focus_times": {},
+        "notes": ""
+    })
+
+    task_defs = get_task_definitions_for_date(today)
+    tasks_result = []
+    timer_tasks_result = []
+    completed_count = 0
+
+    for t in task_defs:
+        tid = t["id"]
+        t_type = t.get("type", "todo")
+        
+        # Nếu là loại retro (xác nhận hôm qua): kiểm tra trạng thái trong bản ghi của ngày hôm qua
+        if t_type == "retro":
+            is_done = yesterday_record["tasks"].get(tid, False)
+            eval_date_label = f"Hôm qua ({yesterday.strftime('%d/%m')})"
+        else:
+            is_done = day_record["tasks"].get(tid, False)
+            eval_date_label = "Hôm nay"
+
+        if is_done:
+            completed_count += 1
+
+        task_item = {
+            **t,
+            "completed": is_done,
+            "eval_label": eval_date_label
+        }
+        tasks_result.append(task_item)
+
+        # Lọc riêng các nhiệm vụ có timer để gửi cho bộ đếm giờ
+        if t_type == "timer":
+            studied_mins = day_record.get("focus_times", {}).get(tid, 0)
+            timer_tasks_result.append({
+                "id": tid,
+                "name": t.get("name", "Nhiệm vụ"),
+                "icon": t.get("icon", "⏱️"),
+                "target_minutes": t.get("target_minutes", 60),
+                "studied_minutes": studied_mins,
+                "completed": is_done
+            })
+
+    day_num, total_days = get_day_number(today)
+    completion_rate = int((completed_count / len(task_defs)) * 100) if task_defs else 0
+
+    nonut_streak = calculate_streak("nonut", history)
+    winter_arc_streak = calculate_full_streak(history)
+
+    storage["streaks"]["nonut"] = nonut_streak
+    storage["streaks"]["winter_arc"] = winter_arc_streak
+    save_storage(storage)
+
+    english_mins = day_record.get("focus_times", {}).get("english", 0)
+    project_mins = day_record.get("focus_times", {}).get("project", 0)
+
+    return {
+        "date_str": today_str,
+        "yesterday_str": yesterday_str,
+        "weekday": weekday_name,
+        "day_num": day_num,
+        "total_days": total_days,
+        "tasks": tasks_result,
+        "timer_tasks": timer_tasks_result,
+        "english_minutes": english_mins,
+        "project_minutes": project_mins,
+        "completed_count": completed_count,
+        "total_tasks": len(task_defs),
+        "completion_rate": completion_rate,
+        "nonut_streak": nonut_streak,
+        "winter_arc_streak": winter_arc_streak,
+        "all_protocols": load_protocols()
+    }
+
+def toggle_task(task_id, force_date_str=None):
+    """
+    Tick hoàn thành hoặc bỏ tick một nhiệm vụ.
+    Tự động xác định: Nếu là loại retro (xác nhận hôm qua) thì lưu vào ngày hôm qua!
+    """
+    today = date.today()
+    yesterday_str = (today - timedelta(days=1)).strftime("%Y-%m-%d")
+    today_str = today.strftime("%Y-%m-%d")
+
+    # Tìm định nghĩa loại nhiệm vụ
+    protocols = load_protocols()
+    task_type = "todo"
+    for p in protocols:
+        if p.get("id") == task_id:
+            task_type = p.get("type", "todo")
+            break
+
+    target_date = force_date_str or (yesterday_str if task_type == "retro" else today_str)
+
+    storage = load_storage()
+    history = storage.setdefault("history", {})
+    record = history.setdefault(target_date, {
+        "tasks": {},
+        "focus_times": {},
+        "notes": ""
+    })
+
+    curr_val = record["tasks"].get(task_id, False)
+    record["tasks"][task_id] = not curr_val
+
+    save_storage(storage)
+
+    try:
+        from . import cloud_sync
+        cloud_sync.sync_toggle(task_id)
+    except Exception:
+        pass
+
+    return get_today_data()
+
+def add_focus_time(task_id, minutes):
+    today_str = date.today().strftime("%Y-%m-%d")
+    storage = load_storage()
+    record = storage.setdefault("history", {}).setdefault(today_str, {
+        "tasks": {},
+        "focus_times": {},
+        "notes": ""
+    })
+
+    focus_dict = record.setdefault("focus_times", {})
+    focus_dict[task_id] = focus_dict.get(task_id, 0) + minutes
+
+    # Tìm target_minutes của task này trong protocols.json
+    protocols = load_protocols()
+    target_mins = 60
+    for p in protocols:
+        if p.get("id") == task_id:
+            target_mins = p.get("target_minutes", 60)
+            break
+
+    if focus_dict[task_id] >= target_mins:
+        record["tasks"][task_id] = True
+
+    save_storage(storage)
+    return get_today_data()
+
+def calculate_streak(task_id, history):
+    streak = 0
+    curr = date.today()
+    
+    # Kiểm tra xem hôm nay hoặc hôm qua có làm không
+    today_str = curr.strftime("%Y-%m-%d")
+    yesterday_str = (curr - timedelta(days=1)).strftime("%Y-%m-%d")
+    
+    today_done = history.get(today_str, {}).get("tasks", {}).get(task_id, False)
+    yesterday_done = history.get(yesterday_str, {}).get("tasks", {}).get(task_id, False)
+    
+    if today_done:
+        streak += 1
+        curr -= timedelta(days=1)
+    elif yesterday_done:
+        streak += 1
+        curr = curr - timedelta(days=2)
+    else:
+        return 0
+
+    while True:
+        d_str = curr.strftime("%Y-%m-%d")
+        if history.get(d_str, {}).get("tasks", {}).get(task_id, False):
+            streak += 1
+            curr -= timedelta(days=1)
+        else:
+            break
+            
+    return streak
+
+def calculate_full_streak(history):
+    streak = 0
+    curr = date.today()
+    
+    def is_day_won(d):
+        d_str = d.strftime("%Y-%m-%d")
+        rec = history.get(d_str, {}).get("tasks", {})
+        defs = get_task_definitions_for_date(d)
+        if not defs:
+            return False
+        return all(rec.get(t["id"], False) for t in defs)
+
+    if is_day_won(curr):
+        streak += 1
+        curr -= timedelta(days=1)
+    else:
+        yesterday = curr - timedelta(days=1)
+        if not is_day_won(yesterday):
+            return 0
+        curr = yesterday
+
+    while True:
+        if is_day_won(curr):
+            streak += 1
+            curr -= timedelta(days=1)
+        else:
+            break
+    return streak
+
+def get_90_day_matrix():
+    cfg = load_config()
+    start_str = cfg.get("start_date", "2026-10-01")
+    try:
+        start_dt = datetime.strptime(start_str, "%Y-%m-%d").date()
+    except Exception:
+        start_dt = date(2026, 10, 1)
+
+    total_days = cfg.get("total_days", 92)
+    storage = load_storage()
+    history = storage.get("history", {})
+
+    matrix = []
+    today = date.today()
+
+    for i in range(total_days):
+        day_date = start_dt + timedelta(days=i)
+        d_str = day_date.strftime("%Y-%m-%d")
+        rec = history.get(d_str, {}).get("tasks", {})
+        task_defs = get_task_definitions_for_date(day_date)
+        
+        done_count = sum(1 for t in task_defs if rec.get(t["id"], False))
+        total_count = len(task_defs)
+        rate = int((done_count / total_count) * 100) if total_count else 0
+        
+        is_today = (day_date == today)
+        is_future = (day_date > today)
+        is_won = (rate == 100)
+
+        matrix.append({
+            "day_index": i + 1,
+            "date": d_str,
+            "rate": rate,
+            "done_count": done_count,
+            "total_count": total_count,
+            "is_today": is_today,
+            "is_future": is_future,
+            "is_won": is_won
+        })
+
+    return matrix

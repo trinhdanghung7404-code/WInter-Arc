@@ -1,0 +1,22 @@
+{
+  "user_name": "Chiến binh Winter Arc",
+  "start_date": "2026-10-01",
+  "end_date": "2027-01-01",
+  "total_days": 92,
+  "total_months": 3,
+  "telegram": {
+    "bot_token": "8936226615:AAGLIJdMnkB50Eg9b7GHGstiu4LiWTq-bec",
+    "chat_id": "8694846863"
+  },
+  "schedule": {
+    "morning_pushups": "07:00",
+    "evening_briefing": "18:00",
+    "workout_reminder": "20:25",
+    "night_review": "22:30"
+  },
+  "window": {
+    "always_on_top": true,
+    "width": 360,
+    "height": 560
+  }
+}

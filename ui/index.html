@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winter Arc iOS Widgets</title>
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body class="ios-body">
+
+  <div class="widget-stack" id="drag-handle">
+    
+    <!-- TOP ROW: 2 SMALL SQUIRCLES (Side by Side) -->
+    <div class="row-two-squares">
+      
+      <!-- WIDGET 1: ACTIVITY RINGS (Exact Apple Fitness / Battery style from reference) -->
+      <div class="ios-card card-rings">
+        <div class="rings-grid">
+          <!-- Ring 1: Pushups -->
+          <div class="ring-box" id="ring-box-pushups" title="50 Chống đẩy">
+            <svg class="ring-svg" viewBox="0 0 36 36">
+              <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path id="ring-pushups" class="ring-fill green" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="ring-icon green">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </span>
+          </div>
+
+          <!-- Ring 2: English -->
+          <div class="ring-box" id="ring-box-english" title="2h Tiếng Anh">
+            <svg class="ring-svg" viewBox="0 0 36 36">
+              <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path id="ring-english" class="ring-fill cyan" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="ring-icon cyan">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+            </span>
+          </div>
+
+          <!-- Ring 3: Sleep Recovery -->
+          <div class="ring-box" id="ring-box-sleep" title="Giấc ngủ phục hồi 7-8h">
+            <svg class="ring-svg" viewBox="0 0 36 36">
+              <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path id="ring-sleep" class="ring-fill purple" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="ring-icon purple" id="icon-sleep">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+              </svg>
+            </span>
+          </div>
+
+          <!-- Ring 4: No Nut -->
+          <div class="ring-box" id="ring-box-nonut" title="No Nut">
+            <svg class="ring-svg" viewBox="0 0 36 36">
+              <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path id="ring-nonut" class="ring-fill flame" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="ring-icon flame">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WIDGET 2: APPLE CALENDAR / COUNTDOWN (Exact white calendar widget from reference) -->
+      <div class="ios-card card-calendar">
+        <div class="cal-header">
+          <span class="cal-weekday" id="cal-weekday">Thứ Hai</span>
+          <span class="cal-month" id="cal-month">TH 10</span>
+        </div>
+        <div class="cal-number" id="cal-day-num">01</div>
+        <div class="cal-footer">
+          <span class="cal-target" id="cal-target-sub">Ngày 1/92</span>
+          <span class="cal-streak-text" id="cal-streak-badge">🔥 0d</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MIDDLE ROW: FOCUS TIMER (Medium Squircle) -->
+    <div class="ios-card card-timer">
+      <div class="timer-head">
+        <div class="timer-tabs" id="timer-tabs-container">
+          <!-- Dynamic Timer Tabs rendered from protocols.json -->
+          <button class="t-tab active" data-type="english">📚 Tiếng Anh</button>
+          <button class="t-tab" data-type="project">💻 Đồ Án</button>
+        </div>
+        <div class="timer-top-btns">
+          <button id="btn-pin" class="btn-pin active" title="Đang ghim trên cùng (Bấm để bỏ ghim)">
+            <svg class="pin-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="17" x2="12" y2="22"></line>
+              <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+            </svg>
+          </button>
+          <button id="btn-open-manager-top" class="ios-mini-icon" title="Cài đặt & Quản lý mục tiêu">
+            <svg class="gear-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+          <button id="btn-hide-tray" class="ios-mini-icon" title="Thu gọn xuống khay hệ thống (Chạy ngầm)">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="timer-body">
+        <div class="timer-time-wrap">
+          <div class="timer-display"><span id="timer-min">120</span>:<span id="timer-sec">00</span></div>
+          <div class="timer-accum-clean" id="timer-accum">0/120p</div>
+        </div>
+        <div class="timer-ctrls">
+          <button id="btn-timer-play" class="btn-play-round" title="Bắt đầu / Tạm dừng">▶</button>
+          <button id="btn-timer-reset" class="btn-reset-round" title="Đặt lại">↺</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW: THE PROTOCOL CHECKLIST -->
+
+    <!-- 1. COMPACT PROTOCOL BAR (Hiển thị khi ở chế độ Rút Gọn) -->
+    <div class="card-protocol-compact hidden" id="protocol-compact-bar" title="Bấm vào để mở rộng checklist nhiệm vụ">
+      <div class="compact-left">
+        <span class="compact-glyph">🎯</span>
+        <span class="compact-title" id="compact-status-text">Đang tải nhiệm vụ...</span>
+      </div>
+      <span class="compact-expand-arrow">▾</span>
+    </div>
+
+    <!-- 2. EXPANDED PROTOCOL CARD (Hiển thị khi ở chế độ Mở Rộng) -->
+    <div class="ios-card card-protocol" id="protocol-expanded-card">
+      <div class="protocol-head">
+        <div class="protocol-title">MỤC TIÊU HÔM NAY</div>
+        <div class="protocol-head-right">
+          <span class="protocol-stat" id="protocol-stat">0/6 (0%)</span>
+          <button id="btn-collapse-protocol" class="btn-collapse-pill" title="Thu gọn bảng checklist">▲</button>
+        </div>
+      </div>
+
+      <div class="protocol-list" id="protocol-list">
+        <!-- Rendered tasks list -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Settings Modal (Glassmorphism) -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-card-ios">
+      <div class="modal-head-ios">
+        <span>⚙️ KẾT NỐI IPHONE TELEGRAM</span>
+        <button id="btn-close-modal" class="btn-close-ios">✕</button>
+      </div>
+      <div class="modal-body-ios">
+        <label>Telegram Bot Token:</label>
+        <input type="text" id="input-token" placeholder="Dán Token từ @BotFather..." />
+        <small>Tìm @BotFather trên Telegram ➔ gửi /newbot để lấy Token.</small>
+
+        <label style="margin-top: 8px;">Telegram Chat ID:</label>
+        <input type="text" id="input-chat" placeholder="Tự động nhận khi bạn bấm /start" />
+
+        <div class="modal-actions-ios">
+          <button id="btn-save-cfg" class="btn-save-ios">Lưu Cài Đặt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=4"></script>
+</body>
+</html>

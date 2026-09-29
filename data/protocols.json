@@ -1,0 +1,294 @@
+{
+  "protocols": [
+    {
+      "id": "pushups",
+      "name": "Chống đẩy 50 cái",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Sáng sớm",
+      "active": true
+    },
+    {
+      "id": "english",
+      "name": "Học Tiếng Anh",
+      "icon": "📚",
+      "type": "timer",
+      "target_minutes": 120,
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Mục tiêu 120p",
+      "active": true
+    },
+    {
+      "id": "project",
+      "name": "Làm Đồ Án",
+      "icon": "💻",
+      "type": "timer",
+      "target_minutes": 90,
+      "days": [
+        1,
+        3,
+        5
+      ],
+      "time_desc": "Tối T3, T5, T7",
+      "active": true
+    },
+    {
+      "id": "sleep",
+      "name": "Ngủ đủ 7-8h / trước 23:00",
+      "icon": "🌙",
+      "type": "retro",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Đánh giá giấc ngủ hôm qua",
+      "active": true
+    },
+    {
+      "id": "nonut",
+      "name": "Kỷ luật No Nut",
+      "icon": "🔥",
+      "type": "retro",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Đánh giá hôm qua",
+      "active": true
+    },
+    {
+      "id": "detox_mxh",
+      "name": "Không dùng đt trước khi ngủ",
+      "icon": "📵",
+      "type": "retro",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Tối hôm qua",
+      "active": true
+    },
+    {
+      "id": "ch_i_6354",
+      "name": "chơi",
+      "icon": "🎯",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "kjp_5063",
+      "name": "kjp",
+      "icon": "🏋️",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "kho_5339",
+      "name": "kho",
+      "icon": "📖",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "jj_5708",
+      "name": "jj",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "hi_6006",
+      "name": "hi",
+      "icon": "💻",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "ji_6020",
+      "name": "ji",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "hi_6079",
+      "name": "hi",
+      "icon": "💤",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "hi_6795",
+      "name": "hi",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true
+    },
+    {
+      "id": "fg_7885",
+      "name": "fg",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true,
+      "remind_time": "22:06"
+    },
+    {
+      "id": "hi_8777",
+      "name": "hi",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true,
+      "remind_time": "22:20"
+    },
+    {
+      "id": "hi_9014",
+      "name": "hi",
+      "icon": "💪",
+      "type": "todo",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "time_desc": "Hàng ngày",
+      "active": true,
+      "remind_time": "22:24"
+    }
+  ]
+}

@@ -1,0 +1,822 @@
+/* ==============================================================================
+   WINTER ARC APPLE WIDGETS - CLEAN MINIMALIST GLASSMORPHISM
+   Minimalist, Quiet Luxury, Zero Clutter
+   ============================================================================== */
+
+:root {
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  
+  --apple-blue: #0a84ff;
+  --apple-cyan: #38bdf8;
+  --apple-green: #30d158;
+  --apple-red: #ff453a;
+  --apple-orange: #ff9f0a;
+
+  --glass-bg: rgba(12, 16, 26, 0.82);
+  --card-bg: rgba(20, 26, 42, 0.7);
+  --card-bg-hover: rgba(28, 36, 56, 0.8);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body.ios-body {
+  background: transparent !important;
+  background-color: transparent !important;
+  font-family: var(--apple-font);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ==============================================================================
+   MAIN CONTAINER (Apple Glass Plate)
+   ============================================================================== */
+.widget-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 345px;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  cursor: grab;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.widget-stack:active {
+  cursor: grabbing;
+}
+
+/* Base Card - Apple Dark Glass Squircle */
+.ios-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ios-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* ==============================================================================
+   ROW 1: TWO SQUARES (Side by Side)
+   ============================================================================== */
+.row-two-squares {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* WIDGET 1: Rings */
+.card-rings {
+  height: 130px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+}
+
+.ring-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.02);
+  transition: transform 0.2s ease;
+}
+
+.ring-box:hover {
+  transform: scale(1.06);
+}
+
+.ring-svg {
+  width: 44px;
+  height: 44px;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 3.5;
+}
+
+.ring-fill {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.ring-fill.green { stroke: var(--apple-green); filter: drop-shadow(0 0 4px rgba(48, 209, 88, 0.5)); }
+.ring-fill.cyan  { stroke: var(--apple-cyan); filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.5)); }
+.ring-fill.purple{ stroke: #bf5af2; filter: drop-shadow(0 0 4px rgba(191, 90, 242, 0.5)); }
+.ring-fill.orange{ stroke: var(--apple-orange); filter: drop-shadow(0 0 4px rgba(255, 159, 10, 0.5)); }
+.ring-fill.flame { stroke: var(--apple-red); filter: drop-shadow(0 0 4px rgba(255, 69, 58, 0.5)); }
+
+.ring-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+.ring-icon.green  { color: var(--apple-green);  filter: drop-shadow(0 0 5px rgba(48, 209, 88, 0.75)); }
+.ring-icon.cyan   { color: var(--apple-cyan);   filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.75)); }
+.ring-icon.purple { color: #bf5af2;             filter: drop-shadow(0 0 5px rgba(191, 90, 242, 0.75)); }
+.ring-icon.orange { color: var(--apple-orange); filter: drop-shadow(0 0 5px rgba(255, 159, 10, 0.75)); }
+.ring-icon.flame  { color: var(--apple-red);    filter: drop-shadow(0 0 5px rgba(255, 69, 58, 0.75)); }
+
+.ring-box:hover .ring-icon {
+  transform: scale(1.15);
+}
+
+/* WIDGET 2: Dark Minimalist Calendar */
+.card-calendar {
+  height: 130px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.cal-weekday {
+  color: var(--apple-red);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cal-month {
+  color: var(--text-tertiary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cal-number {
+  font-size: 3.1rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -2px;
+  line-height: 0.9;
+  margin: 1px 0;
+}
+
+.cal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cal-target {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cal-streak-text {
+  font-size: 0.62rem;
+  font-weight: 750;
+  color: var(--apple-orange);
+}
+
+/* ==============================================================================
+   ROW 2: FOCUS TIMER (Clean Minimalist)
+   ============================================================================== */
+.card-timer {
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.timer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timer-tabs {
+  display: flex;
+  gap: 5px;
+}
+
+.t-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--text-secondary);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.t-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.t-tab.active {
+  background: rgba(56, 189, 248, 0.15);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.tab-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.tab-indicator.dot-cyan {
+  background: var(--apple-cyan);
+  box-shadow: 0 0 5px var(--apple-cyan);
+}
+
+.tab-indicator.dot-purple {
+  background: #c084fc;
+  box-shadow: 0 0 5px #c084fc;
+}
+
+.tab-indicator.dot-orange {
+  background: var(--apple-orange);
+  box-shadow: 0 0 5px var(--apple-orange);
+}
+
+.timer-top-btns {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ios-mini-icon,
+#btn-pin {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Nút Bánh Răng Quản Lý */
+.ios-mini-icon {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.ios-mini-icon:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ios-mini-icon .gear-svg {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.ios-mini-icon:hover .gear-svg {
+  transform: rotate(30deg);
+}
+
+/* NÚT GHIM (PIN) - TRẠNG THÁI CHƯA GHIM: Màu xám mờ tinh tế */
+#btn-pin {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #71717a;
+}
+
+#btn-pin .pin-svg {
+  width: 13px;
+  height: 13px;
+  stroke: #71717a;
+  fill: none;
+  opacity: 0.6;
+  transform: rotate(-35deg);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#btn-pin:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #a1a1aa;
+}
+
+#btn-pin:hover .pin-svg {
+  stroke: #a1a1aa;
+  opacity: 0.9;
+}
+
+/* NÚT GHIM (PIN) - TRẠNG THÁI ĐANG GHIM: Màu xanh rực rỡ + phát sáng viền */
+#btn-pin.active {
+  background: rgba(10, 132, 255, 0.22);
+  border-color: rgba(56, 189, 248, 0.6);
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(10, 132, 255, 0.45);
+}
+
+#btn-pin.active .pin-svg {
+  stroke: #38bdf8;
+  fill: rgba(56, 189, 248, 0.35);
+  opacity: 1;
+  transform: rotate(0deg);
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.85));
+}
+
+#btn-pin.active:hover {
+  background: rgba(10, 132, 255, 0.32);
+  border-color: rgba(56, 189, 248, 0.85);
+  box-shadow: 0 0 14px rgba(10, 132, 255, 0.65);
+}
+
+.timer-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timer-time-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.timer-display {
+  font-size: 2.1rem;
+  font-weight: 850;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-accum-clean {
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.timer-ctrls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-play-round {
+  background: var(--apple-blue);
+  color: #fff;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(10, 132, 255, 0.4);
+  transition: transform 0.15s ease, background 0.2s;
+}
+
+.btn-play-round:active {
+  transform: scale(0.92);
+}
+
+.btn-play-round.running {
+  background: var(--apple-red);
+  box-shadow: 0 2px 10px rgba(255, 69, 58, 0.4);
+}
+
+.btn-reset-round {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: var(--text-secondary);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-round:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ==============================================================================
+   ROW 3: PROTOCOL CHECKLIST (Ultra Clean)
+   ============================================================================== */
+.card-protocol {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.protocol-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.protocol-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.protocol-head-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.protocol-stat {
+  font-size: 0.65rem;
+  font-weight: 750;
+  color: var(--apple-cyan);
+}
+
+.btn-collapse-pill {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 0.72rem;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.15s ease;
+}
+
+.btn-collapse-pill:hover {
+  color: #fff;
+}
+
+/* Scrollable List */
+.protocol-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.protocol-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.protocol-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.protocol-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+/* Task Item: 1 Single Clean Line */
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 11px;
+  padding: 7px 9px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.task-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.task-row.done {
+  background: rgba(48, 209, 88, 0.07);
+  border-color: rgba(48, 209, 88, 0.18);
+}
+
+.task-left-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+/* Apple Dark Squircle Task Badge — matches manager icon picker style */
+.task-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.task-badge svg {
+  display: block;
+}
+
+/* Unified Badge Colors — Apple Dark Squircle System */
+.badge-blue, .task-badge-pushups     { background: linear-gradient(145deg, #0d1f3d, #0d2c5c); color: #0a84ff; }
+.badge-purple, .task-badge-english   { background: linear-gradient(145deg, #20103d, #2a1460); color: #bf5af2; }
+.badge-green, .task-badge-project    { background: linear-gradient(145deg, #0d2c20, #0d3d28); color: #30d158; }
+.badge-orange, .task-badge-workout   { background: linear-gradient(145deg, #3d2000, #5c3000); color: #ff9f0a; }
+.badge-indigo                        { background: linear-gradient(145deg, #1a1a3d, #222266); color: #6e6ef5; }
+.badge-cyan                          { background: linear-gradient(145deg, #0d3036, #0d3d46); color: #00c7be; }
+.badge-red, .task-badge-nonut        { background: linear-gradient(145deg, #3d1010, #5c1a1a); color: #ff453a; }
+.badge-slate, .task-badge-detox      { background: linear-gradient(145deg, #1c1c1e, #2c2c2e); color: #8e8e93; }
+.badge-teal                          { background: linear-gradient(145deg, #0d3020, #0d3d28); color: #00c7be; }
+.badge-amber                         { background: linear-gradient(145deg, #3d2e00, #5c4500); color: #ffd60a; }
+.badge-violet, .task-badge-sleep     { background: linear-gradient(145deg, #2a1a3d, #3d1a5c); color: #bf5af2; }
+.badge-rose                          { background: linear-gradient(145deg, #3d1020, #5c1030); color: #ff2d55; }
+.badge-lime                          { background: linear-gradient(145deg, #1a3010, #243d10); color: #34c759; }
+.badge-target, .task-badge-custom     { background: linear-gradient(145deg, #0d1f3d, #0d3036); color: #38bdf8; }
+
+
+.task-row.done .task-badge {
+  opacity: 0.3;
+  filter: grayscale(0.6);
+  box-shadow: none;
+}
+
+.task-row:hover .task-badge {
+  transform: scale(1.08);
+
+}
+
+.t-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-row.done .t-title {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.tag-retro {
+  font-size: 0.52rem;
+  color: var(--apple-orange);
+  margin-left: 4px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.tag-timer {
+  font-size: 0.52rem;
+  color: var(--apple-cyan);
+  margin-left: 4px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* Minimalist Check Circle */
+.t-check-circle {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.task-row:hover .t-check-circle {
+  border-color: var(--apple-green);
+}
+
+.task-row.done .t-check-circle {
+  background: var(--apple-green);
+  border-color: var(--apple-green);
+}
+
+.t-check-mark {
+  display: none;
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+.task-row.done .t-check-mark {
+  display: block;
+}
+
+/* ==============================================================================
+   COMPACT MODE BAR (Rút gọn)
+   ============================================================================== */
+.card-protocol-compact {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-protocol-compact:hover {
+  background: var(--card-bg-hover);
+}
+
+.compact-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compact-glyph {
+  font-size: 0.9rem;
+}
+
+.compact-title {
+  font-size: 0.7rem;
+  font-weight: 650;
+  color: #cbd5e1;
+}
+
+.compact-expand-arrow {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* ==============================================================================
+   SETTINGS MODAL (Frosted Glass)
+   ============================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-card-ios {
+  background: rgba(22, 28, 46, 0.95);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 18px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.modal-head-ios {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--apple-cyan);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.btn-close-ios {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.modal-body-ios {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-body-ios label {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.modal-body-ios input {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #fff;
+  font-size: 0.72rem;
+  outline: none;
+}
+
+.modal-body-ios small {
+  font-size: 0.58rem;
+  color: var(--text-tertiary);
+}
+
+.modal-actions-ios {
+  margin-top: 10px;
+}
+
+.btn-save-ios {
+  width: 100%;
+  background: var(--apple-blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
