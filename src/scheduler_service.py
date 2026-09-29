@@ -1,8 +1,17 @@
 import os
 import time
+
+# Ép múi giờ hệ thống sang Giờ Việt Nam (Asia/Ho_Chi_Minh - GMT+7) trên server Linux/Cloud
+os.environ["TZ"] = "Asia/Ho_Chi_Minh"
+if hasattr(time, "tzset"):
+    try:
+        time.tzset()
+    except Exception:
+        pass
+
 import threading
 import schedule
-from datetime import date
+from datetime import date, datetime
 from . import app_logic
 from .bot_service import bot_instance
 

@@ -1,4 +1,14 @@
 import os
+import time
+
+# Ép múi giờ sang Giờ Việt Nam (Asia/Ho_Chi_Minh - GMT+7) trên server Render/Linux
+os.environ["TZ"] = "Asia/Ho_Chi_Minh"
+if hasattr(time, "tzset"):
+    try:
+        time.tzset()
+    except Exception:
+        pass
+
 import json
 import threading
 from datetime import datetime, date
@@ -18,8 +28,23 @@ def ping():
     return jsonify({
         "status": "online",
         "service": "Winter Arc Cloud Engine",
-        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "server_time_vn": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "timezone": "Asia/Ho_Chi_Minh (GMT+7)",
         "telegram_bot": "running" if bot_instance.is_running else "waiting"
+    }), 200
+
+@app.route("/api/test_broadcast", methods=["GET"])
+def test_broadcast():
+    """Endpoint để bạn test bắn thông báo trực tiếp từ máy chủ Render sang điện thoại"""
+    success, msg = bot_instance.send_broadcast(
+        f"⚡ <b>[RENDER CLOUD]</b> Thông báo thử nghiệm trực tiếp từ máy chủ Render!\n"
+        f"🕒 Giờ máy chủ: {datetime.now().strftime('%H:%M:%S (%d/%m/%Y)')}",
+        with_buttons=True
+    )
+    return jsonify({
+        "success": success,
+        "message": msg,
+        "server_time_vn": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }), 200
 
 # ==============================================================================
