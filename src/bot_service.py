@@ -96,13 +96,20 @@ class WinterArcBot:
         @self.bot.message_handler(commands=['status'])
         def handle_status(message):
             keyboard, today = self.build_task_keyboard()
+            lvl = today.get("level_info", {})
+            stk = today.get("streak_info", {})
+            stk_badge = stk.get("badge", f"🔥 {today['winter_arc_streak']} ngày")
+            warning_text = f"\n⚠️ <i>{stk.get('warning_msg')}</i>\n" if stk.get("warning") else ""
+
             status_text = (
-                f"📊 <b>BÁO CÁO TIẾN ĐỘ HÔM NAY</b>\n"
-                f"📅 {today['weekday']} — Ngày {today['day_num']}/{today['total_days']}\n"
-                f"🎯 Tiến độ: <b>{today['completed_count']}/{today['total_tasks']} nhiệm vụ ({today['completion_rate']}%)</b>\n"
-                f"🇬🇧 Tiếng Anh đã học: <b>{today['english_minutes']}/120 phút</b>\n"
-                f"🔥 No Nut Streak: <b>{today['nonut_streak']} ngày</b>\n"
-                f"❄️ Full Winter Arc Streak: <b>{today['winter_arc_streak']} ngày</b>"
+                f"📊 <b>BÁO CÁO TIẾN ĐỘ WINTER ARC</b>\n"
+                f"📅 {today['weekday']} — Ngày <b>{today['day_num']}/{today['total_days']}</b>\n"
+                f"🏆 <b>Cấp độ:</b> {lvl.get('badge', 'LEVEL 1')} — {lvl.get('title', 'Tân Binh')}\n"
+                f"   <i>(Ngày {lvl.get('day_in_level', 1)}/30 của chặng này)</i>\n\n"
+                f"⚡ <b>Chuỗi Kỷ Luật:</b> {stk_badge}{warning_text}\n"
+                f"🔥 <b>No Nut Streak:</b> {today['nonut_streak']} ngày\n"
+                f"🎯 <b>Nhiệm vụ hôm nay:</b> {today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)\n"
+                f"🇬🇧 Tiếng Anh đã học: <b>{today['english_minutes']}/120 phút</b>"
             )
             self.bot.send_message(message.chat.id, status_text, reply_markup=keyboard)
 
@@ -126,11 +133,17 @@ class WinterArcBot:
                     
                     # Cập nhật lại giao diện tin nhắn với các nút mới
                     new_keyboard, today = self.build_task_keyboard()
+                    lvl = today.get("level_info", {})
+                    stk = today.get("streak_info", {})
+                    stk_badge = stk.get("badge", f"🔥 {today['winter_arc_streak']} ngày")
+                    warning_text = f"\n⚠️ <i>{stk.get('warning_msg')}</i>" if stk.get("warning") else ""
+
                     new_text = (
                         f"📊 <b>CẬP NHẬT TIẾN ĐỘ HÔM NAY</b>\n"
                         f"📅 {today['weekday']} — Ngày {today['day_num']}/{today['total_days']}\n"
-                        f"🎯 Hoàn thành: <b>{today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)</b>\n"
-                        f"🔥 No Nut: <b>{today['nonut_streak']} ngày</b> | Winter Arc: <b>{today['winter_arc_streak']} ngày</b>\n\n"
+                        f"🏆 {lvl.get('badge', 'LEVEL 1')} (Ngày {lvl.get('day_in_level', 1)}/30)\n"
+                        f"⚡ Chuỗi: <b>{stk_badge}</b>{warning_text}\n"
+                        f"🎯 Hoàn thành: <b>{today['completed_count']}/{today['total_tasks']} ({today['completion_rate']}%)</b>\n\n"
                         f"<i>Tick ngay trên tin nhắn này:</i>"
                     )
                     self.bot.edit_message_text(
@@ -139,6 +152,7 @@ class WinterArcBot:
                         text=new_text,
                         reply_markup=new_keyboard
                     )
+
                 elif data == "refresh":
                     new_keyboard, today = self.build_task_keyboard()
                     self.bot.answer_callback_query(call.id, text="Đã làm mới dữ liệu!")

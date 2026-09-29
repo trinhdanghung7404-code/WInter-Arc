@@ -180,7 +180,9 @@ def get_today_data():
     completion_rate = int((completed_count / len(task_defs)) * 100) if task_defs else 0
 
     nonut_streak = calculate_streak("nonut", history)
-    winter_arc_streak = calculate_full_streak(history)
+    streak_info = calculate_winter_arc_streak(history)
+    winter_arc_streak = streak_info.get("streak", 0)
+    level_info = calculate_level_info(day_num, total_days)
 
     storage["streaks"]["nonut"] = nonut_streak
     storage["streaks"]["winter_arc"] = winter_arc_streak
@@ -195,6 +197,8 @@ def get_today_data():
         "weekday": weekday_name,
         "day_num": day_num,
         "total_days": total_days,
+        "level_info": level_info,
+        "streak_info": streak_info,
         "tasks": tasks_result,
         "timer_tasks": timer_tasks_result,
         "english_minutes": english_mins,
@@ -206,6 +210,7 @@ def get_today_data():
         "winter_arc_streak": winter_arc_streak,
         "all_protocols": load_protocols()
     }
+
 
 def toggle_task(task_id, force_date_str=None):
     """
@@ -303,34 +308,169 @@ def calculate_streak(task_id, history):
             
     return streak
 
-def calculate_full_streak(history):
-    streak = 0
-    curr = date.today()
-    
-    def is_day_won(d):
-        d_str = d.strftime("%Y-%m-%d")
-        rec = history.get(d_str, {}).get("tasks", {})
-        defs = get_task_definitions_for_date(d)
-        if not defs:
-            return False
-        return all(rec.get(t["id"], False) for t in defs)
+def get_day_performance(d, history):
+    """
+    Tính tỉ lệ hoàn thành nhiệm vụ của một ngày cụ thể:
+    - rate: % hoàn thành (0 - 100)
+    - status: 'fire' (100%), 'grey' (50% - 99%), 'lost' (< 50%)
+    """
+    d_str = d.strftime("%Y-%m-%d")
+    rec = history.get(d_str, {}).get("tasks", {})
+    defs = get_task_definitions_for_date(d)
+    if not defs:
+        return 0, 0, 0, "none"
+        
+    total = len(defs)
+    done = sum(1 for t in defs if rec.get(t["id"], False))
+    rate = int((done / total) * 100) if total else 0
 
-    if is_day_won(curr):
-        streak += 1
-        curr -= timedelta(days=1)
+    if rate == 100:
+        status = "fire"
+    elif rate >= 50:
+        status = "grey"
     else:
-        yesterday = curr - timedelta(days=1)
-        if not is_day_won(yesterday):
-            return 0
+        status = "lost"
+
+    return rate, done, total, status
+
+def calculate_winter_arc_streak(history):
+    """
+    Chính sách tính Streak Winter Arc chuẩn:
+    1. Làm hết 100%: Chuỗi Lửa 🔥 (Flame Streak)
+    2. Làm nửa (50% - 99%): Chuỗi Xám ⚪ (Grey Streak)
+    3. Nếu có > 3 ngày chuỗi xám liên tiếp: MẤT CHUỖI (= 0)
+    4. Không làm gì (< 50%): MẤT CHUỖI (= 0)
+    """
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+    
+    rate_today, _, total_today, status_today = get_day_performance(today, history)
+    rate_yesterday, _, total_yesterday, status_yesterday = get_day_performance(yesterday, history)
+    
+    # Nếu hôm nay đã đạt từ 50% trở lên thì tính cả hôm nay
+    if status_today in ("fire", "grey"):
+        curr = today
+    else:
+        # Nếu hôm nay chưa xong (đang trong ngày), kiểm tra hôm qua
+        if status_yesterday == "lost":
+            return {
+                "streak": 0,
+                "type": "none",
+                "badge": "Chưa có chuỗi",
+                "consecutive_grey": 0,
+                "warning": False,
+                "warning_msg": ""
+            }
         curr = yesterday
 
+    streak = 0
+    consecutive_grey = 0
+    current_day_status = None
+    first_day = True
+
     while True:
-        if is_day_won(curr):
-            streak += 1
-            curr -= timedelta(days=1)
-        else:
+        rate, done, total, status = get_day_performance(curr, history)
+        if total == 0:
             break
-    return streak
+            
+        if first_day:
+            current_day_status = status
+
+        if status == "fire":
+            streak += 1
+            # Gặp ngày 100% thì reset chuỗi xám liên tiếp
+            consecutive_grey = 0
+        elif status == "grey":
+            consecutive_grey += 1
+            # QUY TẮC CỐT LÕI: Nếu > 3 ngày xám liên tiếp -> MẤT CHUỖI!
+            if consecutive_grey > 3:
+                return {
+                    "streak": 0,
+                    "type": "lost",
+                    "badge": "Mất chuỗi (>3 ngày xám)",
+                    "consecutive_grey": consecutive_grey,
+                    "warning": True,
+                    "warning_msg": "Bạn đã có hơn 3 ngày chuỗi xám liên tiếp. Chuỗi đã bị đặt lại về 0!"
+                }
+            streak += 1
+        else:
+            # status == 'lost' (< 50%): Chuỗi đứt tại đây
+            break
+
+        first_day = False
+        curr -= timedelta(days=1)
+
+    # Đánh giá loại chuỗi hiển thị
+    streak_type = current_day_status or "fire"
+    warning = (streak_type == "grey" and consecutive_grey >= 2)
+    warning_msg = f"Cảnh báo: Bạn đang có {consecutive_grey}/3 ngày chuỗi xám liên tiếp. Nếu tiếp tục làm nửa vời, bạn sẽ mất chuỗi!" if warning else ""
+
+    if streak_type == "fire":
+        badge = f"🔥 {streak} ngày bất bại"
+    elif streak_type == "grey":
+        badge = f"⚪ {streak} ngày (Chuỗi xám {consecutive_grey}/3)"
+    else:
+        badge = f"{streak} ngày"
+
+    return {
+        "streak": streak,
+        "type": streak_type,
+        "badge": badge,
+        "consecutive_grey": consecutive_grey,
+        "warning": warning,
+        "warning_msg": warning_msg
+    }
+
+def calculate_full_streak(history):
+    """Hàm tương thích ngược trả về số nguyên streak"""
+    res = calculate_winter_arc_streak(history)
+    return res.get("streak", 0)
+
+def calculate_level_info(day_num, total_days=90):
+    """
+    Chính sách Cấp độ Level: Mỗi mốc 30 ngày là 1 Level
+    - Level 1: Ngày 1 - 30 (Tân Binh - Phá vỡ quán tính)
+    - Level 2: Ngày 31 - 60 (Chiến Binh - Kỷ luật thép)
+    - Level 3: Ngày 61 - 90 (Bậc Thầy - Bất khả chiến bại)
+    """
+    level = min(3, max(1, ((day_num - 1) // 30) + 1))
+    day_in_level = ((day_num - 1) % 30) + 1
+    
+    level_metadata = {
+        1: {
+            "title": "Tân Binh (Khởi Động)",
+            "badge": "🌱 LEVEL 1",
+            "desc": "Giai đoạn 30 ngày đầu: Phá vỡ thói quen cũ và xây dựng nền tảng kỷ luật",
+            "icon": "🌱"
+        },
+        2: {
+            "title": "Chiến Binh (Kỷ Luật Thép)",
+            "badge": "⚡ LEVEL 2",
+            "desc": "Giai đoạn 30 ngày giữa: Định hình thói quen thép, tốc độ và sức bền",
+            "icon": "⚡"
+        },
+        3: {
+            "title": "Bậc Thầy (Bất Khả Chiến Bại)",
+            "badge": "👑 LEVEL 3",
+            "desc": "Giai đoạn 30 ngày cuối: Đạt trạng thái tối thượng, làm chủ bản thân hoàn toàn",
+            "icon": "👑"
+        }
+    }
+    
+    meta = level_metadata.get(level, level_metadata[1])
+    is_milestone = (day_in_level == 1 and day_num > 1) # Vừa thăng cấp hôm nay
+
+    return {
+        "level": level,
+        "day_in_level": day_in_level,
+        "days_left_in_level": 30 - day_in_level,
+        "title": meta["title"],
+        "badge": meta["badge"],
+        "desc": meta["desc"],
+        "icon": meta["icon"],
+        "is_milestone": is_milestone
+    }
+
 
 def get_90_day_matrix():
     cfg = load_config()

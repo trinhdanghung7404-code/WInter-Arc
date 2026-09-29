@@ -53,15 +53,48 @@ def job_workout_reminder():
 
 def job_night_review():
     today = app_logic.get_today_data()
+    lvl = today.get("level_info", {})
+    stk = today.get("streak_info", {})
+    rate = today.get("completion_rate", 0)
+
+    # 1. Đánh giá chuỗi hôm nay
+    if rate == 100:
+        streak_result = "🔥 <b>XUẤT SẮC: Bạn đã hoàn thành 100% nhiệm vụ! Đạt Chuỗi Lửa bất bại!</b>"
+    elif rate >= 50:
+        streak_result = f"⚪ <b>CẢNH BÁO: Bạn hoàn thành {rate}% (Chuỗi Xám: {stk.get('consecutive_grey', 1)}/3). Cần cố gắng hơn để giữ chuỗi!</b>"
+    else:
+        streak_result = "💀 <b>BẠN ĐÃ KHÔNG HOÀN THÀNH ĐỦ 50% NHIỆM VỤ! Chuỗi kỷ luật đã bị đặt lại về 0!</b>"
+
+    # 2. Kiểm tra thăng cấp Level (Ngày cuối cùng của Level: ngày 30, 60 hoặc 90)
+    level_milestone_msg = ""
+    day_in_lvl = lvl.get("day_in_level", 1)
+    current_lvl = lvl.get("level", 1)
+
+    if day_in_lvl == 30:
+        next_lvl = current_lvl + 1
+        level_milestone_msg = (
+            f"\n\n🎉 <b>CHÚC MỪNG CHIẾN BINH — HOÀN THÀNH CHẶNG 30 NGÀY!</b>\n"
+            f"🏆 Bạn đã hoàn thành toàn bộ chặng <b>{lvl.get('title')}</b>!\n"
+            f"Ngày mai bạn sẽ chính thức bước chân vào <b>LEVEL {next_lvl}</b> với bản lĩnh kiên cường hơn!"
+        )
+    elif day_in_lvl == 1 and today["day_num"] > 1:
+        level_milestone_msg = (
+            f"\n\n👑 <b>CHÀO ĐÓN BẠN ĐẾN VỚI {lvl.get('badge')}!</b>\n"
+            f"<i>{lvl.get('desc')}</i>"
+        )
+
     msg = (
-        f"🌙 <b>[22:30] — TỔNG KẾT NGÀY & KHÓA SỔ DISCIPLINE</b>\n\n"
-        f"Kiểm tra trước khi đi ngủ:\n"
-        f"• Đã học đủ 2 tiếng Tiếng Anh chưa? ({today['english_minutes']}/120p)\n"
-        f"• Xác nhận No Nut hôm nay để tăng chuỗi {today['nonut_streak']} ngày 🔥\n"
-        f"• Detox mạng xã hội thành công!\n\n"
-        f"Hoàn thành nốt các mục còn lại để giữ ngày bất bại!"
+        f"🌙 <b>[22:30] — TỔNG KẾT NGÀY & KHÓA SỔ KỶ LUẬT</b>\n\n"
+        f"📅 Ngày <b>{today['day_num']}/{today['total_days']}</b> ({today['weekday']})\n"
+        f"🏆 Cấp độ: <b>{lvl.get('badge')}</b> — {lvl.get('title')}\n"
+        f"🎯 Tiến độ hôm nay: <b>{today['completed_count']}/{today['total_tasks']} ({rate}%)</b>\n\n"
+        f"{streak_result}\n\n"
+        f"• Tiếng Anh: {today['english_minutes']}/120 phút\n"
+        f"• No Nut Streak: {today['nonut_streak']} ngày 🔥"
+        f"{level_milestone_msg}"
     )
     bot_instance.send_broadcast(msg, with_buttons=True)
+
 
 def job_custom_protocol_reminder(proto_id):
     """Bắn thông báo Telegram khi đến giờ hẹn riêng của một mục tiêu To-Do/Protocol"""

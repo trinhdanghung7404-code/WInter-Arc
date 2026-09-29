@@ -1,9 +1,10 @@
 {
   "user_name": "Chiến binh Winter Arc",
-  "start_date": "2026-10-01",
-  "end_date": "2027-01-01",
-  "total_days": 92,
+  "start_date": "2026-09-29",
+  "end_date": "2026-12-28",
+  "total_days": 90,
   "total_months": 3,
+  "level_days": 30,
   "telegram": {
     "bot_token": "8936226615:AAGLIJdMnkB50Eg9b7GHGstiu4LiWTq-bec",
     "chat_id": "8694846863"
@@ -18,5 +19,6 @@
     "always_on_top": true,
     "width": 360,
     "height": 560
-  }
+  },
+  "cloud_url": "https://winter-arc-bot.onrender.com/"
 }

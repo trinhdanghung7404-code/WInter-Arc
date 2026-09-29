@@ -118,9 +118,9 @@
       "active": true
     },
     {
-      "id": "kjp_5063",
-      "name": "kjp",
-      "icon": "🏋️",
+      "id": "ad_5621",
+      "name": "ad",
+      "icon": "🇬🇧",
       "type": "todo",
       "days": [
         0,
@@ -132,113 +132,12 @@
         6
       ],
       "time_desc": "Hàng ngày",
-      "active": true
+      "active": true,
+      "remind_time": "08:35"
     },
     {
-      "id": "kho_5339",
-      "name": "kho",
-      "icon": "📖",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "jj_5708",
-      "name": "jj",
-      "icon": "💪",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "hi_6006",
-      "name": "hi",
-      "icon": "💻",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "ji_6020",
-      "name": "ji",
-      "icon": "💪",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "hi_6079",
-      "name": "hi",
-      "icon": "💤",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "hi_6795",
-      "name": "hi",
-      "icon": "💪",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "fg_7885",
-      "name": "fg",
+      "id": "add_5677",
+      "name": "add",
       "icon": "💪",
       "type": "todo",
       "days": [
@@ -252,11 +151,11 @@
       ],
       "time_desc": "Hàng ngày",
       "active": true,
-      "remind_time": "22:06"
+      "remind_time": "08:36"
     },
     {
-      "id": "hi_8777",
-      "name": "hi",
+      "id": "his_6584",
+      "name": "his",
       "icon": "💪",
       "type": "todo",
       "days": [
@@ -270,11 +169,11 @@
       ],
       "time_desc": "Hàng ngày",
       "active": true,
-      "remind_time": "22:20"
+      "remind_time": "08:50"
     },
     {
-      "id": "hi_9014",
-      "name": "hi",
+      "id": "hisa_6617",
+      "name": "hisa",
       "icon": "💪",
       "type": "todo",
       "days": [
@@ -288,7 +187,7 @@
       ],
       "time_desc": "Hàng ngày",
       "active": true,
-      "remind_time": "22:24"
+      "remind_time": "08:51"
     }
   ]
 }
