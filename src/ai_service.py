@@ -27,7 +27,8 @@ def is_ai_enabled():
     return bool(api_key)
 
 def call_gemini(api_key, prompt):
-    models = ["gemini-flash-latest", "gemini-3.5-flash", "gemini-3.7-flash"]
+    # Ưu tiên các model nhanh, ổn định và không bị 503
+    models = ["gemini-3-flash-preview", "gemini-flash-latest", "gemini-3.1-flash-lite-preview", "gemini-3.7-flash"]
     last_err = None
     headers = {"Content-Type": "application/json"}
     payload = {
@@ -47,7 +48,7 @@ def call_gemini(api_key, prompt):
     for model in models:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=20)
+            resp = requests.post(url, headers=headers, json=payload, timeout=15)
             if resp.status_code == 200:
                 data = resp.json()
                 candidates = data.get("candidates", [])
@@ -55,6 +56,10 @@ def call_gemini(api_key, prompt):
                     parts = candidates[0].get("content", {}).get("parts", [])
                     if parts:
                         return parts[0].get("text", "").strip()
+            elif resp.status_code in (503, 429):
+                # Server Google bị quá tải tạm thời ở model này -> tự động nhảy sang model tiếp theo ngay
+                last_err = f"Google Server 503 High Demand on {model}"
+                continue
             else:
                 err_msg = resp.text
                 try:
@@ -65,7 +70,7 @@ def call_gemini(api_key, prompt):
         except Exception as e:
             last_err = str(e)
             
-    raise Exception(last_err or "Gemini API unavailable")
+    raise Exception(last_err or "Gemini API temporarily busy, please try again in a few seconds.")
 
 def call_openai(api_key, prompt):
     url = "https://api.openai.com/v1/chat/completions"

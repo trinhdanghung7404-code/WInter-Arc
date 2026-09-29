@@ -36,6 +36,13 @@ class WinterArcBot:
         return markup, today_data
 
     def start_polling(self):
+        cfg = app_logic.load_config()
+        cloud_url = (cfg.get("cloud_url") or "").strip()
+        if cloud_url:
+            print(f"[BOT] Cloud mode active ({cloud_url}). Telegram polling delegated to Render Cloud.")
+            self.is_running = False
+            return
+
         token, chat_id = self.get_token_and_chat()
         if not token:
             print("[BOT] Telegram Bot Token not configured in config.json. Bot is idle...")
@@ -71,7 +78,9 @@ class WinterArcBot:
 
     def restart(self):
         self.stop_polling()
-        self.start_polling()
+        cfg = app_logic.load_config()
+        if not (cfg.get("cloud_url") or "").strip():
+            self.start_polling()
 
     def _register_handlers(self):
         @self.bot.message_handler(commands=['start', 'help'])
