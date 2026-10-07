@@ -417,7 +417,7 @@ function startEditProtocol(protoId) {
   // Fill Inputs
   document.getElementById("input-name").value = p.name || "";
   document.getElementById("input-time-desc").value = p.time_desc || "";
-  setCustomRemindTime(p.remind_time || "");
+  setRemindTime(p.remind_time || "");
 
   // Type
   const targetType = p.type || "todo";
@@ -483,7 +483,7 @@ function cancelEditMode() {
   // Reset inputs
   document.getElementById("input-name").value = "";
   document.getElementById("input-time-desc").value = "";
-  setCustomRemindTime("");
+  setRemindTime("");
 
   // Reset repeat daily
   const repeatCheck = document.getElementById("input-repeat-daily");
@@ -690,169 +690,33 @@ function setupWeatherControls() {
 }
 
 // -----------------------------------------------------------------------------
-// Custom Apple Glass Time Picker Controller
+// Remind Time Input & Presets
 // -----------------------------------------------------------------------------
-function setCustomRemindTime(timeStr) {
-  const hiddenInput = document.getElementById("input-remind-time");
-  const hourInput = document.getElementById("time-hour-input");
-  const minInput = document.getElementById("time-minute-input");
-  const badge = document.getElementById("remind-time-active-badge");
+function setRemindTime(timeStr) {
+  const remindInput = document.getElementById("input-remind-time");
   const timePresets = document.querySelectorAll(".btn-time-preset");
-  const hourChips = document.querySelectorAll(".btn-hour-chip");
-  const minChips = document.querySelectorAll(".btn-min-chip");
-
-  const cleanTime = (timeStr || "").trim();
-  if (hiddenInput) hiddenInput.value = cleanTime;
-
-  if (cleanTime && cleanTime.includes(":")) {
-    const [hh, mm] = cleanTime.split(":");
-    const paddedHH = String(hh).padStart(2, "0");
-    const paddedMM = String(mm).padStart(2, "0");
-
-    if (hourInput) hourInput.value = paddedHH;
-    if (minInput) minInput.value = paddedMM;
-    if (badge) {
-      badge.innerText = `${paddedHH}:${paddedMM}`;
-      badge.style.color = "#38bdf8";
-      badge.style.borderColor = "rgba(56, 189, 248, 0.4)";
-    }
-
-    hourChips.forEach(chip => chip.classList.toggle("active", chip.dataset.h === paddedHH));
-    minChips.forEach(chip => chip.classList.toggle("active", chip.dataset.m === paddedMM));
-    timePresets.forEach(b => b.classList.toggle("active", b.dataset.time === `${paddedHH}:${paddedMM}`));
-  } else {
-    if (hourInput) hourInput.value = "";
-    if (minInput) minInput.value = "";
-    if (badge) {
-      badge.innerText = "Optional";
-      badge.style.color = "";
-      badge.style.borderColor = "";
-    }
-    hourChips.forEach(chip => chip.classList.remove("active"));
-    minChips.forEach(chip => chip.classList.remove("active"));
-    timePresets.forEach(b => b.classList.toggle("active", b.dataset.time === ""));
-  }
+  const clean = (timeStr || "").trim();
+  if (remindInput) remindInput.value = clean;
+  timePresets.forEach(b => b.classList.toggle("active", b.dataset.time === clean && clean !== ""));
 }
 
-function setupCustomTimePickerControls() {
-  const hourInput = document.getElementById("time-hour-input");
-  const minInput = document.getElementById("time-minute-input");
-  const toggleBtn = document.getElementById("btn-toggle-time-drawer");
-  const drawer = document.getElementById("glass-time-drawer");
+function setupRemindTimeControls() {
+  const remindInput = document.getElementById("input-remind-time");
   const timePresets = document.querySelectorAll(".btn-time-preset");
-  const hourChips = document.querySelectorAll(".btn-hour-chip");
-  const minChips = document.querySelectorAll(".btn-min-chip");
 
-  function syncInputsToHidden() {
-    let hVal = (hourInput?.value || "").trim();
-    let mVal = (minInput?.value || "").trim();
-
-    if (!hVal && !mVal) {
-      setCustomRemindTime("");
-      return;
-    }
-
-    if (hVal) {
-      let hNum = parseInt(hVal, 10);
-      if (isNaN(hNum)) hNum = 7;
-      if (hNum < 0) hNum = 0;
-      if (hNum > 23) hNum = 23;
-      hVal = String(hNum).padStart(2, "0");
-    } else {
-      hVal = "07";
-    }
-
-    if (mVal) {
-      let mNum = parseInt(mVal, 10);
-      if (isNaN(mNum)) mNum = 0;
-      if (mNum < 0) mNum = 0;
-      if (mNum > 59) mNum = 59;
-      mVal = String(mNum).padStart(2, "0");
-    } else {
-      mVal = "00";
-    }
-
-    setCustomRemindTime(`${hVal}:${mVal}`);
-  }
-
-  // Hour input typing
-  if (hourInput) {
-    hourInput.addEventListener("input", (e) => {
-      let val = hourInput.value.replace(/[^0-9]/g, "");
-      hourInput.value = val;
-      if (val.length >= 2) {
-        let num = parseInt(val, 10);
-        if (num > 23) hourInput.value = "23";
-        minInput?.focus();
-        minInput?.select();
-      }
-      syncInputsToHidden();
-    });
-
-    hourInput.addEventListener("blur", () => {
-      if (hourInput.value.length === 1) {
-        hourInput.value = "0" + hourInput.value;
-      }
-      syncInputsToHidden();
-    });
-  }
-
-  // Minute input typing
-  if (minInput) {
-    minInput.addEventListener("input", (e) => {
-      let val = minInput.value.replace(/[^0-9]/g, "");
-      minInput.value = val;
-      if (val.length >= 2) {
-        let num = parseInt(val, 10);
-        if (num > 59) minInput.value = "59";
-      }
-      syncInputsToHidden();
-    });
-
-    minInput.addEventListener("blur", () => {
-      if (minInput.value.length === 1) {
-        minInput.value = "0" + minInput.value;
-      }
-      syncInputsToHidden();
-    });
-  }
-
-  // Drawer Toggle
-  if (toggleBtn && drawer) {
-    toggleBtn.addEventListener("click", () => {
-      const isHidden = drawer.classList.contains("hidden");
-      drawer.classList.toggle("hidden", !isHidden);
-      toggleBtn.classList.toggle("active", isHidden);
-    });
-  }
-
-  // Quick Hour Chips
-  hourChips.forEach(chip => {
-    chip.addEventListener("click", () => {
-      const h = chip.dataset.h;
-      let m = minInput?.value || "00";
-      if (!m || m.length < 2) m = "00";
-      setCustomRemindTime(`${h}:${m}`);
-    });
-  });
-
-  // Quick Minute Chips
-  minChips.forEach(chip => {
-    chip.addEventListener("click", () => {
-      const m = chip.dataset.m;
-      let h = hourInput?.value || "07";
-      if (!h || h.length < 2) h = "07";
-      setCustomRemindTime(`${h}:${m}`);
-    });
-  });
-
-  // Presets
   timePresets.forEach(presetBtn => {
     presetBtn.addEventListener("click", () => {
       const t = presetBtn.dataset.time || "";
-      setCustomRemindTime(t);
+      setRemindTime(t);
     });
   });
+
+  if (remindInput) {
+    remindInput.addEventListener("input", () => {
+      const val = remindInput.value.trim();
+      timePresets.forEach(b => b.classList.toggle("active", b.dataset.time === val && val !== ""));
+    });
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -899,8 +763,8 @@ function setupForm() {
     });
   });
 
-  // Setup Custom Apple Glass Time Picker
-  setupCustomTimePickerControls();
+  // Setup Clean Time Text Input & Presets
+  setupRemindTimeControls();
 
   // Add / Update Protocol Submit
   const addBtn = document.getElementById("btn-add-protocol");
