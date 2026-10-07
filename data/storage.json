@@ -1,7 +1,7 @@
 {
   "streaks": {
     "nonut": 0,
-    "winter_arc": 0
+    "winter_arc": 1
   },
   "history": {
     "2026-09-28": {
@@ -10,9 +10,9 @@
       "project_minutes": 0,
       "tasks": {
         "english": false,
+        "no_nut_3297": true,
         "pushups": false,
-        "workout": false,
-        "no_nut_3297": true
+        "workout": false
       }
     },
     "2026-09-27": {
@@ -68,52 +68,55 @@
       }
     },
     "2026-10-07": {
-      "focus_times": {},
+      "focus_times": {
+        "listening_e_6102": 3
+      },
       "notes": "",
       "tasks": {
-        "no_nut_1692": false,
-        "50_push_ups_5943": true
+        "50_push_ups_5943": true,
+        "done_task_proj_6046": true,
+        "no_nut_1692": false
       }
     },
     "2026-10-08": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-09": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-10": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-11": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-12": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-13": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-14": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     },
     "2026-10-15": {
-      "tasks": {},
       "focus_times": {},
-      "notes": ""
+      "notes": "",
+      "tasks": {}
     }
   },
   "focus_today": {

@@ -784,18 +784,19 @@ function setupForm() {
       return;
     }
 
+    const remindTimeInput = document.getElementById("input-remind-time");
     const remindTime = remindTimeInput ? remindTimeInput.value.trim() : "";
 
-    // 2-Hour Buffer Validation for Today
-    if (!repeatDaily && formSelectedDate === todayStr) {
+    // 2-Hour Buffer Validation for Today (If a specific time is given)
+    if (!repeatDaily && formSelectedDate === todayStr && remindTime) {
       const now = new Date();
       now.setHours(now.getHours() + 2);
       const minHH = String(now.getHours()).padStart(2, '0');
       const minMM = String(now.getMinutes()).padStart(2, '0');
       const minTimeStr = `${minHH}:${minMM}`;
 
-      if (!remindTime || remindTime < minTimeStr) {
-        alert(`When scheduling for today (${todayStr}), the reminder/scheduled time must be at least 2 hours in advance (>= ${minTimeStr}). Currently: "${remindTime || 'Not set'}".`);
+      if (remindTime < minTimeStr) {
+        alert(`When scheduling for today (${todayStr}), the reminder/scheduled time must be at least 2 hours in advance (>= ${minTimeStr}). Currently entered: "${remindTime}".`);
         remindTimeInput?.focus();
         return;
       }

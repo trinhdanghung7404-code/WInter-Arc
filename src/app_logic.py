@@ -111,7 +111,7 @@ def add_protocol(new_item):
             raise ValueError("Cannot schedule for past dates.")
         if today_str in specific:
             remind_t = (new_item.get("remind_time") or "").strip()
-            if not remind_t or remind_t < min_time:
+            if remind_t and remind_t < min_time:
                 raise ValueError(f"When scheduling for today ({today_str}), time must be at least 2 hours in advance (>= {min_time}).")
 
     protocols.append(new_item)
@@ -153,7 +153,7 @@ def update_protocol(item_id, updated_fields):
             raise ValueError("Cannot schedule for past dates.")
         if today_str in new_specific:
             remind_t = (updated_fields.get("remind_time") or "").strip()
-            if not remind_t or remind_t < min_time:
+            if remind_t and remind_t < min_time:
                 raise ValueError(f"When scheduling for today ({today_str}), time must be at least 2 hours in advance (>= {min_time}).")
 
     for p in protocols:
