@@ -103,14 +103,22 @@ def add_protocol(new_item):
     # Chặn đặt lịch cho ngày quá khứ. Cho phép hôm nay nếu giờ đặt >= hiện tại + 2 tiếng.
     now = datetime.now()
     today_str = now.strftime("%Y-%m-%d")
+    tomorrow_str = (now + timedelta(days=1)).strftime("%Y-%m-%d")
     min_time = (now + timedelta(hours=2)).strftime("%H:%M")
+    remind_t = (new_item.get("remind_time") or "").strip()
+
+    if new_item.get("schedule_type") == "weekly":
+        # Nếu đặt lịch weekly với giờ hẹn < min_time hôm nay -> bắt đầu có hiệu lực từ ngày mai
+        if remind_t and remind_t < min_time:
+            new_item.setdefault("effective_from", tomorrow_str)
+        else:
+            new_item.setdefault("effective_from", today_str)
 
     if new_item.get("schedule_type") == "dates":
         specific = new_item.get("specific_dates", [])
         if any(d < today_str for d in specific):
             raise ValueError("Cannot schedule for past dates.")
         if today_str in specific:
-            remind_t = (new_item.get("remind_time") or "").strip()
             if remind_t and remind_t < min_time:
                 raise ValueError(f"When scheduling for today ({today_str}), time must be at least 2 hours in advance (>= {min_time}).")
 
@@ -196,6 +204,7 @@ def get_task_definitions_for_date(curr_date):
         pid = p.get("id")
         is_active = p.get("active", True)
         deleted_at = p.get("deleted_at")
+        effective_from = p.get("effective_from")
 
         if is_past_day:
             # Ngày trong quá khứ: protocol hợp lệ nếu ngày đó xảy ra TRƯỚC thời điểm xóa
@@ -207,6 +216,9 @@ def get_task_definitions_for_date(curr_date):
         else:
             # Ngày hôm nay hoặc tương lai: chỉ lấy protocol đang active và chưa xóa
             if not is_active or deleted_at:
+                continue
+            # Nếu ngày đang xét chưa tới ngày có hiệu lực -> bỏ qua
+            if effective_from and curr_date_str < effective_from:
                 continue
 
         schedule_type = p.get("schedule_type", "")

@@ -120,6 +120,41 @@
       "active": true,
       "remind_time": "08:00",
       "id": "mua_l__i_nh___d_7058"
+    },
+    {
+      "name": "50 PushUps",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "weekly",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "specific_dates": [],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "06:00",
+      "effective_from": "2026-10-08",
+      "id": "50_pushups_1557"
+    },
+    {
+      "name": "Done task FP",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-08"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "09:30",
+      "id": "done_task_fp_1631"
     }
   ]
 }

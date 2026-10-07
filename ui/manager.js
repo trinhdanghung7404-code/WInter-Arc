@@ -113,6 +113,7 @@ async function loadProtocols() {
 
       displayProtocols = allLoadedProtocols.filter(p => {
         if (p.active === false) return false;
+        if (p.effective_from && formSelectedDate < p.effective_from) return false;
         // Weekly recurring
         if (p.schedule_type === "weekly") {
           return Array.isArray(p.days) && p.days.includes(selectedWeekday);
@@ -839,6 +840,19 @@ function setupForm() {
       time_desc: timeDesc || (selectedType === "retro" ? "Full 24h evaluation" : ""),
       active: true
     };
+
+    if (repeatDaily) {
+      const now = new Date();
+      now.setHours(now.getHours() + 2);
+      const minHH = String(now.getHours()).padStart(2, '0');
+      const minMM = String(now.getMinutes()).padStart(2, '0');
+      const minTimeStr = `${minHH}:${minMM}`;
+      if (remindTime && remindTime < minTimeStr) {
+        protocolData.effective_from = getTomorrowStr();
+      } else {
+        protocolData.effective_from = todayStr;
+      }
+    }
 
     if (remindTime) {
       protocolData.remind_time = remindTime;
