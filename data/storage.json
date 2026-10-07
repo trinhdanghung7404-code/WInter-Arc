@@ -1,7 +1,7 @@
 {
   "streaks": {
     "nonut": 0,
-    "winter_arc": 0
+    "winter_arc": 1
   },
   "history": {
     "2026-09-28": {
@@ -69,7 +69,7 @@
     },
     "2026-10-07": {
       "focus_times": {
-        "listening_e_6102": 6
+        "listening_e_6102": 5
       },
       "notes": "",
       "tasks": {

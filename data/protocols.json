@@ -155,6 +155,20 @@
       "active": true,
       "remind_time": "09:30",
       "id": "done_task_fp_1631"
+    },
+    {
+      "name": "Meeting FP",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-08"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "20:30",
+      "id": "meeting_fp_2030"
     }
   ]
 }

@@ -6,6 +6,8 @@
 let currentTimerTaskId = 'english';
 let currentTimerTargetMinutes = 120;
 let timerSeconds = 120 * 60;
+let taskTimerSeconds = {};
+let timerAccumSeconds = 0;
 let timerRunning = false;
 let timerInterval = null;
 let isAlwaysOnTop = true;
@@ -605,10 +607,7 @@ function renderTimerTabs(timerTasks) {
       cardTimer.style.display = 'none';
     }
     if (timerRunning) {
-      clearInterval(timerInterval);
-      timerRunning = false;
-      const playBtn = document.getElementById('btn-timer-play');
-      if (playBtn) playBtn.innerText = '▶';
+      pauseTimer();
     }
     return;
   }
@@ -621,15 +620,16 @@ function renderTimerTabs(timerTasks) {
   if (!tabsContainer) return;
 
   // Ensure active task exists
-  const activeExists = timerTasks.some(t => t.id === currentTimerTaskId);
-  if (!activeExists) {
-    currentTimerTaskId = timerTasks[0].id;
-    currentTimerTargetMinutes = timerTasks[0].target_minutes || 60;
-    if (!timerRunning) {
-      timerSeconds = currentTimerTargetMinutes * 60;
-      updateTimerDisplay();
-    }
+  const activeTask = timerTasks.find(t => t.id === currentTimerTaskId) || timerTasks[0];
+  currentTimerTaskId = activeTask.id;
+  currentTimerTargetMinutes = activeTask.target_minutes || 60;
+
+  // If this task has not been initialized in taskTimerSeconds, initialize it
+  if (taskTimerSeconds[currentTimerTaskId] === undefined) {
+    taskTimerSeconds[currentTimerTaskId] = currentTimerTargetMinutes * 60;
   }
+  timerSeconds = taskTimerSeconds[currentTimerTaskId];
+  updateTimerDisplay();
 
   // Render tab buttons
   tabsContainer.innerHTML = '';
@@ -646,15 +646,28 @@ function renderTimerTabs(timerTasks) {
     btn.innerHTML = `<span class="tab-indicator ${dotClass}"></span><span>${escapeHtml(t.name)}</span>`;
 
     btn.onclick = () => {
+      if (currentTimerTaskId === t.id) return; // already active
+
+      // Save current task remaining seconds
+      taskTimerSeconds[currentTimerTaskId] = timerSeconds;
+
+      // If timer was running, pause it when switching tasks
+      if (timerRunning) {
+        pauseTimer();
+      }
+
       document.querySelectorAll('.t-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentTimerTaskId = t.id;
       currentTimerTargetMinutes = t.target_minutes || 60;
 
-      if (!timerRunning) {
-        timerSeconds = currentTimerTargetMinutes * 60;
-        updateTimerDisplay();
+      // Restore or initialize remaining seconds for the new task
+      if (taskTimerSeconds[currentTimerTaskId] === undefined) {
+        taskTimerSeconds[currentTimerTaskId] = currentTimerTargetMinutes * 60;
       }
+      timerSeconds = taskTimerSeconds[currentTimerTaskId];
+      updateTimerDisplay();
+
       const studied = t.studied_minutes || 0;
       const accumEl = document.getElementById('timer-accum');
       if (accumEl) accumEl.innerText = `${studied}/${currentTimerTargetMinutes}m`;
@@ -664,12 +677,9 @@ function renderTimerTabs(timerTasks) {
   });
 
   // Update accumulated focus time label
-  const activeTask = timerTasks.find(t => t.id === currentTimerTaskId);
-  if (activeTask) {
-    const studied = activeTask.studied_minutes || 0;
-    const accumEl = document.getElementById('timer-accum');
-    if (accumEl) accumEl.innerText = `${studied}/${activeTask.target_minutes || 60}m`;
-  }
+  const studied = activeTask.studied_minutes || 0;
+  const accumEl = document.getElementById('timer-accum');
+  if (accumEl) accumEl.innerText = `${studied}/${currentTimerTargetMinutes}m`;
 }
 
 function updateTimerDisplay() {
@@ -688,28 +698,33 @@ function toggleTimer() {
 }
 
 function startTimer() {
+  if (timerRunning) return;
   timerRunning = true;
   const playBtn = document.getElementById('btn-timer-play');
-  playBtn.innerText = '❚❚';
-  playBtn.classList.add('running');
-
-  let secondsElapsed = 0;
+  if (playBtn) {
+    playBtn.innerText = '❚❚';
+    playBtn.classList.add('running');
+  }
 
   timerInterval = setInterval(async () => {
     if (timerSeconds > 0) {
       timerSeconds--;
-      secondsElapsed++;
+      taskTimerSeconds[currentTimerTaskId] = timerSeconds;
+      timerAccumSeconds++;
       updateTimerDisplay();
 
-      if (secondsElapsed >= 60) {
-        secondsElapsed = 0;
+      if (timerAccumSeconds >= 60) {
+        timerAccumSeconds = 0;
         const api = getApi();
         const updated = await api.add_focus_minutes(currentTimerTaskId, 1);
         renderToday(updated);
       }
     } else {
       pauseTimer();
-      alert(`Focus session completed! Great job!`);
+      alert(`Focus session for ${currentTimerTaskId} completed! Great job!`);
+      taskTimerSeconds[currentTimerTaskId] = currentTimerTargetMinutes * 60;
+      timerSeconds = currentTimerTargetMinutes * 60;
+      updateTimerDisplay();
       loadData();
     }
   }, 1000);
@@ -717,15 +732,23 @@ function startTimer() {
 
 function pauseTimer() {
   timerRunning = false;
-  clearInterval(timerInterval);
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  taskTimerSeconds[currentTimerTaskId] = timerSeconds;
   const playBtn = document.getElementById('btn-timer-play');
-  playBtn.innerText = '▶';
-  playBtn.classList.remove('running');
+  if (playBtn) {
+    playBtn.innerText = '▶';
+    playBtn.classList.remove('running');
+  }
 }
 
 function resetTimer() {
   pauseTimer();
+  taskTimerSeconds[currentTimerTaskId] = currentTimerTargetMinutes * 60;
   timerSeconds = currentTimerTargetMinutes * 60;
+  timerAccumSeconds = 0;
   updateTimerDisplay();
 }
 
