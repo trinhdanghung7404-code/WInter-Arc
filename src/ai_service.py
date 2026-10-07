@@ -1,19 +1,42 @@
 import json
 import logging
-import requests
+import urllib.request
+import urllib.error
 from . import app_logic
 
 logger = logging.getLogger("WinterArcAI")
 
-SYSTEM_PERSONA = (
-    "You are a stoic, disciplined, tough-love Winter Arc personal discipline mentor and brother. "
-    "You communicate in crisp, impactful Vietnamese with a confident, motivating, and no-excuses tone. "
-    "Rules:\n"
-    "1. Praise consistency and 100% flame streaks (🔥) enthusiastically.\n"
-    "2. Be brutally honest and call out half-hearted effort or grey streaks (⚪) without sugarcoating.\n"
-    "3. Keep responses punchy, concise (around 3 to 5 short paragraphs max), and format with clean HTML tags supported by Telegram (<b>, <i>, <code>).\n"
-    "4. End with a sharp warrior mindset takeaway for the upcoming days."
-)
+PERSONA_PRESETS = {
+    "david_goggins": (
+        "You are David Goggins — extreme mental toughness, tough love, zero excuses, no sugarcoating. "
+        "You speak with raw intensity, demanding 100% effort every single day. Call out laziness directly. "
+        "Format using clean Telegram HTML (<b>, <i>). Keep it punchy, aggressive, and deeply motivating."
+    ),
+    "stoic": (
+        "You are a wise Stoic philosopher mentor (Marcus Aurelius / Epictetus style). "
+        "You communicate in calm, deeply reflective, highly disciplined, and impactful English. "
+        "Remind the warrior of control over mind, virtue, and daily duty. Format in clean Telegram HTML."
+    ),
+    "drill_sergeant": (
+        "You are a military Drill Sergeant. Uncompromising discipline, strict orders, high urgency. "
+        "Demand prompt execution of all protocols. Call out slacking immediately."
+    ),
+    "brother": (
+        "You are a supportive, caring, but strict older brother. You want the best for them and hold them accountable with firmness. "
+        "Format in clean Telegram HTML."
+    ),
+    "custom": ""
+}
+
+def get_active_persona():
+    cfg = app_logic.load_config()
+    ai_cfg = cfg.get("ai", {})
+    custom = (ai_cfg.get("custom_prompt") or "").strip()
+    persona_key = ai_cfg.get("persona", "david_goggins").lower()
+    
+    if custom:
+        return custom
+    return PERSONA_PRESETS.get(persona_key, PERSONA_PRESETS["david_goggins"])
 
 def get_ai_config():
     cfg = app_logic.load_config()
@@ -27,15 +50,15 @@ def is_ai_enabled():
     return bool(api_key)
 
 def call_gemini(api_key, prompt):
-    # Ưu tiên các model nhanh, ổn định và không bị 503
-    models = ["gemini-3-flash-preview", "gemini-flash-latest", "gemini-3.1-flash-lite-preview", "gemini-3.7-flash"]
+    models = ["gemini-3-flash-preview", "gemini-3.1-flash-lite-preview", "gemini-flash-latest", "gemini-3.1-pro-preview"]
     last_err = None
-    headers = {"Content-Type": "application/json"}
-    payload = {
+    headers = {"Content-Type": "application/json", "User-Agent": "WinterArc/1.0"}
+    persona = get_active_persona()
+    payload = json.dumps({
         "contents": [
             {
                 "parts": [
-                    {"text": f"{SYSTEM_PERSONA}\n\nTask:\n{prompt}"}
+                    {"text": f"{persona}\n\nTask:\n{prompt}"}
                 ]
             }
         ],
@@ -43,30 +66,28 @@ def call_gemini(api_key, prompt):
             "temperature": 0.7,
             "maxOutputTokens": 800
         }
-    }
+    }).encode("utf-8")
 
     for model in models:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=15)
-            if resp.status_code == 200:
-                data = resp.json()
+            req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
                 candidates = data.get("candidates", [])
                 if candidates:
                     parts = candidates[0].get("content", {}).get("parts", [])
                     if parts:
                         return parts[0].get("text", "").strip()
-            elif resp.status_code in (503, 429):
-                # Server Google bị quá tải tạm thời ở model này -> tự động nhảy sang model tiếp theo ngay
-                last_err = f"Google Server 503 High Demand on {model}"
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="ignore")
+            try:
+                err_body = json.loads(err_body).get("error", {}).get("message", err_body)
+            except Exception:
+                pass
+            last_err = f"Gemini ({e.code}): {err_body}"
+            if e.code in (503, 429, 404):
                 continue
-            else:
-                err_msg = resp.text
-                try:
-                    err_msg = resp.json().get("error", {}).get("message", resp.text)
-                except Exception:
-                    pass
-                last_err = f"Gemini Error ({resp.status_code}): {err_msg}"
         except Exception as e:
             last_err = str(e)
             
@@ -76,44 +97,105 @@ def call_openai(api_key, prompt):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "User-Agent": "WinterArc/1.0"
     }
-    payload = {
+    persona = get_active_persona()
+    payload = json.dumps({
         "model": "gpt-4o-mini",
         "messages": [
-            {"role": "system", "content": SYSTEM_PERSONA},
+            {"role": "system", "content": persona},
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.7,
         "max_tokens": 800
-    }
-    resp = requests.post(url, headers=headers, json=payload, timeout=20)
-    if resp.status_code == 200:
-        data = resp.json()
-        return data["choices"][0]["message"]["content"].strip()
-    else:
-        err_msg = resp.text
+    }).encode("utf-8")
+
+    try:
+        req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            return data["choices"][0]["message"]["content"].strip()
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
         try:
-            err_msg = resp.json().get("error", {}).get("message", resp.text)
+            err_body = json.loads(err_body).get("error", {}).get("message", err_body)
         except Exception:
             pass
-        raise Exception(f"OpenAI API Error ({resp.status_code}): {err_msg}")
+        raise Exception(f"OpenAI Error ({e.code}): {err_body}")
 
 def generate_ai_text(prompt):
     api_key, provider = get_ai_config()
     if not api_key:
         return None
     
-    # Auto-detect if key is OpenAI format
     if api_key.startswith("sk-"):
         return call_openai(api_key, prompt)
     else:
         return call_gemini(api_key, prompt)
 
+def generate_daily_morning_briefing(today_data):
+    """Tạo thông điệp đánh thức buổi sáng tự động dựa trên persona đã cấu hình"""
+    if not is_ai_enabled():
+        return None
+    
+    day_num = today_data.get("day_num", 1)
+    total_days = today_data.get("total_days", 90)
+    tasks = today_data.get("tasks", [])
+    task_names = [t.get("name") for t in tasks if t.get("name")]
+    streak = today_data.get("winter_arc_streak", 0)
+    
+    prompt = (
+        f"Generate a personalized MORNING BRIEFING for a Winter Arc warrior:\n"
+        f"- Day: {day_num}/{total_days} ({today_data.get('weekday', 'Today')})\n"
+        f"- Current Flame Streak: {streak} days\n"
+        f"- Today's Scheduled Protocols ({len(task_names)} items): {', '.join(task_names) if task_names else 'Daily discipline'}\n\n"
+        f"Requirements:\n"
+        f"1. Start with title in Telegram HTML: 🌅 <b>[MORNING BRIEFING] DAY {day_num}/{total_days}</b>\n"
+        f"2. Deliver a 2-3 paragraph ignition message in your chosen persona.\n"
+        f"3. Command them to execute today's protocols with zero excuses."
+    )
+    try:
+        return generate_ai_text(prompt)
+    except Exception as e:
+        logger.error(f"Generate morning briefing error: {e}")
+        return None
+
+def generate_daily_night_review(today_data):
+    """Tạo báo cáo tổng kết buổi tối tự động dựa trên persona và tiến độ thực tế"""
+    if not is_ai_enabled():
+        return None
+    
+    day_num = today_data.get("day_num", 1)
+    total_days = today_data.get("total_days", 90)
+    completed = today_data.get("completed_count", 0)
+    total_tasks = today_data.get("total_tasks", 0)
+    rate = today_data.get("completion_rate", 0)
+    streak = today_data.get("winter_arc_streak", 0)
+    nonut_streak = today_data.get("nonut_streak", 0)
+    
+    prompt = (
+        f"Generate an end-of-day NIGHT DISCIPLINE REVIEW for this warrior based on today's actual performance:\n"
+        f"- Day: {day_num}/{total_days} ({today_data.get('weekday', 'Today')})\n"
+        f"- Completed Protocols: {completed}/{total_tasks} ({rate}%)\n"
+        f"- Streak: {streak} days\n"
+        f"- No Nut Streak: {nonut_streak} days\n\n"
+        f"Requirements:\n"
+        f"1. Start with Telegram HTML title: 🌙 <b>[NIGHT REVIEW] DAY {day_num}/{total_days} ({rate}%)</b>\n"
+        f"2. If rate == 100%, praise their absolute discipline enthusiastically.\n"
+        f"3. If rate < 100%, call out the slack and command them to make up for it tomorrow.\n"
+        f"4. Keep it punchy (2-3 short paragraphs) in your authentic persona."
+    )
+    try:
+        return generate_ai_text(prompt)
+    except Exception as e:
+        logger.error(f"Generate night review error: {e}")
+        return None
+
 def generate_weekly_review(data):
     """
-    Tạo báo cáo tuần do AI Coach nhận xét.
-    Nếu không có AI Key hoặc lỗi mạng, trả về báo cáo tiêu chuẩn mẫu.
+    Weekly review generated by AI Coach.
+    Returns standard fallback report if AI key is missing or network fails.
     """
     days_stat = data.get("days_stat", [])
     total_assigned = data.get("total_assigned", 0)
@@ -126,37 +208,36 @@ def generate_weekly_review(data):
     current_streak = data.get("current_streak", 0)
     level_info = data.get("level_info", {})
 
-    # Báo cáo chuẩn fallback nếu chưa có AI Key
     fallback_text = (
-        f"📊 <b>WINTER ARC — BÁO CÁO TỔNG KẾT TUẦN</b>\n\n"
-        f"🏆 <b>Cấp độ:</b> {level_info.get('badge', 'LEVEL 1')} — {level_info.get('title', 'Recruit')}\n"
-        f"⚡ <b>Chuỗi hiện tại:</b> {current_streak} ngày\n"
-        f"🎯 <b>Tỷ lệ hoàn thành cả tuần:</b> {total_done}/{total_assigned} ({overall_rate}%)\n\n"
-        f"• Ngày 100% (Chuỗi Lửa 🔥): <b>{flame_days} ngày</b>\n"
-        f"• Ngày 50-99% (Chuỗi Xám ⚪): <b>{grey_days} ngày</b>\n"
-        f"• Ngày bỏ lỡ (<50% 💀): <b>{missed_days} ngày</b>\n"
-        f"• Tổng giờ học Tiếng Anh: <b>{english_hours} giờ</b>\n\n"
-        f"<i>💡 Gắn Gemini API Key trong Protocol Manager để nhận lời nhận xét chi tiết từ AI Coach!</i>"
+        f"📊 <b>WINTER ARC — WEEKLY DISCIPLINE REPORT</b>\n\n"
+        f"🏆 <b>Level:</b> {level_info.get('badge', 'LEVEL 1')} — {level_info.get('title', 'Recruit')}\n"
+        f"⚡ <b>Current Streak:</b> {current_streak} days\n"
+        f"🎯 <b>Weekly Completion Rate:</b> {total_done}/{total_assigned} ({overall_rate}%)\n\n"
+        f"• 100% Days (Flame Streak 🔥): <b>{flame_days} days</b>\n"
+        f"• 50–99% Days (Grey Streak ⚪): <b>{grey_days} days</b>\n"
+        f"• Missed Days (<50% 💀): <b>{missed_days} days</b>\n"
+        f"• Total English Focus Time: <b>{english_hours} hours</b>\n\n"
+        f"<i>💡 Connect your Gemini API Key in Protocol Manager for personalized daily AI Coaching!</i>"
     )
 
     if not is_ai_enabled():
         return fallback_text
 
     prompt = (
-        f"Hãy nhận xét về kết quả kỷ luật 7 ngày vừa qua của chiến binh Winter Arc:\n"
-        f"- Cấp độ hiện tại: {level_info.get('badge', 'LEVEL 1')} ({level_info.get('title', 'Recruit')})\n"
-        f"- Chuỗi hiện tại: {current_streak} ngày\n"
-        f"- Tỷ lệ hoàn thành tổng thể: {total_done}/{total_assigned} ({overall_rate}%)\n"
-        f"- Số ngày đạt 100% (Chuỗi Lửa 🔥): {flame_days}/7 ngày\n"
-        f"- Số ngày làm nửa vời (Chuỗi Xám ⚪): {grey_days}/7 ngày\n"
-        f"- Số ngày lười biếng / bỏ lỡ (<50%): {missed_days}/7 ngày\n"
-        f"- Tổng giờ học Tiếng Anh tuần qua: {english_hours} giờ\n\n"
-        f"Chi tiết từng ngày:\n" + "\n".join(days_stat) + "\n\n"
-        f"Yêu cầu:\n"
-        f"1. Mở đầu bằng tiêu đề chuẩn Telegram HTML: 🛡️ <b>[AI COACH] BÁO CÁO KỶ LUẬT TUẦN QUA</b>\n"
-        f"2. Đánh giá thẳng thắn phong độ tuần qua (khen ngợi nếu giữ chuỗi lửa, chỉnh đốn nếu có chuỗi xám hoặc ngày bỏ cuộc).\n"
-        f"3. Nêu rõ mục tiêu tối quan trọng cho tuần tới.\n"
-        f"4. Giữ phong thái lạnh lùng, kỷ luật thép, khích lệ tự tôn bản lĩnh."
+        f"Review the past 7 days of discipline performance for this Winter Arc warrior:\n"
+        f"- Current Level: {level_info.get('badge', 'LEVEL 1')} ({level_info.get('title', 'Recruit')})\n"
+        f"- Current Streak: {current_streak} days\n"
+        f"- Overall Completion Rate: {total_done}/{total_assigned} ({overall_rate}%)\n"
+        f"- 100% Days (Flame Streak 🔥): {flame_days}/7 days\n"
+        f"- Mediocre Days (Grey Streak ⚪): {grey_days}/7 days\n"
+        f"- Missed / Slack Days (<50%): {missed_days}/7 days\n"
+        f"- Total English Study: {english_hours} hours\n\n"
+        f"Daily Breakdown:\n" + "\n".join(days_stat) + "\n\n"
+        f"Requirements:\n"
+        f"1. Start with title in Telegram HTML: 🛡️ <b>[AI COACH] WEEKLY DISCIPLINE REVIEW</b>\n"
+        f"2. Candidly assess the week's performance (praise unbroken flame streaks, firmly challenge any grey or missed days).\n"
+        f"3. State the top critical priority for the upcoming week.\n"
+        f"4. Deliver in an unapologetic, stoic warrior brother tone."
     )
 
     try:
@@ -172,7 +253,7 @@ def generate_weekly_review(data):
 
 def generate_monthly_review(data):
     """
-    Tạo báo cáo tháng / chặng 30 ngày (Level milestone)
+    30-Day milestone report (Level progression)
     """
     level = data.get("level", 1)
     day_num = data.get("day_num", 30)
@@ -182,29 +263,29 @@ def generate_monthly_review(data):
     title = data.get("title", "Recruit")
 
     fallback_text = (
-        f"👑 <b>WINTER ARC — BÁO CÁO KỶ LUẬT CHẶNG 30 NGÀY (LEVEL {level})</b>\n\n"
-        f"🏆 <b>Danh hiệu:</b> {title}\n"
-        f"📅 Đã đi qua: <b>{day_num}/90 ngày</b>\n"
-        f"🔥 Tổng ngày đạt Chuỗi Lửa: <b>{flame_count} ngày</b>\n"
-        f"⚪ Ngày Chuỗi Xám: <b>{grey_count} ngày</b>\n"
-        f"📖 Tổng giờ Tiếng Anh: <b>{english_hours} giờ</b>\n\n"
-        f"<i>Bước sang chặng tiếp theo với tiêu chuẩn kỷ luật cao hơn nữa!</i>"
+        f"👑 <b>WINTER ARC — 30-DAY PHASE REPORT (LEVEL {level})</b>\n\n"
+        f"🏆 <b>Title:</b> {title}\n"
+        f"📅 Days Elapsed: <b>{day_num}/90 days</b>\n"
+        f"🔥 Flame Days (100%): <b>{flame_count} days</b>\n"
+        f"⚪ Grey Days: <b>{grey_count} days</b>\n"
+        f"📖 English Focus: <b>{english_hours} hours</b>\n\n"
+        f"<i>Step into the next phase with even higher standards!</i>"
     )
 
     if not is_ai_enabled():
         return fallback_text
 
     prompt = (
-        f"Chiến binh vừa hoàn thành chặng 30 ngày của Level {level} ({title}).\n"
-        f"- Ngày thứ: {day_num}/90 ngày Winter Arc.\n"
-        f"- Tổng số ngày hoàn thành 100% (Chuỗi Lửa 🔥): {flame_count} ngày.\n"
-        f"- Số ngày chuỗi xám: {grey_count} ngày.\n"
-        f"- Tổng giờ học Tiếng Anh tích lũy: {english_hours} giờ.\n\n"
-        f"Yêu cầu:\n"
-        f"1. Tiêu đề Telegram HTML: 👑 <b>[AI COACH] TỔNG KẾT CHẶNG 30 NGÀY (LEVEL {level})</b>\n"
-        f"2. Đánh giá sự biến chuyển tâm lý và sức chịu đựng của chiến binh sau 30 ngày.\n"
-        f"3. Nhắc nhở rằng chặng đường tiếp theo sẽ khắc nghiệt hơn, đòi hỏi tập trung cao độ hơn.\n"
-        f"4. Văn phong truyền lửa, chuẩn Stoic warrior."
+        f"Warrior has completed the 30-day milestone for Level {level} ({title}).\n"
+        f"- Current Day: {day_num}/90 days of Winter Arc.\n"
+        f"- Total 100% Days (Flame Streak 🔥): {flame_count} days.\n"
+        f"- Total Grey Days: {grey_count} days.\n"
+        f"- Total Accumulated English Focus: {english_hours} hours.\n\n"
+        f"Requirements:\n"
+        f"1. Telegram HTML header: 👑 <b>[AI COACH] 30-DAY PHASE REVIEW (LEVEL {level})</b>\n"
+        f"2. Assess mental endurance growth and identity transformation over these 30 days.\n"
+        f"3. Emphasize that the next phase demands even stricter execution.\n"
+        f"4. Deliver in an authentic, high-impact stoic warrior tone."
     )
 
     try:
@@ -217,45 +298,146 @@ def generate_monthly_review(data):
     return fallback_text
 
 
+def get_full_warrior_context():
+    """Thu thập toàn bộ dữ liệu thời gian thực: nhiệm vụ hôm nay, tiến độ, thời tiết hiện tại & dự báo ngày mai"""
+    today = app_logic.get_today_data()
+    weather = app_logic.get_weather_data()
+    
+    tasks_list = today.get("tasks", [])
+    tasks_summary = []
+    for t in tasks_list:
+        status = "Done ✅" if t.get("completed") else "Pending ⬜"
+        time_info = f" ({t.get('time_desc')})" if t.get("time_desc") else ""
+        tasks_summary.append(f"• {t.get('name')}{time_info}: {status}")
+    tasks_str = "\n".join(tasks_summary) if tasks_summary else "No specific protocols scheduled."
+    
+    city = weather.get("city", "Hanoi")
+    today_weather = (
+        f"{city}: {weather.get('temperature', 28)}°C, {weather.get('condition', 'Clear Sky')}, "
+        f"High: {weather.get('temp_max', 28)}°C, Low: {weather.get('temp_min', 22)}°C, "
+        f"Humidity: {weather.get('humidity', 50)}%, Wind: {weather.get('wind_speed', 10)} km/h"
+    )
+    
+    tm = weather.get("tomorrow", {})
+    tomorrow_weather = (
+        f"{tm.get('date', 'Tomorrow')}: {tm.get('condition', 'Clear')}, "
+        f"High: {tm.get('temp_max', 29)}°C, Low: {tm.get('temp_min', 20)}°C, "
+        f"Rain Chance: {tm.get('rain_chance', 0)}%"
+    )
+    
+    lvl = today.get("level_info", {})
+    
+    context = (
+        f"[CURRENT WARRIOR CONTEXT & REAL-TIME DATA]:\n"
+        f"- Date: {today.get('date_str')} ({today.get('weekday')})\n"
+        f"- Winter Arc Progress: Day {today.get('day_num')}/{today.get('total_days')} | Level: {lvl.get('badge', 'LV.1')} ({lvl.get('title', 'Recruit')})\n"
+        f"- Overall Completion Today: {today.get('completed_count')}/{today.get('total_tasks')} ({today.get('completion_rate')}%)\n"
+        f"- Flame Streak: {today.get('winter_arc_streak', 0)} days | No Nut Streak: {today.get('nonut_streak', 0)} days\n"
+        f"- Today's Scheduled Protocols:\n{tasks_str}\n"
+        f"- Live Weather Today: {today_weather}\n"
+        f"- Tomorrow's Weather Forecast: {tomorrow_weather}\n"
+    )
+    return context
+
+def generate_daily_morning_briefing(today_data):
+    """Tạo thông điệp đánh thức buổi sáng tự động dựa trên persona và dữ liệu thời gian thực"""
+    if not is_ai_enabled():
+        return None
+    
+    day_num = today_data.get("day_num", 1)
+    total_days = today_data.get("total_days", 90)
+    context = get_full_warrior_context()
+    
+    prompt = (
+        f"{context}\n\n"
+        f"Task:\n"
+        f"Generate a personalized MORNING BRIEFING for this Winter Arc warrior.\n"
+        f"Requirements:\n"
+        f"1. Start with title in Telegram HTML: 🌅 <b>[MORNING BRIEFING] DAY {day_num}/{total_days}</b>\n"
+        f"2. Reference today's weather condition and scheduled protocols.\n"
+        f"3. Deliver a 2-3 paragraph ignition message in your chosen persona.\n"
+        f"4. Command them to execute today's protocols with zero excuses."
+    )
+    try:
+        return generate_ai_text(prompt)
+    except Exception as e:
+        logger.error(f"Generate morning briefing error: {e}")
+        return None
+
+def generate_daily_night_review(today_data):
+    """Tạo báo cáo tổng kết buổi tối tự động dựa trên persona và tiến độ thực tế"""
+    if not is_ai_enabled():
+        return None
+    
+    day_num = today_data.get("day_num", 1)
+    total_days = today_data.get("total_days", 90)
+    rate = today_data.get("completion_rate", 0)
+    context = get_full_warrior_context()
+    
+    prompt = (
+        f"{context}\n\n"
+        f"Task:\n"
+        f"Generate an end-of-day NIGHT DISCIPLINE REVIEW for this warrior based on today's actual performance.\n"
+        f"Requirements:\n"
+        f"1. Start with Telegram HTML title: 🌙 <b>[NIGHT REVIEW] DAY {day_num}/{total_days} ({rate}%)</b>\n"
+        f"2. If rate == 100%, praise their absolute discipline enthusiastically.\n"
+        f"3. If rate < 100%, call out the slack and command them to make up for it tomorrow (mention tomorrow's weather).\n"
+        f"4. Keep it punchy (2-3 short paragraphs) in your authentic persona."
+    )
+    try:
+        return generate_ai_text(prompt)
+    except Exception as e:
+        logger.error(f"Generate night review error: {e}")
+        return None
+
 def chat_with_coach(user_message, today_context=None):
     """
-    Trả lời tin nhắn tự do của người dùng qua Telegram
+    Respond to free-form warrior messages via Telegram with full live weather & tasks context
     """
     if not is_ai_enabled():
         return (
-            "🤖 <i>AI Coach chưa được kích hoạt. Hãy vào Protocol Manager dán Google Gemini API Key để trò chuyện cùng huấn luyện viên!</i>"
+            "🤖 <i>AI Coach is not active yet. Enter your Google Gemini API Key in Protocol Manager to chat with your coach!</i>"
         )
 
-    context_str = ""
-    if today_context:
-        context_str = (
-            f"\n[Bối cảnh hiện tại của người dùng hôm nay]:\n"
-            f"- Ngày thứ: {today_context.get('day_num')}/{today_context.get('total_days')}\n"
-            f"- Tiến độ hôm nay: {today_context.get('completed_count')}/{today_context.get('total_tasks')} ({today_context.get('completion_rate')}%)\n"
-            f"- Chuỗi: {today_context.get('winter_arc_streak')} ngày\n"
-        )
+    context = get_full_warrior_context()
 
     prompt = (
-        f"Chiến binh Winter Arc vừa nhắn cho bạn tin nhắn này:\n"
-        f"\"{user_message}\"\n"
-        f"{context_str}\n"
-        f"Hãy trả lời người dùng ngắn gọn (2-4 câu), phong thái người anh/huấn luyện viên kỷ luật, "
-        f"thực tế, không sáo rỗng, kéo họ về kỷ luật và hành động."
+        f"{context}\n\n"
+        f"A Winter Arc warrior just sent you this message:\n"
+        f"\"{user_message}\"\n\n"
+        f"Instruction for AI:\n"
+        f"Answer their message directly in your assigned persona. "
+        f"If they ask about today's weather, tomorrow's forecast, scheduled tasks, workouts, streaks, or discipline, give accurate real-time answers based on the context above. "
+        f"Format with clean Telegram HTML (<b>, <i>). Keep it punchy, realistic, zero fluff, pulling them back to immediate discipline and action."
     )
 
     try:
         return generate_ai_text(prompt)
     except Exception as e:
-        return f"⚠️ <i>Lỗi kết nối AI: {e}</i>"
+        return f"⚠️ <i>AI connection error: {e}</i>"
 
-
-def test_ai_connection():
-    """Kiểm tra kết nối tới AI API"""
+def test_ai_connection(custom_prompt=None):
+    """Test AI API connection using real warrior context and the user's custom instruction or query"""
     api_key, provider = get_ai_config()
     if not api_key:
-        return False, "Chưa nhập API Key"
+        return False, "API Key is not configured"
     
-    prompt = "Trả lời đúng 1 câu duy nhất truyền cảm hứng kỷ luật cho chiến binh Winter Arc."
+    context = get_full_warrior_context()
+    
+    user_query = (custom_prompt or "").strip()
+    if not user_query:
+        user_query = "Brief me on today's discipline status, scheduled tasks, and the weather now & tomorrow."
+    
+    prompt = (
+        f"{context}\n\n"
+        f"User / Warrior Request:\n"
+        f"\"{user_query}\"\n\n"
+        f"Instruction for AI:\n"
+        f"Respond directly to the user's request above in your assigned persona. "
+        f"Incorporate the real context (weather today/tomorrow, tasks today, streak) accurately. "
+        f"Format with clean Telegram HTML (<b>, <i>). Keep it impactful, clear, and concise."
+    )
+    
     try:
         reply = generate_ai_text(prompt)
         return True, reply

@@ -11,7 +11,8 @@
       "tasks": {
         "english": false,
         "pushups": false,
-        "workout": false
+        "workout": false,
+        "no_nut_3297": true
       }
     },
     "2026-09-27": {
@@ -24,9 +25,95 @@
     "2026-09-29": {
       "focus_times": {},
       "notes": "",
+      "tasks": {}
+    },
+    "2026-09-30": {
+      "focus_times": {},
+      "notes": "",
       "tasks": {
-        "pushups": false
+        "50_pushup_3267": false,
+        "no_nut_3297": true
       }
+    },
+    "2026-10-01": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {}
+    },
+    "2026-10-02": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {}
+    },
+    "2026-10-03": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {}
+    },
+    "2026-10-04": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {}
+    },
+    "2026-10-05": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {}
+    },
+    "2026-10-06": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "no_nut_1692": true
+      }
+    },
+    "2026-10-07": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "no_nut_1692": false,
+        "50_push_ups_5943": true
+      }
+    },
+    "2026-10-08": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-09": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-10": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-11": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-12": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-13": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-14": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
+    },
+    "2026-10-15": {
+      "tasks": {},
+      "focus_times": {},
+      "notes": ""
     }
   },
   "focus_today": {

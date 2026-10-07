@@ -131,7 +131,7 @@ class DesktopApi:
                 tray = self._tray_holder.get("tray")
                 if tray:
                     try:
-                        tray.notify("Widget đã được thu gọn xuống khay hệ thống. Bấm vào icon ở đây để mở lại!", "Winter Arc")
+                        tray.notify("Widget minimized to system tray. Click this icon to restore!", "Winter Arc")
                     except Exception:
                         pass
         except Exception as e:
@@ -168,11 +168,14 @@ class DesktopApi:
     def move_delta(self, dx, dy):
         return True
 
-    def get_today(self):
-        return app_logic.get_today_data()
+    def get_today(self, target_date_str=None):
+        return app_logic.get_today_data(target_date_str)
 
-    def toggle_task(self, task_id):
-        return app_logic.toggle_task(task_id)
+    def get_day_data(self, target_date_str=None):
+        return app_logic.get_today_data(target_date_str)
+
+    def toggle_task(self, task_id, force_date_str=None):
+        return app_logic.toggle_task(task_id, force_date_str)
 
     def add_focus_minutes(self, task_type, minutes):
         return app_logic.add_focus_time(task_type, minutes)
@@ -257,12 +260,33 @@ class DesktopApi:
 
     def send_test_telegram(self):
         success, msg = bot_instance.send_broadcast(
-            "⚡ <b>[TEST CONNECT] WINTER ARC WIDGETS ĐÃ KẾT NỐI!</b>\n\n"
-            "Thông báo từ máy tính của bạn đã bắn thành công tới iPhone!\n"
-            "Từ bây giờ các mốc 07:00, 18:00, 20:25, 22:30 sẽ tự động nhắc nhở bạn.",
+            "⚡ <b>[TEST CONNECT] WINTER ARC WIDGETS CONNECTED!</b>\n\n"
+            "Notification from your desktop widget has reached your phone!\n"
+            "From now on, check-in reminders at 07:00, 18:00, 20:25, 22:30 will ping you here.",
             with_buttons=True
         )
         return {"success": success, "message": msg}
+
+    def get_weather(self, force_refresh=False):
+        return app_logic.get_weather_data(force_refresh)
+
+    def search_city(self, query):
+        return app_logic.search_city_locations(query)
+
+    def set_weather_location(self, city, lat=None, lon=None):
+        return app_logic.update_weather_location(city, lat, lon)
+
+    def test_ai_coach(self, custom_prompt=None):
+        from src import ai_service
+        success, reply = ai_service.test_ai_connection(custom_prompt)
+        if success:
+            bot_instance.send_broadcast(
+                f"🛡️ <b>[AI DISCIPLINE COACH]</b>\n\n{reply}",
+                with_buttons=False
+            )
+            return {"success": True, "message": reply}
+        else:
+            return {"success": False, "message": reply}
 
 def get_screen_bounds():
     try:
@@ -279,17 +303,15 @@ def main():
     cloud_url = (cfg.get("cloud_url") or "").strip()
 
     if cloud_url:
-        print(f"[SYSTEM] Chế độ Cloud đang bật ({cloud_url}). Bot & Scheduler được ủy quyền cho Render chạy 24/7.")
-        # Kéo dữ liệu mới nhất từ Cloud về
         try:
             from src import cloud_sync
             cloud_sync.sync_down()
         except Exception:
             pass
-    else:
-        print("[SYSTEM] Chế độ Local: Khởi chạy Bot Telegram & Scheduler trên máy tính...")
-        bot_instance.start_polling()
-        scheduler_instance.start()
+
+    print("[SYSTEM] Starting Telegram Bot & Scheduler engine...")
+    bot_instance.start_polling()
+    scheduler_instance.start()
 
 
     screen_w, screen_h = get_screen_bounds()
@@ -333,10 +355,10 @@ def main():
                 try:
                     import subprocess
                     subprocess.Popen([
-                        r"C:\Users\Admin\Documents\Module4-main\.venv\Scripts\pythonw.exe",
+                        sys.executable,
                         os.path.join(BASE_DIR, "set_wallpaper.py")
                     ], cwd=BASE_DIR)
-                    icon.notify("Đã cập nhật hình nền Winter Arc 4K!", "Winter Arc")
+                    icon.notify("Winter Arc 4K wallpaper updated!", "Winter Arc")
                 except Exception as ex:
                     print(f"[Tray Wallpaper Error]: {ex}")
 
@@ -355,20 +377,20 @@ def main():
                 os._exit(0)
 
             menu = pystray.Menu(
-                item('👁️ Hiện / Ẩn Desktop Widget', toggle_action, default=True),
-                item('⚙️ Quản lý mục tiêu (Protocol Manager)', open_mgr_action),
-                item('❄️ Đổi hình nền Winter Arc 4K', set_wp_action),
+                item('👁️ Show / Hide Desktop Widget', toggle_action, default=True),
+                item('⚙️ Protocol Manager', open_mgr_action),
+                item('❄️ Set 4K Winter Arc Wallpaper', set_wp_action),
                 pystray.Menu.SEPARATOR,
-                item('🚪 Thoát hoàn toàn', quit_action)
+                item('🚪 Quit Completely', quit_action)
             )
 
             icon_img = Image.open(os.path.join(BASE_DIR, "app_icon.ico"))
             tray_icon = pystray.Icon("WinterArc", icon_img, "Winter Arc Command Center", menu)
             tray_holder["tray"] = tray_icon
             tray_icon.run_detached()
-            print("[SYSTEM TRAY] Pystray Icon đã gắn vào khay hệ thống thành công!")
+            print("[SYSTEM TRAY] Pystray Icon attached to system tray.")
             try:
-                tray_icon.notify("Widget đang chạy ngầm trong khay hệ thống. Click icon ở đây để Ẩn / Hiện widget!", "Winter Arc đã khởi động!")
+                tray_icon.notify("Widget is running in background. Click this icon to toggle visibility!", "Winter Arc Started")
             except Exception:
                 pass
         except Exception as e:

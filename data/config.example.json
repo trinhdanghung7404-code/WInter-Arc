@@ -1,0 +1,37 @@
+{
+  "user_name": "Winter Arc Warrior",
+  "start_date": "2026-10-01",
+  "end_date": "2026-12-31",
+  "total_days": 90,
+  "total_months": 3,
+  "level_days": 30,
+  "telegram": {
+    "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+    "chat_id": "YOUR_TELEGRAM_CHAT_ID"
+  },
+  "schedule": {
+    "morning_briefing": "07:00",
+    "evening_briefing": "18:00",
+    "workout_reminder": "20:25",
+    "night_review": "22:30"
+  },
+  "window": {
+    "always_on_top": true,
+    "width": 360,
+    "height": 560
+  },
+  "cloud_url": "",
+  "ai": {
+    "api_key": "YOUR_GEMINI_OR_OPENAI_API_KEY",
+    "provider": "gemini",
+    "persona": "david_goggins",
+    "custom_prompt": "",
+    "use_ai_daily_briefings": true
+  },
+  "weather": {
+    "city": "Hanoi",
+    "latitude": 21.0245,
+    "longitude": 105.8412,
+    "temp_unit": "celsius"
+  }
+}

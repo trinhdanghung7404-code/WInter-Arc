@@ -10,7 +10,55 @@
 
   <div class="widget-stack" id="drag-handle">
     
-    <!-- TOP ROW: 2 SMALL SQUIRCLES (Side by Side) -->
+    <!-- TOP BAR: DIGITAL CLOCK (TIMER STYLE) + WEATHER & TEMPERATURE -->
+    <div class="ios-card card-clock-weather">
+      <div class="clock-weather-content">
+        <!-- Live Timer-Style Clock -->
+        <div class="clock-block">
+          <div class="clock-timer-digits">
+            <span id="clock-hh">14</span><span class="clock-colon">:</span><span id="clock-mm">30</span><span class="clock-sec-sub" id="clock-ss">.00</span>
+          </div>
+          <span class="clock-date-pill" id="clock-date-pill">Tue, Oct 06</span>
+        </div>
+
+        <div class="clock-divider"></div>
+
+        <!-- Live Weather & Temperature -->
+        <div class="weather-block" id="top-weather-block" title="Live Weather">
+          <span class="weather-icon-large" id="top-weather-icon">☀️</span>
+          <div class="weather-text-wrap">
+            <div class="weather-temp-row">
+              <span class="weather-temp-num" id="top-weather-temp">28°</span>
+              <span class="weather-city-badge" id="top-weather-city">HANOI</span>
+            </div>
+            <div class="weather-condition-sub" id="top-weather-cond">Clear Sky</div>
+          </div>
+        </div>
+
+        <!-- Window Controls -->
+        <div class="clock-top-btns">
+          <button id="btn-pin" class="btn-pin active" title="Always on top (Click to toggle)">
+            <svg class="pin-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="17" x2="12" y2="22"></line>
+              <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+            </svg>
+          </button>
+          <button id="btn-open-manager-top" class="ios-mini-icon" title="Settings & Protocol Manager">
+            <svg class="gear-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+          <button id="btn-hide-tray" class="ios-mini-icon" title="Minimize to system tray (Run in background)">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: 2 SMALL SQUIRCLES (Side by Side) -->
     <div class="row-two-squares">
       
       <!-- WIDGET 1: ACTIVITY RINGS (Exact Apple Fitness / Battery style from reference) -->
@@ -86,32 +134,11 @@
 
     </div>
 
-    <!-- MIDDLE ROW: FOCUS TIMER (Medium Squircle) -->
-    <div class="ios-card card-timer">
+    <!-- MIDDLE ROW: FOCUS TIMER (Medium Squircle - Auto hidden if no timer tasks scheduled) -->
+    <div class="ios-card card-timer" id="card-focus-timer">
       <div class="timer-head">
         <div class="timer-tabs" id="timer-tabs-container">
           <!-- Dynamic Timer Tabs rendered from protocols.json -->
-          <button class="t-tab active" data-type="english">English</button>
-          <button class="t-tab" data-type="project">Project</button>
-        </div>
-        <div class="timer-top-btns">
-          <button id="btn-pin" class="btn-pin active" title="Always on top (Click to toggle)">
-            <svg class="pin-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="17" x2="12" y2="22"></line>
-              <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
-            </svg>
-          </button>
-          <button id="btn-open-manager-top" class="ios-mini-icon" title="Settings & Protocol Manager">
-            <svg class="gear-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </button>
-          <button id="btn-hide-tray" class="ios-mini-icon" title="Minimize to system tray (Run in background)">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
         </div>
       </div>
 
@@ -147,7 +174,14 @@
     <!-- 2. EXPANDED PROTOCOL CARD (Expanded Mode) -->
     <div class="ios-card card-protocol" id="protocol-expanded-card">
       <div class="protocol-head">
-        <div class="protocol-title">TODAY'S PROTOCOLS</div>
+        <div class="protocol-title-group">
+          <span class="protocol-title" id="protocol-title-text">TODAY'S PROTOCOLS</span>
+          <div class="day-stepper">
+            <button type="button" id="btn-widget-prev-day" class="btn-step" title="Previous Day">‹</button>
+            <button type="button" id="btn-widget-next-day" class="btn-step" title="Next Day">›</button>
+          </div>
+          <button type="button" id="btn-widget-today-reset" class="btn-today-pill hidden" title="Back to Today">Today</button>
+        </div>
         <div class="protocol-head-right">
           <span class="protocol-stat" id="protocol-stat">0/6 (0%)</span>
           <button id="btn-collapse-protocol" class="btn-collapse-pill" title="Collapse checklist">▲</button>

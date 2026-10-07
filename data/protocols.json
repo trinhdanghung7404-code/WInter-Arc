@@ -1,10 +1,39 @@
 {
   "protocols": [
     {
-      "id": "pushups",
-      "name": "50 Pushups",
-      "icon": "💪",
+      "name": "50 Push Up",
+      "icon": "",
       "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-06"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "06:00",
+      "id": "50_push_up_1624"
+    },
+    {
+      "name": "Practie English",
+      "icon": "",
+      "type": "timer",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-06"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "00:45",
+      "target_minutes": 30,
+      "id": "practie_english_1668"
+    },
+    {
+      "name": "No nut",
+      "icon": "",
+      "type": "retro",
+      "schedule_type": "weekly",
       "days": [
         0,
         1,
@@ -14,180 +43,68 @@
         5,
         6
       ],
-      "time_desc": "Early morning",
-      "active": true
+      "specific_dates": [],
+      "time_desc": "Full 24h evaluation",
+      "active": true,
+      "remind_time": "",
+      "id": "no_nut_1692"
     },
     {
-      "id": "english",
-      "name": "English Study",
-      "icon": "📚",
-      "type": "timer",
-      "target_minutes": 120,
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
+      "name": "50 Push ups",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-07"
       ],
-      "time_desc": "Target 120m",
-      "active": true
+      "time_desc": "",
+      "active": true,
+      "remind_time": "18:00",
+      "id": "50_push_ups_5943"
     },
     {
-      "id": "project",
-      "name": "Capstone Project",
-      "icon": "💻",
+      "name": "Done task Proj",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-07"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "20:30",
+      "id": "done_task_proj_6046"
+    },
+    {
+      "name": "Listening E",
+      "icon": "",
       "type": "timer",
-      "target_minutes": 90,
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-07"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "21:00",
+      "target_minutes": 30,
+      "id": "listening_e_6102"
+    },
+    {
+      "name": "mua lưới nhỏ, dây rút, túi nano",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "weekly",
       "days": [
-        1,
-        3,
         5
       ],
-      "time_desc": "Tue, Thu, Sat evenings",
-      "active": true
-    },
-    {
-      "id": "sleep",
-      "name": "Sleep 7-8h / Before 23:00",
-      "icon": "🌙",
-      "type": "retro",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Review yesterday's sleep",
-      "active": true
-    },
-    {
-      "id": "nonut",
-      "name": "Discipline No Nut",
-      "icon": "🔥",
-      "type": "retro",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Review yesterday",
-      "active": true
-    },
-    {
-      "id": "detox_mxh",
-      "name": "No Screen Before Bed",
-      "icon": "📵",
-      "type": "retro",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Yesterday evening",
-      "active": true
-    },
-    {
-      "id": "ch_i_6354",
-      "name": "chơi",
-      "icon": "🎯",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true
-    },
-    {
-      "id": "ad_5621",
-      "name": "ad",
-      "icon": "🇬🇧",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
+      "specific_dates": [],
+      "time_desc": "",
+      "remind_time": "07:30",
       "active": true,
-      "remind_time": "08:35"
-    },
-    {
-      "id": "add_5677",
-      "name": "add",
-      "icon": "💪",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true,
-      "remind_time": "08:36"
-    },
-    {
-      "id": "his_6584",
-      "name": "his",
-      "icon": "💪",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true,
-      "remind_time": "08:50"
-    },
-    {
-      "id": "hisa_6617",
-      "name": "hisa",
-      "icon": "💪",
-      "type": "todo",
-      "days": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "time_desc": "Hàng ngày",
-      "active": true,
-      "remind_time": "08:51"
+      "id": "task_1791356262"
     }
   ]
 }

@@ -48,6 +48,10 @@ class ManagerApi:
         """Lấy danh sách toàn bộ mục tiêu từ data/protocols.json"""
         return app_logic.load_protocols()
 
+    def get_day_data(self, date_str=None):
+        """Lấy dữ liệu và danh sách nhiệm vụ của một ngày cụ thể"""
+        return app_logic.get_today_data(date_str)
+
     def add_protocol(self, item):
         """Thêm mục tiêu mới và lưu trực tiếp vào data/protocols.json"""
         return app_logic.add_protocol(item)
@@ -82,18 +86,27 @@ class ManagerApi:
         )
         return {"success": success, "message": msg}
 
-    def test_ai_coach(self):
+    def test_ai_coach(self, custom_prompt=None):
         """Kiểm tra kết nối AI Coach và gửi thông điệp thử sang Telegram"""
         from src import ai_service
-        success, reply = ai_service.test_ai_connection()
+        success, reply = ai_service.test_ai_connection(custom_prompt)
         if success:
             bot_instance.send_broadcast(
-                f"🛡️ <b>[AI COACH KẾT NỐI THÀNH CÔNG]</b>\n\n<i>\"{reply}\"</i>",
+                f"🛡️ <b>[AI DISCIPLINE COACH]</b>\n\n{reply}",
                 with_buttons=False
             )
             return {"success": True, "message": reply}
         else:
             return {"success": False, "message": reply}
+
+    def get_weather(self, force_refresh=False):
+        return app_logic.get_weather_data(force_refresh)
+
+    def search_city(self, query):
+        return app_logic.search_city_locations(query)
+
+    def set_weather_location(self, city, lat=None, lon=None):
+        return app_logic.update_weather_location(city, lat, lon)
 
 def main():
     print("[MANAGER] Starting Winter Arc Protocol Manager...")

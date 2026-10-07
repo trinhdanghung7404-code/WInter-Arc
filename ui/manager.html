@@ -27,11 +27,14 @@
       <!-- LEFT: Existing Protocols List -->
       <section class="section-box list-section">
         <div class="section-title-row">
-          <h2>ACTIVE PROTOCOLS</h2>
-          <span id="active-count-badge" class="count-badge">0 items</span>
+          <div class="title-with-badge">
+            <h2 id="list-section-title">ACTIVE PROTOCOLS</h2>
+            <span id="active-count-badge" class="count-badge">0 items</span>
+          </div>
         </div>
-        <p class="section-hint">Protocols listed here will automatically sync to your Desktop Widget and Telegram Bot.</p>
+        <p class="section-hint" id="section-hint-text">Showing discipline protocols scheduled for the selected date.</p>
 
+        <!-- Protocols List Container -->
         <div id="protocols-list-container" class="protocols-list">
           <div class="loading-state">Loading protocols...</div>
         </div>
@@ -40,11 +43,17 @@
       <!-- RIGHT: Create New Protocol Form -->
       <section class="section-box form-section">
         <div class="section-title-row">
-          <h2>NEW PROTOCOL</h2>
+          <h2 id="form-heading">NEW PROTOCOL</h2>
+          <button type="button" id="btn-cancel-edit" class="btn-cancel-edit hidden" title="Cancel edit and create new">✕ Cancel Edit</button>
         </div>
-        <p class="section-hint">Create habits that align with your personal discipline standard.</p>
+        <div id="edit-notice-bar" class="edit-notice-bar hidden">
+          <span>Editing: <strong id="editing-proto-name"></strong></span>
+          <span class="edit-hint-tag">Modifying Schedule / Details</span>
+        </div>
+        <p class="section-hint" id="form-hint-desc">Create discipline protocols (Repeat everyday or schedule for a specific date).</p>
 
         <form id="add-protocol-form" class="protocol-form" onsubmit="return false;">
+          <input type="hidden" id="editing-protocol-id" value="" />
           
           <!-- Name (full width now, icon hidden input) -->
           <div class="form-row">
@@ -53,78 +62,7 @@
               <input type="text" id="input-name" placeholder="e.g., Read 30 pages, Run 3km, Pushups..." required />
             </div>
           </div>
-          <!-- Hidden icon value — set by picker click -->
-          <input type="hidden" id="input-icon" value="💪" />
 
-          <!-- Quick Icon Picker — SVG Squircle System -->
-          <div class="emoji-picker-row">
-
-            <!-- Strength / Pushups -->
-            <span class="emoji-opt icon-pick-blue" data-emoji="💪" title="Strength / Pushups">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </span>
-
-            <!-- Language / Study -->
-            <span class="emoji-opt icon-pick-purple" data-emoji="🇬🇧" title="Language / Study">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </span>
-
-            <!-- Project / Code -->
-            <span class="emoji-opt icon-pick-green" data-emoji="💻" title="Project / Code">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" x2="22" y1="20" y2="20"/></svg>
-            </span>
-
-            <!-- Gym / Fitness -->
-            <span class="emoji-opt icon-pick-orange" data-emoji="🏋️" title="Gym / Fitness">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1a2 2 0 0 0-2.83 0l-1.17 1.17a2 2 0 0 0 0 2.83l1 1a2 2 0 0 0 2.83 0l1.17-1.17a2 2 0 0 0 0-2.83Z"/><path d="m3 3 1 1a2 2 0 0 0 2.83 0l1.17-1.17a2 2 0 0 0 0-2.83l-1-1a2 2 0 0 0-2.83 0L3 1.17a2 2 0 0 0 0 2.83Z"/><path d="m18 15 1.41-1.41a2 2 0 0 0 0-2.83L13.24 4.59a2 2 0 0 0-2.83 0L9 6"/><path d="m6 9-1.41 1.41a2 2 0 0 0 0 2.83l6.17 6.17a2 2 0 0 0 2.83 0L15 18"/></svg>
-            </span>
-
-            <!-- Reading -->
-            <span class="emoji-opt icon-pick-indigo" data-emoji="📖" title="Reading">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
-            </span>
-
-            <!-- Hydration / Water -->
-            <span class="emoji-opt icon-pick-cyan" data-emoji="💧" title="Hydration">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
-            </span>
-
-            <!-- Discipline / No Nut -->
-            <span class="emoji-opt icon-pick-red" data-emoji="🚫" title="Discipline / No Nut">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-            </span>
-
-            <!-- Screen Detox -->
-            <span class="emoji-opt icon-pick-slate" data-emoji="📵" title="Screen Detox">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="m2 2 20 20"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
-            </span>
-
-            <!-- Meditation -->
-            <span class="emoji-opt icon-pick-teal" data-emoji="🧘" title="Meditation">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="1"/><path d="M6 8h12l-2 8H8z"/><path d="M6 8 4 18"/><path d="m18 8 2 10"/></svg>
-            </span>
-
-            <!-- Running / Cardio -->
-            <span class="emoji-opt icon-pick-amber" data-emoji="🏃" title="Running / Cardio">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="1"/><path d="M6 8.8 10 8l2 4 2-3 2 1.8"/><path d="m10 16 1.5-4L14 14l2-2.5"/><path d="m6 20 2-4"/><path d="m18 20-2-5.5"/></svg>
-            </span>
-
-            <!-- Rest / Sleep -->
-            <span class="emoji-opt icon-pick-violet" data-emoji="💤" title="Rest / Sleep">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            </span>
-
-            <!-- Boxing / Training -->
-            <span class="emoji-opt icon-pick-rose" data-emoji="🥊" title="Boxing / Training">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8v-5a1 1 0 0 1 1-1 2 2 0 0 1 2 2v2.5"/></svg>
-            </span>
-
-            <!-- Healthy Nutrition -->
-            <span class="emoji-opt icon-pick-lime" data-emoji="🥗" title="Healthy Nutrition">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-            </span>
-
-          </div>
 
           <!-- Type Selector (3 Visual Cards) -->
           <div class="form-field">
@@ -139,7 +77,7 @@
                       <path d="M20 6 9 17l-5-5"/>
                     </svg>
                   </div>
-                  <div class="type-title">Daily To-Do</div>
+                  <div class="type-title">To-Do Task</div>
                   <div class="type-desc">Actionable tasks to complete and check off anytime.</div>
                 </div>
               </label>
@@ -166,7 +104,7 @@
                       <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
                     </svg>
                   </div>
-                  <div class="type-title">Daily Retrospective</div>
+                  <div class="type-title">Yesterday Retro</div>
                   <div class="type-desc">Reflect and evaluate yesterday (No Nut, Screen Detox...).</div>
                 </div>
               </label>
@@ -186,30 +124,51 @@
             </div>
           </div>
 
-          <!-- Schedule Days -->
+          <!-- Schedule Calendar Sheet (Tờ lịch chọn ngày trực tiếp) -->
+          <!-- Schedule Date Picker Sheet (Chỉ chọn 1 ngày duy nhất) -->
           <div class="form-field">
-            <label>Schedule (Days of Week):</label>
-            <div class="preset-schedule-row">
-              <button type="button" class="btn-schedule-preset active" data-preset="all">Everyday (Mon - Sun)</button>
-              <button type="button" class="btn-schedule-preset" data-preset="t357">Tue - Thu - Sat</button>
-              <button type="button" class="btn-schedule-preset" data-preset="t246cn">Mon - Wed - Fri - Sun</button>
-              <button type="button" class="btn-schedule-preset" data-preset="weekdays">Weekdays (Mon - Fri)</button>
+            <div class="field-label-with-tag">
+              <label>Schedule Date (Select single date):</label>
+              <span class="badge-optional" id="form-cal-selected-count">1 date</span>
             </div>
+            <p class="field-sub-hint">Click to choose a date. For <strong>Today</strong>, scheduled time must be at least 2 hours in advance. Future dates have no time restrictions.</p>
 
-            <div class="days-checkbox-grid">
-              <label><input type="checkbox" class="day-check" value="0" checked /> Mon</label>
-              <label><input type="checkbox" class="day-check" value="1" checked /> Tue</label>
-              <label><input type="checkbox" class="day-check" value="2" checked /> Wed</label>
-              <label><input type="checkbox" class="day-check" value="3" checked /> Thu</label>
-              <label><input type="checkbox" class="day-check" value="4" checked /> Fri</label>
-              <label><input type="checkbox" class="day-check" value="5" checked /> Sat</label>
-              <label><input type="checkbox" class="day-check" value="6" checked /> Sun</label>
+            <div class="form-calendar-sheet">
+              <div class="form-cal-nav-bar">
+                <button type="button" id="btn-form-cal-prev" class="btn-cal-mini-nav" title="Previous Month">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <span id="form-cal-month-title" class="form-cal-month-title">October 2026</span>
+                <button type="button" id="btn-form-cal-next" class="btn-cal-mini-nav" title="Next Month">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                <div class="form-cal-quick-actions">
+                  <button type="button" id="btn-form-cal-today" class="btn-cal-quick" title="Jump to today">Today</button>
+                  <button type="button" id="btn-form-cal-tomorrow" class="btn-cal-quick" title="Jump to tomorrow">Tomorrow</button>
+                </div>
+              </div>
+
+              <div class="form-cal-weekdays-row form-cal-weekdays-static">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+              </div>
+
+              <div id="form-cal-grid" class="form-cal-grid">
+                <!-- Days 1 to 31 rendered by JS -->
+              </div>
             </div>
+          </div>
+
+          <!-- Optional Repeat Daily Checkbox -->
+          <div class="form-field" style="margin-top: -4px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.72rem; color: var(--text-dim);">
+              <input type="checkbox" id="input-repeat-daily" style="width: 14px; height: 14px; accent-color: #38bdf8; cursor: pointer;" />
+              <span><strong>Repeat Everyday</strong> — <i>(Uncheck if scheduling for a single date on the calendar)</i></span>
+            </label>
           </div>
 
           <div class="form-field">
             <label>Time Note / Hint (Optional):</label>
-            <input type="text" id="input-time-desc" placeholder="e.g., Early Morning, Evening 20:30, Before Sleep..." />
+            <input type="text" id="input-time-desc" placeholder="e.g., Early Morning, Evening 20:30, Before Sleep... (Optional)" />
           </div>
 
           <!-- Optional Telegram Notification Time -->
@@ -234,7 +193,7 @@
           <!-- Submit Button -->
           <div class="form-submit-row">
             <button type="button" id="btn-add-protocol" class="btn-primary-add">
-              <span>SAVE PROTOCOL</span>
+              <span id="btn-submit-text">SAVE PROTOCOL</span>
             </button>
           </div>
 
@@ -244,14 +203,62 @@
 
     </div>
 
+    <!-- Weather & Location Config Bar -->
+    <section class="section-box weather-settings-box">
+      <div class="tg-row-header">
+        <div class="weather-head-title">
+          <h3>WEATHER & LOCATION</h3>
+          <span class="badge-optional" id="weather-live-indicator">LIVE API</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <div id="weather-preview-pill" class="weather-preview-pill">
+            <span id="weather-preview-icon">☀️</span>
+            <span id="weather-preview-temp">28°C</span>
+            <span id="weather-preview-desc" class="weather-preview-desc">Clear Sky</span>
+          </div>
+          <button id="btn-refresh-weather" class="btn-refresh" style="color: var(--ice-blue); border-color: var(--ice-blue);" type="button">Refresh</button>
+          <button id="btn-save-weather" class="btn-save-small" type="button">Save Location</button>
+        </div>
+      </div>
+
+      <div class="weather-inputs-row">
+        <div class="form-field" style="flex: 1;">
+          <label>City / Location Name:</label>
+          <div class="city-input-wrap">
+            <input type="text" id="input-weather-city" placeholder="e.g., Hanoi, Ho Chi Minh, Tokyo, London, New York..." value="Hanoi" />
+          </div>
+        </div>
+      </div>
+
+      <div class="weather-presets-wrap">
+        <span class="weather-preset-label">Quick Presets:</span>
+        <div class="weather-preset-chips" id="weather-preset-chips">
+          <button type="button" class="btn-city-chip" data-city="Hanoi" data-lat="21.0245" data-lon="105.8412">Hanoi</button>
+          <button type="button" class="btn-city-chip" data-city="Ho Chi Minh" data-lat="10.8231" data-lon="106.6297">Ho Chi Minh</button>
+          <button type="button" class="btn-city-chip" data-city="Da Nang" data-lat="16.0544" data-lon="108.2022">Da Nang</button>
+          <button type="button" class="btn-city-chip" data-city="Tokyo" data-lat="35.6762" data-lon="139.6503">Tokyo</button>
+          <button type="button" class="btn-city-chip" data-city="London" data-lat="51.5074" data-lon="-0.1278">London</button>
+          <button type="button" class="btn-city-chip" data-city="New York" data-lat="40.7128" data-lon="-74.0060">New York</button>
+          <button type="button" class="btn-city-chip" data-city="Singapore" data-lat="1.3521" data-lon="103.8198">Singapore</button>
+        </div>
+      </div>
+
+      <p style="margin-top: 8px; font-size: 0.65rem; color: var(--text-muted); line-height: 1.4;">
+        Powered by Open-Meteo Global API (100% Free, 0 API Key required). Live temperature and weather icon sync directly to your Apple Calendar Desktop Widget.
+      </p>
+    </section>
+
     <!-- Bottom Telegram & AI Coach Config Bar -->
     <section class="section-box telegram-settings-box">
       <div class="tg-row-header">
-        <h3>TELEGRAM & AI DISCIPLINE COACH</h3>
+        <div>
+          <h3>TELEGRAM & AI DISCIPLINE COACH</h3>
+          <span class="section-hint" style="margin: 0;">Customize Who messages you daily & What tone they use</span>
+        </div>
         <div style="display: flex; gap: 8px;">
           <button id="btn-test-ai" class="btn-refresh" style="color: #a855f7; border-color: #a855f7;" type="button">Test AI Coach</button>
           <button id="btn-tg-ping-mgr" class="btn-refresh" style="color: var(--ice-blue); border-color: var(--ice-blue);" type="button">Test Ping</button>
-          <button id="btn-save-tg" class="btn-save-small" type="button">Save Settings</button>
+          <button id="btn-save-tg" class="btn-save-small" type="button">Save AI & Telegram</button>
         </div>
       </div>
 
@@ -269,8 +276,33 @@
           <input type="password" id="ai-token-input" placeholder="Paste Google Gemini Key (Free on aistudio.google.com)..." />
         </div>
       </div>
+
+      <!-- AI Persona Selector & Custom Prompt -->
+      <div class="ai-persona-section" style="margin-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label style="font-size: 0.75rem; font-weight: 700; color: #c084fc;">AI COACH PERSONA & DAILY TONE:</label>
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.68rem; color: var(--text-dim); cursor: pointer;">
+            <input type="checkbox" id="ai-daily-briefings-check" checked style="accent-color: #a855f7; width: 13px; height: 13px;" />
+            <span>Enable Daily AI Morning & Night Briefings</span>
+          </label>
+        </div>
+
+        <div class="ai-persona-chips" id="ai-persona-chips" style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+          <button type="button" class="btn-persona-chip active" data-persona="david_goggins" data-prompt="You are David Goggins — extreme mental toughness, tough love, zero excuses, no sugarcoating. You speak with raw intensity, demanding 100% effort every single day. Call out laziness directly. Keep it punchy, aggressive, and deeply motivating.">🔥 David Goggins</button>
+          <button type="button" class="btn-persona-chip" data-persona="stoic" data-prompt="You are a wise Stoic philosopher mentor (Marcus Aurelius / Epictetus style). You communicate in calm, deeply reflective, highly disciplined, and impactful English. Remind the warrior of control over mind, virtue, and daily duty.">🛡️ Stoic Warrior</button>
+          <button type="button" class="btn-persona-chip" data-persona="drill_sergeant" data-prompt="You are a military Drill Sergeant. Uncompromising discipline, strict orders, high urgency. Demand prompt execution of all protocols. Call out slacking immediately.">🎖️ Drill Sergeant</button>
+          <button type="button" class="btn-persona-chip" data-persona="brother" data-prompt="You are a supportive, caring, but strict older brother. You want the best for them and hold them accountable with empathy and firmness.">👥 Strict Older Brother</button>
+          <button type="button" class="btn-persona-chip" data-persona="custom" data-prompt="">✍️ Custom Prompt</button>
+        </div>
+
+        <div>
+          <label style="font-size: 0.68rem; color: var(--text-muted);">Custom System Prompt / Instruction for AI:</label>
+          <textarea id="ai-custom-prompt-input" rows="2" style="width: 100%; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 0.72rem; outline: none; resize: vertical; font-family: inherit; line-height: 1.4;" placeholder="Describe how your AI Coach should talk to you every day..."></textarea>
+        </div>
+      </div>
+
       <p style="margin-top: 8px; font-size: 0.65rem; color: var(--text-muted); line-height: 1.4;">
-        Get a 100% Free Gemini API Key at <a href="https://aistudio.google.com" target="_blank" style="color: var(--ice-blue); text-decoration: underline;">aistudio.google.com</a>. AI Coach analyzes weekly/monthly data and acts as your personal accountability mentor via Telegram.
+        Get a 100% Free Gemini API Key at <a href="https://aistudio.google.com" target="_blank" style="color: var(--ice-blue); text-decoration: underline;">aistudio.google.com</a>. AI Coach uses your chosen persona to generate customized Morning Briefings (07:00), Night Discipline Reviews (22:30), Weekly Assessments, and answers your direct Telegram messages.
       </p>
     </section>
 

@@ -11,6 +11,9 @@ __pycache__/
 # Logs
 *.log
 
+# Local User Config (Contains personal Bot Token and API Keys)
+data/config.json
+
 # Windows Shortcuts
 *.lnk
 

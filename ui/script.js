@@ -11,27 +11,19 @@ let timerInterval = null;
 let isAlwaysOnTop = true;
 let isDraggingWindow = false;
 let isCompactMode = false;
+let inspectedDateStr = null;
 
 const fallbackApi = {
   get_today: async () => ({
-    date_str: "2026-09-29",
-    yesterday_str: "2026-09-28",
-    weekday: "Tuesday",
+    date_str: (new Date()).toISOString().slice(0, 10),
+    yesterday_str: "",
+    weekday: "Today",
     day_num: 1,
     total_days: 90,
-    tasks: [
-      { id: "pushups", name: "50 Pushups", icon: "💪", type: "todo", completed: false, time_desc: "Morning warmup" },
-      { id: "english", name: "English Study", icon: "🇬🇧", type: "timer", target_minutes: 120, completed: false },
-      { id: "project", name: "Capstone Project", icon: "💻", type: "timer", target_minutes: 90, completed: false },
-      { id: "nonut", name: "Discipline No Nut (Yesterday)", icon: "🚫", type: "retro", completed: false, time_desc: "Full 24h evaluation" },
-      { id: "detox_mxh", name: "No Screen Before Bed", icon: "📵", type: "retro", completed: false, time_desc: "Yesterday evening evaluation" }
-    ],
-    timer_tasks: [
-      { id: "english", name: "English Study", icon: "🇬🇧", target_minutes: 120, studied_minutes: 0, completed: false },
-      { id: "project", name: "Capstone Project", icon: "💻", target_minutes: 90, studied_minutes: 0, completed: false }
-    ],
+    tasks: [],
+    timer_tasks: [],
     completed_count: 0,
-    total_tasks: 5,
+    total_tasks: 0,
     completion_rate: 0,
     nonut_streak: 0,
     winter_arc_streak: 0
@@ -49,14 +41,158 @@ const fallbackApi = {
   },
   get_config: async () => ({ telegram: { bot_token: "", chat_id: "" } }),
   save_config: async (cfg) => true,
-  send_test_telegram: async () => ({ success: false, message: "Please enter Bot Token first" })
+  send_test_telegram: async () => ({ success: false, message: "Please enter Bot Token first" }),
+  get_weather: async (force) => ({
+    success: true,
+    city: "Hanoi",
+    temperature: 28,
+    condition: "Clear Sky",
+    icon: "☀️",
+    humidity: 45,
+    wind_speed: 10,
+    temp_max: 28,
+    temp_min: 22,
+    tomorrow: {
+      date: (new Date(Date.now() + 86400000)).toISOString().slice(0, 10),
+      temp_max: 29,
+      temp_min: 20,
+      avg_temp: 24,
+      condition: "Mainly Clear",
+      icon: "🌤️",
+      rain_chance: 0,
+      weather_code: 1
+    }
+  })
 };
+
+let lastWeatherData = null;
+let weatherDisplayMode = 'auto'; // 'auto' (follows inspected date), 'today', 'tomorrow'
+
+async function ensureApiReady(maxRetries = 25, delay = 80) {
+  for (let i = 0; i < maxRetries; i++) {
+    if (window.pywebview && window.pywebview.api) {
+      return window.pywebview.api;
+    }
+    await new Promise(r => setTimeout(r, delay));
+  }
+  return null;
+}
 
 function getApi() {
   if (window.pywebview && window.pywebview.api) {
     return window.pywebview.api;
   }
   return fallbackApi;
+}
+
+function updateLiveClock() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+
+  const hhEl = document.getElementById('clock-hh');
+  const mmEl = document.getElementById('clock-mm');
+  const ssEl = document.getElementById('clock-ss');
+  const datePill = document.getElementById('clock-date-pill');
+
+  if (hhEl) hhEl.innerText = hh;
+  if (mmEl) mmEl.innerText = mm;
+  if (ssEl) ssEl.innerText = `.${ss}`;
+
+  if (datePill) {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    datePill.innerText = `${days[now.getDay()]}, ${months[now.getMonth()]} ${String(now.getDate()).padStart(2, '0')}`;
+  }
+}
+
+function renderWeatherDisplay(w, customMode = null) {
+  if (!w) return;
+  lastWeatherData = w;
+
+  const iconEl = document.getElementById('top-weather-icon');
+  const tempEl = document.getElementById('top-weather-temp');
+  const cityEl = document.getElementById('top-weather-city');
+  const condEl = document.getElementById('top-weather-cond');
+  const blockEl = document.getElementById('top-weather-block');
+
+  const todayStr = (new Date()).toISOString().slice(0, 10);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+
+  let mode = customMode || weatherDisplayMode;
+  if (mode === 'auto') {
+    if (inspectedDateStr && inspectedDateStr === tomorrowStr) {
+      mode = 'tomorrow';
+    } else if (inspectedDateStr && inspectedDateStr !== todayStr && w.forecast_map && w.forecast_map[inspectedDateStr]) {
+      mode = 'custom_date';
+    } else {
+      mode = 'today';
+    }
+  }
+
+  if (mode === 'tomorrow' && w.tomorrow) {
+    const tm = w.tomorrow;
+    if (iconEl) iconEl.innerText = tm.icon || '🌤️';
+    if (tempEl) tempEl.innerText = `${tm.temp_max}°`;
+    if (cityEl) {
+      cityEl.innerText = 'TOMORROW';
+      cityEl.style.background = 'rgba(255, 159, 10, 0.2)';
+      cityEl.style.color = '#ff9f0a';
+      cityEl.style.borderColor = 'rgba(255, 159, 10, 0.4)';
+    }
+    const rainStr = tm.rain_chance > 0 ? ` • 🌧️ ${tm.rain_chance}%` : '';
+    if (condEl) condEl.innerText = `${tm.condition || 'Clear'}${rainStr}`;
+    if (blockEl) {
+      blockEl.title = `[TOMORROW ${tm.date} FORECAST] ${w.city || 'Hanoi'}: ${tm.condition || 'Mainly Clear'} (${tm.temp_max}° / ${tm.temp_min}°C)${rainStr} • Click to toggle Today/Tomorrow`;
+    }
+  } else if (mode === 'custom_date' && w.forecast_map && w.forecast_map[inspectedDateStr]) {
+    const fd = w.forecast_map[inspectedDateStr];
+    if (iconEl) iconEl.innerText = fd.icon || '☀️';
+    if (tempEl) tempEl.innerText = `${fd.temp_max}°`;
+    if (cityEl) {
+      cityEl.innerText = inspectedDateStr.slice(5);
+      cityEl.style.background = 'rgba(168, 85, 247, 0.2)';
+      cityEl.style.color = '#c084fc';
+      cityEl.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+    }
+    const rainStr = fd.rain_chance > 0 ? ` • 🌧️ ${fd.rain_chance}%` : '';
+    if (condEl) condEl.innerText = `${fd.condition || 'Forecast'}${rainStr}`;
+    if (blockEl) {
+      blockEl.title = `[${inspectedDateStr} FORECAST] ${w.city || 'Hanoi'}: ${fd.condition} (${fd.temp_max}° / ${fd.temp_min}°C)${rainStr}`;
+    }
+  } else {
+    if (iconEl) iconEl.innerText = w.icon || '☀️';
+    if (tempEl) tempEl.innerText = `${w.temperature !== undefined ? w.temperature : 28}°`;
+    if (cityEl) {
+      cityEl.innerText = (w.city || 'HANOI').toUpperCase();
+      cityEl.style.background = 'rgba(56, 189, 248, 0.15)';
+      cityEl.style.color = '#38bdf8';
+      cityEl.style.borderColor = 'rgba(56, 189, 248, 0.25)';
+    }
+    if (condEl) condEl.innerText = w.condition || 'Clear Sky';
+    if (blockEl) {
+      const rangeStr = (w.temp_max !== undefined && w.temp_min !== undefined) ? ` (H:${w.temp_max}° L:${w.temp_min}°)` : '';
+      const tmStr = w.tomorrow ? ` | Tomorrow: ${w.tomorrow.icon} ${w.tomorrow.temp_max}°/${w.tomorrow.temp_min}°` : '';
+      blockEl.title = `[TODAY] ${w.city || 'Hanoi'}: ${w.condition || 'Clear Sky'} ${w.temperature}°C${rangeStr} • Humidity: ${w.humidity || 50}%${tmStr} • Click to toggle Tomorrow`;
+    }
+  }
+}
+
+async function loadWeather() {
+  try {
+    const api = getApi();
+    if (api && api.get_weather) {
+      const w = await api.get_weather();
+      if (w) {
+        renderWeatherDisplay(w);
+      }
+    }
+  } catch (err) {
+    console.warn("Weather fetch error:", err);
+  }
 }
 
 function formatTime(totalSec) {
@@ -67,8 +203,14 @@ function formatTime(totalSec) {
 
 async function loadData() {
   try {
-    const api = getApi();
-    const data = await api.get_today();
+    let api = getApi();
+    if (!window.pywebview || !window.pywebview.api) {
+      const realApi = await ensureApiReady(25, 80);
+      if (realApi) api = realApi;
+    }
+    const data = inspectedDateStr 
+      ? (api.get_day_data ? await api.get_day_data(inspectedDateStr) : await api.get_today(inspectedDateStr))
+      : await api.get_today();
     renderToday(data);
   } catch (err) {
     console.error("Error loading today data:", err);
@@ -79,13 +221,35 @@ function renderToday(data) {
   if (!data) return;
 
   // 1. Calendar Widget
-  const now = new Date();
+  let now = new Date();
+  if (data.date_str) {
+    const parts = data.date_str.split('-').map(Number);
+    if (parts.length === 3) {
+      now = new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+  }
   const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   
   document.getElementById('cal-weekday').innerText = data.weekday || daysOfWeek[now.getDay()];
   document.getElementById('cal-month').innerText = months[now.getMonth()];
   document.getElementById('cal-day-num').innerText = String(now.getDate()).padStart(2, '0');
+
+  // Update Title and Today button
+  const todayIso = (new Date()).toISOString().slice(0, 10);
+  const isInspectingOther = inspectedDateStr && inspectedDateStr !== todayIso;
+  const titleText = document.getElementById("protocol-title-text");
+  const btnTodayReset = document.getElementById("btn-widget-today-reset");
+  if (titleText) {
+    if (isInspectingOther) {
+      titleText.innerText = `${(data.weekday || '').toUpperCase().slice(0, 3)} ${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]}`;
+    } else {
+      titleText.innerText = "TODAY'S PROTOCOLS";
+    }
+  }
+  if (btnTodayReset) {
+    btnTodayReset.classList.toggle("hidden", !isInspectingOther);
+  }
 
   const lvl = data.level_info || {};
   const stk = data.streak_info || {};
@@ -190,7 +354,7 @@ function getRingSvg(id) {
   if (tasksList.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; padding: 12px 5px; color: #64748b; font-size: 0.65rem;">
-        No protocols scheduled for today.
+        No protocols scheduled for this date.
       </div>
     `;
     return;
@@ -366,9 +530,9 @@ function renderTaskBadge(task) {
     `;
   }
 
-  // Default Fallback: Clean Target SVG (TUYỆT ĐỐI KHÔNG HIỆN EMOJI)
+  // Default Fallback: Clean Target SVG
   return `
-    <div class="task-badge badge-target" title="${escapeHtml(task.name || 'Mục tiêu')}">
+    <div class="task-badge badge-target" title="${escapeHtml(task.name || 'Protocol')}">
       <svg viewBox="0 0 24 24" width="${iconSize}" height="${iconSize}" fill="none" stroke="currentColor" stroke-width="2.2">
         <circle cx="12" cy="12" r="10"/>
         <circle cx="12" cy="12" r="6"/>
@@ -379,22 +543,40 @@ function renderTaskBadge(task) {
 }
 
 
+  const isFutureDate = Boolean(data.is_future || (data.date_str && data.date_str > todayIso));
+
   tasksList.forEach(task => {
     const row = document.createElement('div');
-    row.className = `task-row ${task.completed ? 'done' : ''}`;
+    const isDone = !isFutureDate && task.completed;
+    row.className = `task-row ${isDone ? 'done' : ''} ${isFutureDate ? 'future-disabled' : ''}`;
     
-    row.onclick = async (e) => {
-      e.stopPropagation();
-      const api = getApi();
-      const updated = await api.toggle_task(task.id);
-      renderToday(updated);
-    };
+    if (isFutureDate) {
+      row.title = "Upcoming protocol (cannot be checked off until this date arrives)";
+      row.onclick = (e) => {
+        e.stopPropagation();
+      };
+    } else {
+      row.onclick = async (e) => {
+        e.stopPropagation();
+        const api = getApi();
+        const updated = await api.toggle_task(task.id, inspectedDateStr || null);
+        renderToday(updated);
+      };
+    }
 
     let tagHtml = '';
-    if (task.type === 'retro') {
-      tagHtml = `<span class="tag-retro">Yesterday</span>`;
-    } else if (task.type === 'timer') {
-      tagHtml = `<span class="tag-timer">${task.target_minutes || 60}m</span>`;
+    if (isFutureDate) {
+      if (task.type === 'retro') {
+        tagHtml = `<span class="tag-upcoming">Retro</span>`;
+      } else if (task.type === 'timer') {
+        tagHtml = `<span class="tag-timer">${task.target_minutes || 60}m</span>`;
+      }
+    } else {
+      if (task.type === 'retro') {
+        tagHtml = `<span class="tag-retro">Yesterday</span>`;
+      } else if (task.type === 'timer') {
+        tagHtml = `<span class="tag-timer">${task.target_minutes || 60}m</span>`;
+      }
     }
 
     row.innerHTML = `
@@ -414,18 +596,29 @@ function renderTaskBadge(task) {
 // Render Dynamic Timer Tabs
 // -----------------------------------------------------------------------------
 function renderTimerTabs(timerTasks) {
+  const cardTimer = document.getElementById('card-focus-timer') || document.querySelector('.card-timer');
   const tabsContainer = document.getElementById('timer-tabs-container');
-  if (!tabsContainer) return;
 
-  if (timerTasks.length === 0) {
-    tabsContainer.innerHTML = `<button class="t-tab active" data-id="focus" data-mins="25"><span class="tab-indicator dot-cyan"></span><span>Pomodoro</span></button>`;
-    if (!timerRunning) {
-      currentTimerTaskId = 'focus';
-      currentTimerTargetMinutes = 25;
-      document.getElementById('timer-accum').innerText = `Target: 25m`;
+  if (!timerTasks || timerTasks.length === 0) {
+    // Ẩn Focus Timer khi ngày không có protocol dạng timer nào
+    if (cardTimer) {
+      cardTimer.style.display = 'none';
+    }
+    if (timerRunning) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      const playBtn = document.getElementById('btn-timer-play');
+      if (playBtn) playBtn.innerText = '▶';
     }
     return;
   }
+
+  // Hiển thị lại Focus Timer khi có protocol timer
+  if (cardTimer) {
+    cardTimer.style.display = '';
+  }
+
+  if (!tabsContainer) return;
 
   // Ensure active task exists
   const activeExists = timerTasks.some(t => t.id === currentTimerTaskId);
@@ -544,9 +737,16 @@ async function applyCompactMode(compact) {
   const expandedCard = document.getElementById('protocol-expanded-card');
   const toggleBtn = document.getElementById('btn-toggle-expand-top');
 
+  const cardTimer = document.getElementById('card-focus-timer') || document.querySelector('.card-timer');
+  const isTimerHidden = cardTimer && cardTimer.style.display === 'none';
+  const topBtns = document.getElementById('timer-top-btns');
+
   if (isCompactMode) {
     if (compactBar) compactBar.classList.remove('hidden');
     if (expandedCard) expandedCard.classList.add('hidden');
+    if (isTimerHidden && topBtns && compactBar && !compactBar.contains(topBtns)) {
+      compactBar.appendChild(topBtns);
+    }
     if (toggleBtn) {
       toggleBtn.innerText = '↕';
       toggleBtn.title = 'Expand checklist';
@@ -555,6 +755,14 @@ async function applyCompactMode(compact) {
   } else {
     if (compactBar) compactBar.classList.add('hidden');
     if (expandedCard) expandedCard.classList.remove('hidden');
+    if (isTimerHidden && topBtns) {
+      const protocolHeadRight = document.querySelector('.protocol-head-right');
+      const collapseBtn = document.getElementById('btn-collapse-protocol');
+      if (protocolHeadRight && !protocolHeadRight.contains(topBtns)) {
+        if (collapseBtn) protocolHeadRight.insertBefore(topBtns, collapseBtn);
+        else protocolHeadRight.appendChild(topBtns);
+      }
+    }
     if (toggleBtn) {
       toggleBtn.innerText = '▲';
       toggleBtn.title = 'Collapse checklist';
@@ -583,7 +791,10 @@ function escapeHtml(text) {
 // Document Ready Setup
 // -----------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  updateLiveClock();
+  setInterval(updateLiveClock, 1000);
   loadData();
+  loadWeather();
   updateTimerDisplay();
 
   // Khởi tạo chế độ Thu gọn / Mở rộng (Compact / Extend)
@@ -667,6 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('pywebviewready', () => {
     syncPinStatus();
     loadData();
+    loadWeather();
     const savedCompact = localStorage.getItem('winter_arc_compact') === 'true';
     applyCompactMode(savedCompact);
   });
@@ -777,6 +989,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Day Navigation on Desktop Widget (Chuyển ngày xem danh sách nhiệm vụ các ngày khác)
+  const btnPrevDay = document.getElementById("btn-widget-prev-day");
+  const btnNextDay = document.getElementById("btn-widget-next-day");
+  const btnTodayResetEl = document.getElementById("btn-widget-today-reset");
+
+  function changeWidgetDay(delta) {
+    let base = new Date();
+    if (inspectedDateStr) {
+      const p = inspectedDateStr.split('-').map(Number);
+      base = new Date(p[0], p[1] - 1, p[2]);
+    }
+    base.setDate(base.getDate() + delta);
+    const y = base.getFullYear();
+    const m = String(base.getMonth() + 1).padStart(2, '0');
+    const d = String(base.getDate()).padStart(2, '0');
+    const newStr = `${y}-${m}-${d}`;
+    const todayStr = (new Date()).toISOString().slice(0, 10);
+    inspectedDateStr = (newStr === todayStr) ? null : newStr;
+    loadData();
+    if (lastWeatherData) {
+      renderWeatherDisplay(lastWeatherData);
+    }
+  }
+
+  if (btnPrevDay) btnPrevDay.addEventListener("click", () => changeWidgetDay(-1));
+  if (btnNextDay) btnNextDay.addEventListener("click", () => changeWidgetDay(1));
+  if (btnTodayResetEl) btnTodayResetEl.addEventListener("click", () => {
+    inspectedDateStr = null;
+    loadData();
+    if (lastWeatherData) {
+      renderWeatherDisplay(lastWeatherData);
+    }
+  });
+
+  // Toggle Today / Tomorrow Forecast on Weather Block Click
+  const weatherBlock = document.getElementById('top-weather-block');
+  if (weatherBlock) {
+    weatherBlock.addEventListener('click', () => {
+      weatherDisplayMode = (weatherDisplayMode === 'tomorrow') ? 'today' : 'tomorrow';
+      if (lastWeatherData) {
+        renderWeatherDisplay(lastWeatherData, weatherDisplayMode);
+      }
+    });
+  }
+
   // Tự động đồng bộ mỗi 3.5 giây khi không chạy timer để cập nhật thay đổi từ manager.html
   setInterval(() => {
     if (!timerRunning) {
@@ -784,6 +1041,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 3500);
 
+  // Tự động cập nhật nhiệt độ thời tiết mỗi 10 phút
+  setInterval(loadWeather, 10 * 60 * 1000);
+
   // Tự động tải lại khi cửa sổ được focus
-  window.addEventListener('focus', loadData);
+  window.addEventListener('focus', () => {
+    loadData();
+    loadWeather();
+  });
 });
