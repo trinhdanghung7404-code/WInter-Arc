@@ -174,19 +174,75 @@
           <!-- Optional Telegram Notification Time -->
           <div class="form-field" id="field-remind-time">
             <div class="field-label-with-tag">
-              <label for="input-remind-time">Telegram Reminder Time (Optional):</label>
-              <span class="badge-optional">Optional</span>
+              <label>Telegram Reminder Time (Optional):</label>
+              <span class="badge-optional" id="remind-time-active-badge">Optional</span>
             </div>
             <div class="remind-time-control">
-              <input type="time" id="input-remind-time" class="input-time-picker" />
+              <!-- Custom Apple Glass Time Box -->
+              <div class="custom-time-glass-box" id="custom-time-glass-box">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" class="time-clock-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <input type="text" id="time-hour-input" class="glass-time-num" maxlength="2" placeholder="HH" inputmode="numeric" autocomplete="off" />
+                <span class="glass-time-colon">:</span>
+                <input type="text" id="time-minute-input" class="glass-time-num" maxlength="2" placeholder="MM" inputmode="numeric" autocomplete="off" />
+                <button type="button" id="btn-toggle-time-drawer" class="btn-time-drawer-toggle" title="Select time from grid">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+              </div>
+
+              <!-- Hidden input keeping 100% backend compatibility -->
+              <input type="hidden" id="input-remind-time" />
+
               <div class="time-presets-list">
-                <button type="button" class="btn-time-preset" data-time="07:00">07:00</button>
+                <button type="button" class="btn-time-preset" data-time="06:00">06:00</button>
+                <button type="button" class="btn-time-preset" data-time="07:30">07:30</button>
                 <button type="button" class="btn-time-preset" data-time="12:00">12:00</button>
                 <button type="button" class="btn-time-preset" data-time="18:00">18:00</button>
                 <button type="button" class="btn-time-preset" data-time="20:30">20:30</button>
-                <button type="button" class="btn-time-preset btn-clear-time" data-time="">Disable</button>
+                <button type="button" class="btn-time-preset btn-clear-time" data-time="">Off</button>
               </div>
             </div>
+
+            <!-- Sleek Glass Time Grid Drawer (Expanded on click) -->
+            <div class="glass-time-drawer hidden" id="glass-time-drawer">
+              <div class="time-drawer-col">
+                <span class="time-drawer-heading">HOURS</span>
+                <div class="time-chips-grid hours-grid">
+                  <button type="button" class="btn-hour-chip" data-h="05">05</button>
+                  <button type="button" class="btn-hour-chip" data-h="06">06</button>
+                  <button type="button" class="btn-hour-chip" data-h="07">07</button>
+                  <button type="button" class="btn-hour-chip" data-h="08">08</button>
+                  <button type="button" class="btn-hour-chip" data-h="09">09</button>
+                  <button type="button" class="btn-hour-chip" data-h="10">10</button>
+                  <button type="button" class="btn-hour-chip" data-h="11">11</button>
+                  <button type="button" class="btn-hour-chip" data-h="12">12</button>
+                  <button type="button" class="btn-hour-chip" data-h="13">13</button>
+                  <button type="button" class="btn-hour-chip" data-h="14">14</button>
+                  <button type="button" class="btn-hour-chip" data-h="15">15</button>
+                  <button type="button" class="btn-hour-chip" data-h="16">16</button>
+                  <button type="button" class="btn-hour-chip" data-h="17">17</button>
+                  <button type="button" class="btn-hour-chip" data-h="18">18</button>
+                  <button type="button" class="btn-hour-chip" data-h="19">19</button>
+                  <button type="button" class="btn-hour-chip" data-h="20">20</button>
+                  <button type="button" class="btn-hour-chip" data-h="21">21</button>
+                  <button type="button" class="btn-hour-chip" data-h="22">22</button>
+                  <button type="button" class="btn-hour-chip" data-h="23">23</button>
+                  <button type="button" class="btn-hour-chip" data-h="00">00</button>
+                </div>
+              </div>
+              <div class="time-drawer-col">
+                <span class="time-drawer-heading">MINUTES</span>
+                <div class="time-chips-grid minutes-grid">
+                  <button type="button" class="btn-min-chip" data-m="00">:00</button>
+                  <button type="button" class="btn-min-chip" data-m="15">:15</button>
+                  <button type="button" class="btn-min-chip" data-m="30">:30</button>
+                  <button type="button" class="btn-min-chip" data-m="45">:45</button>
+                </div>
+              </div>
+            </div>
+
             <p class="field-sub-hint">Winter Arc will automatically send an iPhone notification with a Check-in button at this time.</p>
           </div>
 

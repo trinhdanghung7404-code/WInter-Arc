@@ -103,8 +103,23 @@
       "specific_dates": [],
       "time_desc": "",
       "remind_time": "07:30",
+      "active": false,
+      "id": "task_1791356262",
+      "deleted_at": "2026-10-07"
+    },
+    {
+      "name": "Mua lưới nhỏ, dây rút, túi nano",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-10"
+      ],
+      "time_desc": "",
       "active": true,
-      "id": "task_1791356262"
+      "remind_time": "08:00",
+      "id": "mua_l__i_nh___d_7058"
     }
   ]
 }
