@@ -82,7 +82,7 @@ function formatProtocolSchedule(item) {
     return `${weeklyStr} + ${dateCount} specific date${dateCount > 1 ? 's' : ''}`;
   }
   
-  return "Repeat Everyday";
+  return formatScheduleDays(item.days);
 }
 
 // -----------------------------------------------------------------------------
@@ -103,19 +103,26 @@ async function loadProtocols() {
     const protocols = await api.get_protocols();
     allLoadedProtocols = protocols || [];
 
-    // Filter by selected calendar date (and daily recurring tasks)
+    // Filter by selected calendar date (and matching weekday recurring tasks)
     let displayProtocols = allLoadedProtocols;
     if (formSelectedDate) {
+      const [sy, sm, sd] = formSelectedDate.split("-").map(Number);
+      const selectedDt = new Date(sy, sm - 1, sd);
+      let selectedWeekday = selectedDt.getDay() - 1;
+      if (selectedWeekday === -1) selectedWeekday = 6; // 0=Mon .. 6=Sun
+
       displayProtocols = allLoadedProtocols.filter(p => {
         if (p.active === false) return false;
-        // Everyday
-        if (p.schedule_type === "weekly" || (p.days && p.days.length === 7)) return true;
+        // Weekly recurring
+        if (p.schedule_type === "weekly") {
+          return Array.isArray(p.days) && p.days.includes(selectedWeekday);
+        }
         // Specific dates
         if (p.schedule_type === "dates" && p.specific_dates) {
           return p.specific_dates.includes(formSelectedDate);
         }
         if (p.schedule_type === "both") {
-          return (p.specific_dates && p.specific_dates.includes(formSelectedDate)) || (p.days && p.days.length === 7);
+          return (p.specific_dates && p.specific_dates.includes(formSelectedDate)) || (Array.isArray(p.days) && p.days.includes(selectedWeekday));
         }
         return false;
       });
@@ -272,9 +279,7 @@ function initFormCalendarSheet() {
       formSelectedDate = formatYMD(today);
       formCalendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
       renderFormCalendarSheet();
-      if (currentListFilter === "selected") {
-        loadProtocols();
-      }
+      loadProtocols();
     });
   }
 
@@ -286,9 +291,7 @@ function initFormCalendarSheet() {
       formSelectedDate = formatYMD(tomorrow);
       formCalendarDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), 1);
       renderFormCalendarSheet();
-      if (currentListFilter === "selected") {
-        loadProtocols();
-      }
+      loadProtocols();
     });
   }
 
@@ -353,9 +356,7 @@ function renderFormCalendarSheet() {
       cell.addEventListener("click", () => {
         formSelectedDate = dateStr;
         renderFormCalendarSheet();
-        if (currentListFilter === "selected") {
-          loadProtocols();
-        }
+        loadProtocols();
       });
     }
 
