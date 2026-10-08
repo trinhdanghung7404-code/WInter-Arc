@@ -37,6 +37,8 @@ try:
     if sys.stderr is None or getattr(sys.stderr, 'encoding', None) != 'utf-8':
         sys.stderr = SafeStream(LOG_FILE)
 except Exception:
+    pass
+
 # ==============================================================================
 # Single Instance Lock (Ngăn chạy trùng 2 instance gây lỗi 409 Telegram Bot)
 # ==============================================================================
