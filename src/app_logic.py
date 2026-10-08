@@ -809,29 +809,155 @@ _weather_cache = {
     "location_key": None
 }
 
-WMO_WEATHER_MAP = {
-    0: {"name": "Clear Sky", "icon": "☀️"},
-    1: {"name": "Mainly Clear", "icon": "🌤️"},
-    2: {"name": "Partly Cloudy", "icon": "⛅"},
-    3: {"name": "Overcast", "icon": "☁️"},
-    45: {"name": "Fog", "icon": "🌫️"},
-    48: {"name": "Depositing Rime Fog", "icon": "🌫️"},
-    51: {"name": "Light Drizzle", "icon": "🌦️"},
-    53: {"name": "Moderate Drizzle", "icon": "🌦️"},
-    55: {"name": "Dense Drizzle", "icon": "🌧️"},
-    61: {"name": "Slight Rain", "icon": "🌧️"},
-    63: {"name": "Moderate Rain", "icon": "🌧️"},
-    65: {"name": "Heavy Rain", "icon": "🌧️"},
-    71: {"name": "Slight Snow", "icon": "🌨️"},
-    73: {"name": "Moderate Snow", "icon": "🌨️"},
-    75: {"name": "Heavy Snow", "icon": "❄️"},
-    80: {"name": "Slight Showers", "icon": "🌦️"},
-    81: {"name": "Moderate Showers", "icon": "🌧️"},
-    82: {"name": "Violent Showers", "icon": "⛈️"},
-    95: {"name": "Thunderstorm", "icon": "⛈️"},
-    96: {"name": "Thunderstorm & Hail", "icon": "⛈️"},
-    99: {"name": "Heavy Thunderstorm", "icon": "⛈️"}
-}
+def resolve_weather_meta(weather_code, is_day=1, hour=None):
+    """
+    Xác định icon và mô tả thời tiết tự động và sống động theo:
+    - Buổi trong ngày: Sáng sớm (Bình minh), Buổi sáng, Buổi chiều, Chiều tà (Hoàng hôn), Ban đêm
+    - Hiện tượng thời tiết: Nắng, Ít mây, Nhiều mây, U ám, Sương mù, Mưa phùn, Mưa rào, Mưa dông sét, Tuyết...
+    """
+    if hour is None:
+        hour = datetime.now().hour
+
+    is_night = (is_day == 0) or (hour >= 19 or hour < 5)
+    is_early_morning = (not is_night) and (5 <= hour < 7)
+    is_morning = (not is_night) and (7 <= hour < 12)
+    is_afternoon = (not is_night) and (12 <= hour < 17)
+    is_sunset = (not is_night) and (17 <= hour < 19)
+
+    # 0: Clear sky
+    if weather_code == 0:
+        if is_night:
+            return {"name": "Đêm quang", "icon": "🌙", "period": "night"}
+        elif is_early_morning:
+            return {"name": "Bình minh", "icon": "🌅", "period": "sunrise"}
+        elif is_sunset:
+            return {"name": "Hoàng hôn", "icon": "🌇", "period": "sunset"}
+        elif is_afternoon:
+            return {"name": "Nắng chiều", "icon": "☀️", "period": "afternoon"}
+        else:
+            return {"name": "Nắng sáng", "icon": "☀️", "period": "morning"}
+
+    # 1: Mainly clear
+    elif weather_code == 1:
+        if is_night:
+            return {"name": "Đêm ít mây", "icon": "🌙", "period": "night"}
+        elif is_early_morning:
+            return {"name": "Sáng ít mây", "icon": "🌤️", "period": "sunrise"}
+        elif is_sunset:
+            return {"name": "Hoàng hôn", "icon": "🌇", "period": "sunset"}
+        elif is_afternoon:
+            return {"name": "Chiều ít mây", "icon": "🌤️", "period": "afternoon"}
+        else:
+            return {"name": "Sáng ít mây", "icon": "🌤️", "period": "morning"}
+
+    # 2: Partly cloudy
+    elif weather_code == 2:
+        if is_night:
+            return {"name": "Đêm có mây", "icon": "☁️", "period": "night"}
+        elif is_afternoon:
+            return {"name": "Chiều có mây", "icon": "⛅", "period": "afternoon"}
+        elif is_sunset:
+            return {"name": "Chiều tà mây", "icon": "🌥️", "period": "sunset"}
+        else:
+            return {"name": "Sáng có mây", "icon": "⛅", "period": "morning"}
+
+    # 3: Overcast
+    elif weather_code == 3:
+        if is_night:
+            return {"name": "Đêm âm u", "icon": "☁️", "period": "night"}
+        else:
+            return {"name": "Nhiều mây", "icon": "☁️", "period": "day"}
+
+    # 45, 48: Fog
+    elif weather_code in (45, 48):
+        if is_night:
+            return {"name": "Sương mù đêm", "icon": "🌫️", "period": "night"}
+        elif is_early_morning or is_morning:
+            return {"name": "Sương mù sớm", "icon": "🌫️", "period": "morning"}
+        else:
+            return {"name": "Có sương mù", "icon": "🌫️", "period": "day"}
+
+    # 51, 53, 55: Drizzle
+    elif weather_code in (51, 53, 55):
+        if is_night:
+            return {"name": "Mưa phùn đêm", "icon": "🌧️", "period": "night"}
+        else:
+            return {"name": "Mưa phùn", "icon": "🌦️", "period": "day"}
+
+    # 61: Slight rain
+    elif weather_code == 61:
+        if is_night:
+            return {"name": "Mưa rào nhẹ đêm", "icon": "🌧️", "period": "night"}
+        elif is_afternoon:
+            return {"name": "Mưa rào chiều", "icon": "🌦️", "period": "afternoon"}
+        else:
+            return {"name": "Mưa rào sáng", "icon": "🌦️", "period": "morning"}
+
+    # 63, 65: Moderate / Heavy Rain
+    elif weather_code in (63, 65):
+        if is_night:
+            return {"name": "Đêm có mưa to", "icon": "🌧️", "period": "night"}
+        elif is_afternoon:
+            return {"name": "Mưa to chiều", "icon": "🌧️", "period": "afternoon"}
+        else:
+            return {"name": "Mưa to sáng", "icon": "🌧️", "period": "morning"}
+
+    # 71, 73, 75, 77: Snow
+    elif weather_code in (71, 73, 75, 77, 85, 86):
+        return {"name": "Có tuyết rơi", "icon": "🌨️", "period": "day"}
+
+    # 80: Slight showers
+    elif weather_code == 80:
+        if is_night:
+            return {"name": "Mưa rào đêm", "icon": "🌧️", "period": "night"}
+        elif is_afternoon:
+            return {"name": "Mưa rào chiều", "icon": "🌦️", "period": "afternoon"}
+        else:
+            return {"name": "Mưa rào sáng", "icon": "🌦️", "period": "morning"}
+
+    # 81, 82: Moderate / Violent showers
+    elif weather_code in (81, 82):
+        if is_night:
+            return {"name": "Mưa lớn đêm", "icon": "🌧️", "period": "night"}
+        elif is_afternoon:
+            return {"name": "Mưa lớn chiều", "icon": "🌧️", "period": "afternoon"}
+        else:
+            return {"name": "Mưa lớn sáng", "icon": "🌧️", "period": "morning"}
+
+    # 95, 96, 99: Thunderstorm
+    elif weather_code in (95, 96, 99):
+        if is_night:
+            return {"name": "Dông sét đêm", "icon": "⛈️", "period": "night"}
+        elif is_afternoon:
+            return {"name": "Dông sét chiều", "icon": "⛈️", "period": "afternoon"}
+        else:
+            return {"name": "Dông sét sáng", "icon": "⛈️", "period": "morning"}
+
+    return {"name": "Trời quang", "icon": "☀️" if not is_night else "🌙", "period": "day" if not is_night else "night"}
+
+
+def resolve_daily_forecast_meta(weather_code):
+    """Mô tả dự báo tổng quát cho các ngày tiếp theo trong lịch"""
+    if weather_code == 0:
+        return {"name": "Nắng ráo", "icon": "☀️"}
+    elif weather_code == 1:
+        return {"name": "Trời ít mây", "icon": "🌤️"}
+    elif weather_code == 2:
+        return {"name": "Nắng xen mây", "icon": "⛅"}
+    elif weather_code == 3:
+        return {"name": "Nhiều mây", "icon": "☁️"}
+    elif weather_code in (45, 48):
+        return {"name": "Có sương mù", "icon": "🌫️"}
+    elif weather_code in (51, 53, 55):
+        return {"name": "Mưa phùn", "icon": "🌦️"}
+    elif weather_code in (61, 63, 65, 80, 81, 82):
+        return {"name": "Có mưa rào", "icon": "🌧️"}
+    elif weather_code in (95, 96, 99):
+        return {"name": "Có dông sét", "icon": "⛈️"}
+    elif weather_code in (71, 73, 75, 77, 85, 86):
+        return {"name": "Có tuyết", "icon": "❄️"}
+    return {"name": "Trời đẹp", "icon": "🌤️"}
+
 
 def get_weather_data(force_refresh=False):
     """
@@ -854,7 +980,7 @@ def get_weather_data(force_refresh=False):
         return _weather_cache["data"]
 
     try:
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto"
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto"
         req = urllib.request.Request(url, headers={"User-Agent": "WinterArc/1.0"})
         with urllib.request.urlopen(req, timeout=4) as resp:
             data = json.loads(resp.read().decode("utf-8"))
@@ -863,7 +989,8 @@ def get_weather_data(force_refresh=False):
             
             temp = round(current.get("temperature_2m", 25))
             code = current.get("weather_code", 0)
-            meta = WMO_WEATHER_MAP.get(code, {"name": "Clear Sky", "icon": "☀️"})
+            is_day = current.get("is_day", 1)
+            meta = resolve_weather_meta(code, is_day=is_day)
             
             daily_times = daily.get("time", [])
             daily_codes = daily.get("weather_code", [])
@@ -877,7 +1004,7 @@ def get_weather_data(force_refresh=False):
             # Tomorrow Forecast
             tomorrow_date = daily_times[1] if len(daily_times) > 1 else (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
             tomorrow_code = daily_codes[1] if len(daily_codes) > 1 else code
-            tomorrow_meta = WMO_WEATHER_MAP.get(tomorrow_code, {"name": "Clear Sky", "icon": "☀️"})
+            tomorrow_meta = resolve_daily_forecast_meta(tomorrow_code)
             tomorrow_max = round(daily_maxs[1]) if len(daily_maxs) > 1 else temp_max
             tomorrow_min = round(daily_mins[1]) if len(daily_mins) > 1 else temp_min
             tomorrow_rain = round(daily_rains[1]) if len(daily_rains) > 1 else 0
@@ -886,7 +1013,7 @@ def get_weather_data(force_refresh=False):
             forecast_map = {}
             for i, d_str in enumerate(daily_times):
                 d_code = daily_codes[i] if i < len(daily_codes) else 0
-                d_meta = WMO_WEATHER_MAP.get(d_code, {"name": "Clear Sky", "icon": "☀️"})
+                d_meta = resolve_daily_forecast_meta(d_code)
                 d_max = round(daily_maxs[i]) if i < len(daily_maxs) else temp
                 d_min = round(daily_mins[i]) if i < len(daily_mins) else temp
                 d_rain = round(daily_rains[i]) if i < len(daily_rains) else 0
@@ -918,6 +1045,8 @@ def get_weather_data(force_refresh=False):
                 "temperature": temp,
                 "condition": meta["name"],
                 "icon": meta["icon"],
+                "period": meta.get("period", "day"),
+                "is_day": is_day,
                 "humidity": current.get("relative_humidity_2m", 50),
                 "wind_speed": current.get("wind_speed_10m", 0),
                 "temp_max": temp_max,
@@ -940,17 +1069,21 @@ def get_weather_data(force_refresh=False):
             "temp_max": 29,
             "temp_min": 21,
             "avg_temp": 25,
-            "condition": "Mainly Clear",
+            "condition": "Trời ít mây",
             "icon": "🌤️",
             "rain_chance": 0,
             "weather_code": 1
         }
+        hour_now = datetime.now().hour
+        meta_fallback = resolve_weather_meta(0, is_day=1 if 6 <= hour_now < 18 else 0, hour=hour_now)
         return {
             "success": False,
             "city": city,
             "temperature": 26,
-            "condition": "Clear Sky",
-            "icon": "☀️",
+            "condition": meta_fallback["name"],
+            "icon": meta_fallback["icon"],
+            "period": meta_fallback["period"],
+            "is_day": 1 if 6 <= hour_now < 18 else 0,
             "humidity": 50,
             "wind_speed": 10,
             "temp_max": 28,

@@ -210,11 +210,11 @@ body.ios-body {
 }
 
 .weather-condition-sub {
-  font-size: 0.56rem;
+  font-size: 0.58rem;
   font-weight: 500;
   color: var(--text-dim);
   white-space: nowrap;
-  max-width: 80px;
+  max-width: 95px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

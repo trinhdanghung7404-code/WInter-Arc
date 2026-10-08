@@ -140,15 +140,15 @@ function renderWeatherDisplay(w, customMode = null) {
     if (iconEl) iconEl.innerText = tm.icon || '🌤️';
     if (tempEl) tempEl.innerText = `${tm.temp_max}°`;
     if (cityEl) {
-      cityEl.innerText = 'TOMORROW';
+      cityEl.innerText = 'NGÀY MAI';
       cityEl.style.background = 'rgba(255, 159, 10, 0.2)';
       cityEl.style.color = '#ff9f0a';
       cityEl.style.borderColor = 'rgba(255, 159, 10, 0.4)';
     }
     const rainStr = tm.rain_chance > 0 ? ` • 🌧️ ${tm.rain_chance}%` : '';
-    if (condEl) condEl.innerText = `${tm.condition || 'Clear'}${rainStr}`;
+    if (condEl) condEl.innerText = `${tm.condition || 'Nắng ráo'}${rainStr}`;
     if (blockEl) {
-      blockEl.title = `[TOMORROW ${tm.date} FORECAST] ${w.city || 'Hanoi'}: ${tm.condition || 'Mainly Clear'} (${tm.temp_max}° / ${tm.temp_min}°C)${rainStr} • Click to toggle Today/Tomorrow`;
+      blockEl.title = `[DỰ BÁO NGÀY MAI ${tm.date}] ${w.city || 'Hà Nội'}: ${tm.condition || 'Trời đẹp'} (${tm.temp_max}° / ${tm.temp_min}°C)${rainStr} • Bấm để chuyển về Hôm nay`;
     }
   } else if (mode === 'custom_date' && w.forecast_map && w.forecast_map[inspectedDateStr]) {
     const fd = w.forecast_map[inspectedDateStr];
@@ -161,9 +161,9 @@ function renderWeatherDisplay(w, customMode = null) {
       cityEl.style.borderColor = 'rgba(168, 85, 247, 0.4)';
     }
     const rainStr = fd.rain_chance > 0 ? ` • 🌧️ ${fd.rain_chance}%` : '';
-    if (condEl) condEl.innerText = `${fd.condition || 'Forecast'}${rainStr}`;
+    if (condEl) condEl.innerText = `${fd.condition || 'Dự báo'}${rainStr}`;
     if (blockEl) {
-      blockEl.title = `[${inspectedDateStr} FORECAST] ${w.city || 'Hanoi'}: ${fd.condition} (${fd.temp_max}° / ${fd.temp_min}°C)${rainStr}`;
+      blockEl.title = `[DỰ BÁO ${inspectedDateStr}] ${w.city || 'Hà Nội'}: ${fd.condition} (${fd.temp_max}° / ${fd.temp_min}°C)${rainStr}`;
     }
   } else {
     if (iconEl) iconEl.innerText = w.icon || '☀️';
@@ -174,11 +174,11 @@ function renderWeatherDisplay(w, customMode = null) {
       cityEl.style.color = '#38bdf8';
       cityEl.style.borderColor = 'rgba(56, 189, 248, 0.25)';
     }
-    if (condEl) condEl.innerText = w.condition || 'Clear Sky';
+    if (condEl) condEl.innerText = w.condition || 'Trời quang';
     if (blockEl) {
-      const rangeStr = (w.temp_max !== undefined && w.temp_min !== undefined) ? ` (H:${w.temp_max}° L:${w.temp_min}°)` : '';
-      const tmStr = w.tomorrow ? ` | Tomorrow: ${w.tomorrow.icon} ${w.tomorrow.temp_max}°/${w.tomorrow.temp_min}°` : '';
-      blockEl.title = `[TODAY] ${w.city || 'Hanoi'}: ${w.condition || 'Clear Sky'} ${w.temperature}°C${rangeStr} • Humidity: ${w.humidity || 50}%${tmStr} • Click to toggle Tomorrow`;
+      const rangeStr = (w.temp_max !== undefined && w.temp_min !== undefined) ? ` (Cao: ${w.temp_max}° / Thấp: ${w.temp_min}°)` : '';
+      const tmStr = w.tomorrow ? ` | Ngày mai: ${w.tomorrow.icon} ${w.tomorrow.temp_max}°/${w.tomorrow.temp_min}°` : '';
+      blockEl.title = `[HÔM NAY] ${w.city || 'Hà Nội'}: ${w.condition || 'Trời quang'} ${w.temperature}°C${rangeStr} • Độ ẩm: ${w.humidity || 50}%${tmStr} • Bấm để xem ngày mai`;
     }
   }
 }
