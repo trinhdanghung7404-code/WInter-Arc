@@ -328,10 +328,11 @@ def main():
             cloud_sync.sync_down()
         except Exception:
             pass
-
-    print("[SYSTEM] Starting Telegram Bot & Scheduler engine...")
-    bot_instance.start_polling()
-    scheduler_instance.start()
+        print(f"[SYSTEM] Cloud Server connected ({cloud_url}). Bot & Scheduler are handled 24/7 on Render Cloud!")
+    else:
+        print("[SYSTEM] Starting Telegram Bot & Scheduler engine (Local Desktop)...")
+        bot_instance.start_polling()
+        scheduler_instance.start()
 
 
     screen_w, screen_h = get_screen_bounds()

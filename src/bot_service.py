@@ -235,9 +235,13 @@ class WinterArcBot:
 
     def restart(self):
         self.stop_polling()
-        cfg = app_logic.load_config()
-        if not (cfg.get("cloud_url") or "").strip():
+        is_cloud = os.environ.get("IS_CLOUD_SERVER") == "1" or bool(os.environ.get("RENDER"))
+        if is_cloud:
             self.start_polling()
+        else:
+            cfg = app_logic.load_config()
+            if not (cfg.get("cloud_url") or "").strip():
+                self.start_polling()
 
     def _register_commands_menu(self):
         """Đăng ký danh sách lệnh trực tiếp lên menu gợi ý của Telegram"""

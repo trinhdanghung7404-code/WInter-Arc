@@ -1,6 +1,9 @@
 import os
 import time
 
+# Đánh dấu đây là Cloud Server (Render / Linux) để Bot luôn chạy polling 24/7
+os.environ["IS_CLOUD_SERVER"] = "1"
+
 # Ép múi giờ sang Giờ Việt Nam (Asia/Ho_Chi_Minh - GMT+7) trên server Render/Linux
 os.environ["TZ"] = "Asia/Ho_Chi_Minh"
 if hasattr(time, "tzset"):
