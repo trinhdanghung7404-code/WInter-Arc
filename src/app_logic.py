@@ -87,6 +87,10 @@ def save_protocols(protocols_list):
     with open(PROTOCOLS_PATH, "w", encoding="utf-8") as f:
         json.dump({"protocols": protocols_list}, f, ensure_ascii=False, indent=2)
     try:
+        recalculate_and_save_streaks()
+    except Exception:
+        pass
+    try:
         from . import cloud_sync
         cloud_sync.sync_protocols_up()
     except Exception:
@@ -205,6 +209,14 @@ def get_task_definitions_for_date(curr_date):
         is_active = p.get("active", True)
         deleted_at = p.get("deleted_at")
         effective_from = p.get("effective_from")
+        created_at = p.get("created_at")
+
+        # BẢO VỆ LỊCH SỬ QUÁ KHỨ: Nếu protocol bắt đầu từ ngày effective_from (hoặc created_at),
+        # tuyệt đối KHÔNG bao giờ cho xuất hiện ở bất kỳ ngày nào trước ngày đó!
+        if effective_from and curr_date_str < effective_from:
+            continue
+        if created_at and curr_date_str < created_at:
+            continue
 
         if is_past_day:
             # Ngày trong quá khứ: protocol hợp lệ nếu ngày đó xảy ra TRƯỚC thời điểm xóa
@@ -216,9 +228,6 @@ def get_task_definitions_for_date(curr_date):
         else:
             # Ngày hôm nay hoặc tương lai: chỉ lấy protocol đang active và chưa xóa
             if not is_active or deleted_at:
-                continue
-            # Nếu ngày đang xét chưa tới ngày có hiệu lực -> bỏ qua
-            if effective_from and curr_date_str < effective_from:
                 continue
 
         schedule_type = p.get("schedule_type", "")
@@ -455,6 +464,17 @@ def add_focus_time(task_id, minutes):
     save_storage(storage)
     return get_today_data()
 
+def is_task_done_in_record(tasks_dict, task_id):
+    if not tasks_dict:
+        return False
+    if tasks_dict.get(task_id, False):
+        return True
+    if task_id in ("nonut", "no_nut"):
+        for k, v in tasks_dict.items():
+            if v and ("nonut" in k.lower() or "no_nut" in k.lower() or "no nut" in k.lower()):
+                return True
+    return False
+
 def calculate_streak(task_id, history):
     streak = 0
     curr = date.today()
@@ -463,8 +483,8 @@ def calculate_streak(task_id, history):
     today_str = curr.strftime("%Y-%m-%d")
     yesterday_str = (curr - timedelta(days=1)).strftime("%Y-%m-%d")
     
-    today_done = history.get(today_str, {}).get("tasks", {}).get(task_id, False)
-    yesterday_done = history.get(yesterday_str, {}).get("tasks", {}).get(task_id, False)
+    today_done = is_task_done_in_record(history.get(today_str, {}).get("tasks", {}), task_id)
+    yesterday_done = is_task_done_in_record(history.get(yesterday_str, {}).get("tasks", {}), task_id)
     
     if today_done:
         streak += 1
@@ -477,13 +497,29 @@ def calculate_streak(task_id, history):
 
     while True:
         d_str = curr.strftime("%Y-%m-%d")
-        if history.get(d_str, {}).get("tasks", {}).get(task_id, False):
+        if is_task_done_in_record(history.get(d_str, {}).get("tasks", {}), task_id):
             streak += 1
             curr -= timedelta(days=1)
         else:
             break
             
     return streak
+
+def recalculate_and_save_streaks():
+    """Tự động tính toán lại và lưu chuỗi Streak (Winter Arc & No Nut) vào storage.json"""
+    try:
+        storage = load_storage()
+        history = storage.setdefault("history", {})
+        nonut_streak = calculate_streak("nonut", history)
+        streak_info = calculate_winter_arc_streak(history)
+        winter_arc_streak = streak_info.get("streak", 0)
+        storage.setdefault("streaks", {})["nonut"] = nonut_streak
+        storage["streaks"]["winter_arc"] = winter_arc_streak
+        save_storage(storage)
+        return storage["streaks"]
+    except Exception as e:
+        print(f"[Recalculate Streaks Error]: {e}")
+        return {}
 
 def get_day_performance(d, history):
     """
