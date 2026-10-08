@@ -37,7 +37,25 @@ try:
     if sys.stderr is None or getattr(sys.stderr, 'encoding', None) != 'utf-8':
         sys.stderr = SafeStream(LOG_FILE)
 except Exception:
-    pass
+# ==============================================================================
+# Single Instance Lock (Ngăn chạy trùng 2 instance gây lỗi 409 Telegram Bot)
+# ==============================================================================
+mutex_handle = None
+def ensure_single_instance():
+    global mutex_handle
+    try:
+        kernel32 = ctypes.windll.kernel32
+        mutex_name = "Global\\WinterArcDesktopApp_Mutex_Lock"
+        mutex_handle = kernel32.CreateMutexW(None, False, mutex_name)
+        last_error = kernel32.GetLastError()
+        ERROR_ALREADY_EXISTS = 183
+        if last_error == ERROR_ALREADY_EXISTS:
+            print("[SYSTEM] An instance of Winter Arc is already running. Exiting duplicate process...")
+            sys.exit(0)
+    except Exception as e:
+        print(f"[SYSTEM] Mutex check error: {e}")
+
+ensure_single_instance()
 
 import webview
 from src import app_logic

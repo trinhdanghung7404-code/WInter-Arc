@@ -4,6 +4,32 @@
     "winter_arc": 1
   },
   "history": {
+    "2026-10-07": {
+      "focus_times": {
+        "listening_e_6102": 5
+      },
+      "notes": "",
+      "tasks": {
+        "50_push_ups_5943": true,
+        "done_task_proj_6046": true,
+        "no_nut_1692": true,
+        "listening_e_6102": true
+      }
+    },
+    "2026-10-06": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "no_nut_1692": true
+      }
+    },
+    "2026-09-27": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "nonut": false
+      }
+    },
     "2026-09-28": {
       "english_minutes": 0,
       "notes": "",
@@ -13,13 +39,6 @@
         "no_nut_3297": true,
         "pushups": false,
         "workout": false
-      }
-    },
-    "2026-09-27": {
-      "focus_times": {},
-      "notes": "",
-      "tasks": {
-        "nonut": false
       }
     },
     "2026-09-29": {
@@ -59,24 +78,6 @@
       "focus_times": {},
       "notes": "",
       "tasks": {}
-    },
-    "2026-10-06": {
-      "focus_times": {},
-      "notes": "",
-      "tasks": {
-        "no_nut_1692": true
-      }
-    },
-    "2026-10-07": {
-      "focus_times": {
-        "listening_e_6102": 5
-      },
-      "notes": "",
-      "tasks": {
-        "50_push_ups_5943": true,
-        "done_task_proj_6046": true,
-        "no_nut_1692": false
-      }
     },
     "2026-10-08": {
       "focus_times": {},
@@ -118,9 +119,5 @@
       "notes": "",
       "tasks": {}
     }
-  },
-  "focus_today": {
-    "english_seconds": 0,
-    "project_seconds": 0
   }
 }

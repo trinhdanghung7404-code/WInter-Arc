@@ -208,9 +208,13 @@ class WinterArcBot:
             
             def poll_worker():
                 print("[BOT] Telegram Bot started polling...")
+                try:
+                    self.bot.remove_webhook()
+                except Exception:
+                    pass
                 while self.is_running:
                     try:
-                        self.bot.infinity_polling(timeout=10, long_polling_timeout=5)
+                        self.bot.infinity_polling(timeout=10, long_polling_timeout=5, restart_on_change=False)
                     except Exception as e:
                         print(f"[BOT Polling Error]: {e}")
                         import time
