@@ -254,6 +254,7 @@ class WinterArcBot:
                 types.BotCommand("remind", "Quick reminder (e.g. /remind 07:30 Task)"),
                 types.BotCommand("note", "Save memo for today (e.g. /note Mua sữa)"),
                 types.BotCommand("notes", "View today's saved notes"),
+                types.BotCommand("settings", "View system configuration & schedules"),
                 types.BotCommand("status", "Progress & Streak summary"),
                 types.BotCommand("weekly", "Weekly performance review"),
                 types.BotCommand("monthly", "30-day phase report"),
@@ -427,7 +428,30 @@ class WinterArcBot:
             except Exception:
                 pass
 
-            self.bot.send_message(message.chat.id, f"🗑️ Deleted protocol: <b>{matched['name']}</b>")
+        @self.bot.message_handler(commands=['settings', 'config', 'caidat'])
+        def handle_settings(message):
+            cfg = app_logic.load_config()
+            sch = cfg.get("schedule", {})
+            ai_cfg = cfg.get("ai", {})
+            w_cfg = cfg.get("weather", {})
+            
+            settings_text = (
+                f"⚙️ <b>WINTER ARC — BẢNG CÀI ĐẶT HỆ THỐNG:</b>\n\n"
+                f"👤 <b>Chiến binh:</b> {cfg.get('user_name', 'Winter Arc Warrior')}\n"
+                f"📅 <b>Hành trình:</b> {cfg.get('start_date')} ➔ {cfg.get('end_date')} ({cfg.get('total_days', 90)} ngày)\n"
+                f"📍 <b>Vị trí thời tiết:</b> {w_cfg.get('city', 'Hanoi')}\n\n"
+                f"⏰ <b>Lịch thông báo tự động:</b>\n"
+                f"• Đánh thức sáng: <code>{sch.get('morning_briefing', '07:00')}</code>\n"
+                f"• Nhắc nhở chiều: <code>{sch.get('evening_briefing', '18:00')}</code>\n"
+                f"• Tập luyện / Gym: <code>{sch.get('workout_reminder', '20:25')}</code>\n"
+                f"• Tổng kết đêm: <code>{sch.get('night_review', '22:30')}</code>\n\n"
+                f"🤖 <b>AI Discipline Coach:</b>\n"
+                f"• Persona: <b>{ai_cfg.get('persona', 'custom')}</b>\n"
+                f"• Tự động gửi thông điệp AI: <b>{'Bật ✅' if ai_cfg.get('use_ai_daily_briefings') else 'Tắt ❌'}</b>\n"
+                f"• Custom Prompt: <i>{ai_cfg.get('custom_prompt', 'Mặc định')}</i>\n\n"
+                f"☁️ <b>Cloud Server:</b> <code>{cfg.get('cloud_url') or 'Chạy cục bộ Desktop'}</code>"
+            )
+            self.bot.send_message(message.chat.id, settings_text)
 
         @self.bot.message_handler(commands=['status'])
         def handle_status(message):
