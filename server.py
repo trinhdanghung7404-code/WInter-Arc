@@ -54,11 +54,9 @@ def test_broadcast():
 def upload_screentime():
     """
     Endpoint nhận ảnh chụp màn hình Screen Time từ Apple Shortcuts (iPhone):
-    - Đọc ảnh qua Gemini Vision AI
-    - Lưu thời gian sử dụng vào storage hôm nay
-    - Bắn tin nhắn phân tích & đánh giá kỷ luật về Telegram
+    - Trả về 200 ngay lập tức cho iPhone (chống timeout 100%)
+    - Luồng ngầm phân tích qua Gemini Vision AI và bắn kết quả về Telegram
     """
-    from src import ai_service
     image_bytes = None
     mime_type = "image/jpeg"
 
@@ -77,28 +75,34 @@ def upload_screentime():
     if not image_bytes:
         return jsonify({"error": "Không tìm thấy file ảnh"}), 400
 
-    analysis = ai_service.analyze_screentime_image(image_bytes, mime_type=mime_type)
-    
-    # Lưu vào storage
-    today_str = date.today().strftime("%Y-%m-%d")
-    storage = app_logic.load_storage()
-    day_rec = storage.setdefault("history", {}).setdefault(today_str, {})
-    day_rec["screentime"] = {
-        "total_time_str": analysis.get("total_time_str", ""),
-        "total_minutes": analysis.get("total_minutes", 0),
-        "top_apps": analysis.get("top_apps", []),
-        "updated_at": datetime.now().strftime("%H:%M:%S")
-    }
-    app_logic.save_storage(storage)
+    def process_screentime_worker(img_b, m_type):
+        try:
+            from src import ai_service
+            analysis = ai_service.analyze_screentime_image(img_b, mime_type=m_type)
+            
+            # Lưu vào storage
+            today_str = date.today().strftime("%Y-%m-%d")
+            storage = app_logic.load_storage()
+            day_rec = storage.setdefault("history", {}).setdefault(today_str, {})
+            day_rec["screentime"] = {
+                "total_time_str": analysis.get("total_time_str", ""),
+                "total_minutes": analysis.get("total_minutes", 0),
+                "top_apps": analysis.get("top_apps", []),
+                "updated_at": datetime.now().strftime("%H:%M:%S")
+            }
+            app_logic.save_storage(storage)
 
-    # Gửi tin nhắn về Telegram
-    critique_msg = analysis.get("critique", "📱 Đã nhận ảnh Screen Time!")
-    bot_instance.send_broadcast(critique_msg, with_buttons=True)
+            # Gửi tin nhắn về Telegram
+            critique_msg = analysis.get("critique", "📱 Đã nhận ảnh Screen Time!")
+            bot_instance.send_broadcast(critique_msg, with_buttons=True)
+        except Exception as ex:
+            print(f"[Async ScreenTime Error]: {ex}")
+
+    threading.Thread(target=process_screentime_worker, args=(image_bytes, mime_type), daemon=True).start()
 
     return jsonify({
         "success": True,
-        "message": "Đã phân tích Screen Time và gửi về Telegram!",
-        "analysis": analysis
+        "message": "Đã nhận ảnh Screen Time! AI đang phân tích và sẽ gửi kết quả về Telegram sau vài giây."
     }), 200
 
 # ==============================================================================
