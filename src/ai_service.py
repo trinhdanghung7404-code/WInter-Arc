@@ -95,7 +95,7 @@ def call_gemini(api_key, prompt):
 
 def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
     import base64
-    models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
+    models = ["gemini-flash-latest", "gemini-3-flash-preview", "gemini-3.1-flash-lite-preview"]
     last_err = None
     headers = {"Content-Type": "application/json", "User-Agent": "WinterArc/1.0"}
     persona = get_active_persona()
@@ -126,7 +126,7 @@ def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         try:
             req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=25) as resp:
+            with urllib.request.urlopen(req, timeout=35) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 candidates = data.get("candidates", [])
                 if candidates:
