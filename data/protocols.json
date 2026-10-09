@@ -169,6 +169,35 @@
       "active": true,
       "remind_time": "20:30",
       "id": "meeting_fp_2030"
+    },
+    {
+      "name": "Listening E",
+      "icon": "",
+      "type": "timer",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-10"
+      ],
+      "time_desc": "",
+      "active": true,
+      "remind_time": "14:00",
+      "target_minutes": 60,
+      "id": "listening_e_0238"
+    },
+    {
+      "name": "Meeting FP",
+      "icon": "",
+      "type": "todo",
+      "schedule_type": "dates",
+      "days": [],
+      "specific_dates": [
+        "2026-10-10"
+      ],
+      "time_desc": "Discord",
+      "active": true,
+      "remind_time": "20:30",
+      "id": "meeting_fp_0270"
     }
   ]
 }
