@@ -526,15 +526,28 @@ def get_day_performance(d, history):
     Tính tỉ lệ hoàn thành nhiệm vụ của một ngày cụ thể:
     - rate: % hoàn thành (0 - 100)
     - status: 'fire' (100%), 'grey' (50% - 99%), 'lost' (< 50%)
+    - Hỗ trợ chính xác các task dạng retro (đánh giá ngày hôm qua) và task aliases.
     """
     d_str = d.strftime("%Y-%m-%d")
+    yesterday_str = (d - timedelta(days=1)).strftime("%Y-%m-%d")
     rec = history.get(d_str, {}).get("tasks", {})
+    yesterday_rec = history.get(yesterday_str, {}).get("tasks", {})
     defs = get_task_definitions_for_date(d)
     if not defs:
         return 0, 0, 0, "none"
         
     total = len(defs)
-    done = sum(1 for t in defs if rec.get(t["id"], False))
+    done = 0
+    for t in defs:
+        tid = t.get("id")
+        t_type = t.get("type", "todo")
+        if t_type == "retro":
+            is_done = is_task_done_in_record(yesterday_rec, tid) or is_task_done_in_record(rec, tid)
+        else:
+            is_done = is_task_done_in_record(rec, tid)
+        if is_done:
+            done += 1
+
     rate = int((done / total) * 100) if total else 0
 
     if rate == 100:
@@ -549,89 +562,71 @@ def get_day_performance(d, history):
 def calculate_winter_arc_streak(history):
     """
     Chính sách tính Streak Winter Arc chuẩn:
-    1. Làm hết 100%: Chuỗi Lửa 🔥 (Flame Streak)
-    2. Làm nửa (50% - 99%): Chuỗi Xám ⚪ (Grey Streak)
-    3. Nếu có > 3 ngày chuỗi xám liên tiếp: MẤT CHUỖI (= 0)
-    4. Không làm gì (< 50%): MẤT CHUỖI (= 0)
+    1. Quá khứ: Các ngày đã kết thúc (từ hôm qua trở về trước) đạt 100% -> Chuỗi Lửa 🔥
+    2. Các ngày quá khứ đạt 50% - 99% -> Chuỗi Xám ⚪ (tối đa 3 ngày liên tiếp)
+    3. Ngày hôm nay (đang diễn ra):
+       - Chuỗi đã đạt được từ quá khứ luôn được BẢO VỆ NGUYÊN VẸN!
+       - Nếu hôm nay hoàn thành 100% -> Tăng thêm +1 ngày Lửa 🔥!
+       - Không làm tụt chuỗi của các ngày trước thành chuỗi xám khi ngày hôm nay chưa kết thúc.
     """
     today = date.today()
-    yesterday = today - timedelta(days=1)
+    rate_today, done_today, total_today, status_today = get_day_performance(today, history)
     
-    rate_today, _, total_today, status_today = get_day_performance(today, history)
-    rate_yesterday, _, total_yesterday, status_yesterday = get_day_performance(yesterday, history)
-    
-    # Nếu hôm nay đã đạt từ 50% trở lên thì tính cả hôm nay
-    if status_today in ("fire", "grey"):
-        curr = today
-    else:
-        # Nếu hôm nay chưa xong (đang trong ngày), kiểm tra hôm qua
-        if status_yesterday == "lost":
-            return {
-                "streak": 0,
-                "type": "none",
-                "badge": "No streak yet",
-                "consecutive_grey": 0,
-                "warning": False,
-                "warning_msg": ""
-            }
-        curr = yesterday
-
-    streak = 0
+    # 1. Tính chuỗi của các ngày trong quá khứ đã khép lại (hôm qua trở về trước)
+    curr = today - timedelta(days=1)
+    past_streak = 0
     consecutive_grey = 0
-    current_day_status = None
-    first_day = True
-
+    has_grey_in_past = False
+    
     while True:
         rate, done, total, status = get_day_performance(curr, history)
         if total == 0:
             break
-            
-        if first_day:
-            current_day_status = status
-
-        if status == "fire":
-            streak += 1
-            # Gặp ngày 100% thì reset chuỗi xám liên tiếp
+        if status == 'fire':
+            past_streak += 1
             consecutive_grey = 0
-        elif status == "grey":
+        elif status == 'grey':
+            has_grey_in_past = True
             consecutive_grey += 1
-            # QUY TẮC CỐT LÕI: Nếu > 3 ngày xám liên tiếp -> MẤT CHUỖI!
             if consecutive_grey > 3:
-                return {
-                    "streak": 0,
-                    "type": "lost",
-                    "badge": "Streak Lost (>3 grey days)",
-                    "consecutive_grey": consecutive_grey,
-                    "warning": True,
-                    "warning_msg": "You have more than 3 consecutive grey days. Streak reset to 0!"
-                }
-            streak += 1
-        else:
-            # status == 'lost' (< 50%): Streak resets here
+                past_streak = 0
+                break
+            past_streak += 1
+        else: # lost (< 50%)
             break
-
-        first_day = False
         curr -= timedelta(days=1)
 
-    # Evaluate streak badge
-    streak_type = current_day_status or "fire"
+    # 2. Kết hợp với trạng thái hôm nay
+    if status_today == 'fire':
+        total_streak = past_streak + 1
+        streak_type = 'grey' if has_grey_in_past else 'fire'
+        badge = f"🔥 {total_streak} days undefeated" if streak_type == 'fire' else f"⚪ {total_streak} days (Grey {consecutive_grey}/3)"
+    elif past_streak > 0:
+        total_streak = past_streak
+        streak_type = 'grey' if has_grey_in_past else 'fire'
+        badge = f"🔥 {total_streak} days undefeated" if streak_type == 'fire' else f"⚪ {total_streak} days (Grey {consecutive_grey}/3)"
+    else:
+        if status_today == 'grey':
+            total_streak = 1
+            streak_type = 'grey'
+            badge = "⚪ 1 day in progress"
+        else:
+            total_streak = 0
+            streak_type = "none"
+            badge = "No streak yet"
+
     warning = (streak_type == "grey" and consecutive_grey >= 2)
     warning_msg = f"Warning: You have {consecutive_grey}/3 consecutive grey days. Push harder to protect your streak!" if warning else ""
 
-    if streak_type == "fire":
-        badge = f"🔥 {streak} days undefeated"
-    elif streak_type == "grey":
-        badge = f"⚪ {streak} days (Grey {consecutive_grey}/3)"
-    else:
-        badge = f"{streak} days"
-
     return {
-        "streak": streak,
+        "streak": total_streak,
         "type": streak_type,
         "badge": badge,
         "consecutive_grey": consecutive_grey,
         "warning": warning,
-        "warning_msg": warning_msg
+        "warning_msg": warning_msg,
+        "today_status": status_today,
+        "today_progress": f"{done_today}/{total_today} ({rate_today}%)"
     }
 
 def calculate_full_streak(history):

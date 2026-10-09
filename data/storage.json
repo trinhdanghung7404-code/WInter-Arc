@@ -1,7 +1,7 @@
 {
   "streaks": {
-    "nonut": 0,
-    "winter_arc": 2
+    "nonut": 3,
+    "winter_arc": 3
   },
   "history": {
     "2026-10-07": {
@@ -85,13 +85,16 @@
       "tasks": {
         "50_pushups_1557": true,
         "done_task_fp_1631": true,
-        "meeting_fp_2030": true
+        "meeting_fp_2030": true,
+        "no_nut_1692": true
       }
     },
     "2026-10-09": {
       "focus_times": {},
       "notes": "",
-      "tasks": {}
+      "tasks": {
+        "50_pushups_1557": true
+      }
     },
     "2026-10-10": {
       "focus_times": {},
