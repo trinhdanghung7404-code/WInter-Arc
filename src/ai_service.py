@@ -95,21 +95,36 @@ def call_gemini(api_key, prompt):
 
 def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
     import base64
-    models = ["gemini-flash-latest", "gemini-3-flash-preview", "gemini-3.1-flash-lite-preview"]
-    last_err = None
-    headers = {"Content-Type": "application/json", "User-Agent": "WinterArc/1.0"}
+    import io
+    
+    # Tối ưu hoá ảnh bằng Pillow (resize max 1280px, nén JPEG) để gửi siêu nhanh và tránh lỗi payload/400
+    final_bytes = image_bytes
+    final_mime = mime_type or "image/jpeg"
+    try:
+        from PIL import Image
+        im = Image.open(io.BytesIO(image_bytes))
+        if im.mode in ("RGBA", "P", "LA"):
+            im = im.convert("RGB")
+        im.thumbnail((1280, 1280))
+        buf = io.BytesIO()
+        im.save(buf, format="JPEG", quality=82)
+        final_bytes = buf.getvalue()
+        final_mime = "image/jpeg"
+    except Exception as img_err:
+        print(f"[Vision Image Preprocess Warning]: {img_err}")
+
+    b64_data = base64.b64encode(final_bytes).decode("utf-8")
     persona = get_active_persona()
     
-    b64_data = base64.b64encode(image_bytes).decode("utf-8")
-    
+    # Format inlineData chuẩn Google Gemini REST API (camelCase)
     payload = json.dumps({
         "contents": [
             {
                 "parts": [
                     {"text": f"{persona}\n\nTask:\n{prompt}"},
                     {
-                        "inline_data": {
-                            "mime_type": mime_type,
+                        "inlineData": {
+                            "mimeType": final_mime,
                             "data": b64_data
                         }
                     }
@@ -122,11 +137,15 @@ def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
         }
     }).encode("utf-8")
 
+    models = ["gemini-3.1-flash-lite-preview", "gemini-3-flash-preview", "gemini-flash-latest"]
+    last_err = None
+    headers = {"Content-Type": "application/json", "User-Agent": "WinterArc/1.0"}
+
     for model in models:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         try:
             req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=35) as resp:
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 candidates = data.get("candidates", [])
                 if candidates:
@@ -140,10 +159,11 @@ def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
             except Exception:
                 pass
             last_err = f"Gemini ({e.code}): {err_body}"
-            if e.code in (503, 429, 404):
-                continue
+            # Tiếp tục thử model dự phòng nếu gặp bất kỳ lỗi API nào
+            continue
         except Exception as e:
             last_err = str(e)
+            continue
             
     raise Exception(last_err or "Gemini Vision API error.")
 
