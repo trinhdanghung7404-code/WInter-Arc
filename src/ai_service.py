@@ -150,9 +150,9 @@ def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
 def analyze_screentime_image(image_bytes, mime_type="image/jpeg"):
     """
     Phân tích ảnh chụp màn hình Screen Time trên iPhone bằng Gemini Vision:
-    - Trích xuất tổng thời gian sử dụng hôm nay (ví dụ: 4h 15m -> 255 phút).
+    - Trích xuất tổng thời gian sử dụng hôm nay.
     - Trích xuất danh sách các app dùng nhiều nhất.
-    - AI Coach đánh giá kỷ luật theo Persona đã chọn (David Goggins, Stoic, Custom...).
+    - AI Coach đánh giá kỷ luật theo Persona đã chọn.
     """
     api_key, _ = get_ai_config()
     if not api_key:
@@ -162,48 +162,30 @@ def analyze_screentime_image(image_bytes, mime_type="image/jpeg"):
         }
 
     prompt = (
-        "You are an expert AI Discipline Coach analyzing an iPhone Screen Time (Thời gian sử dụng màn hình) screenshot.\n"
-        "Your task:\n"
-        "1. Carefully read and extract the TOTAL screen time for today (e.g. '3h 45m', '4 giờ 12 phút', etc.) and convert it into total minutes (integer).\n"
-        "2. List the Top Apps shown and their exact usage times (e.g. TikTok, Facebook, YouTube, Games, Safari, etc.).\n"
-        "3. Write a fierce, motivating, or reflective critique according to your Persona in Vietnamese:\n"
-        "   - Highlight whether their phone usage is disciplined (< 3h/day is good, > 4h/day is slacking/doomscrolling).\n"
-        "   - Call out excessive social media/entertainment usage specifically.\n"
-        "   - Give them actionable advice for the rest of the day/tomorrow.\n"
-        "   - Format your critique with clean Telegram HTML (<b>, <i>, <code>).\n\n"
-        "Return ONLY a JSON object with this exact structure:\n"
-        "```json\n"
-        "{\n"
-        '  "total_time_str": "4h 15m",\n'
-        '  "total_minutes": 255,\n'
-        '  "top_apps": [\n'
-        '    {"name": "TikTok", "time": "1h 45m"},\n'
-        '    {"name": "Facebook", "time": "50m"}\n'
-        '  ],\n'
-        '  "critique": "📱 <b>[AI SCREEN TIME ANALYSIS]</b>\\n\\n..."\n'
-        "}\n"
-        "```"
+        "Bạn là Huấn luyện viên Kỷ luật Winter Arc. Hãy quan sát và phân tích thật kỹ bức ảnh chụp màn hình này:\n\n"
+        "1. Nếu đây là ảnh Screen Time (Thời gian sử dụng màn hình của iPhone):\n"
+        "   - Đọc ra TỔNG THỜI GIAN sử dụng hôm nay (ví dụ: 3h 45m, 4 giờ 12 phút...).\n"
+        "   - Liệt kê các ỨNG DỤNG tiêu tốn nhiều thời gian nhất (TikTok, Facebook, Game, YouTube, Safari...).\n"
+        "   - Đánh giá mức độ kỷ luật (< 3h: Tốt/Khen ngợi; > 4h: Cảnh báo nghiêm khắc/Chỉ trích thói quen lướt mạng xã hội).\n"
+        "   - Đưa ra mệnh lệnh/lời khuyên hành động cho chiến binh.\n\n"
+        "2. Nếu đây KHÔNG PHẢI ảnh Screen Time:\n"
+        "   - Nhận xét ngắn gọn nội dung bức ảnh đang gửi là gì.\n"
+        "   - Nhắc chiến binh mở Cài đặt (Settings) -> Thời gian sử dụng (Screen Time) để chụp lại đúng trang.\n\n"
+        "3. Hãy viết toàn bộ phản hồi bằng định dạng Telegram HTML chuẩn (dùng các thẻ <b>, <i>, <code>) thật đẹp mắt, mạnh mẽ, truyền lửa theo đúng phong cách persona của bạn."
     )
 
     try:
         raw_text = call_gemini_vision(api_key, image_bytes, prompt, mime_type=mime_type)
-        clean_json_str = raw_text.strip()
-        if "```json" in clean_json_str:
-            clean_json_str = clean_json_str.split("```json")[1].split("```")[0].strip()
-        elif "```" in clean_json_str:
-            clean_json_str = clean_json_str.split("```")[1].split("```")[0].strip()
-
-        data = json.loads(clean_json_str)
-        data["success"] = True
-        return data
+        return {
+            "success": True,
+            "critique": raw_text.strip()
+        }
     except Exception as e:
         print(f"[AI ScreenTime Vision Error]: {e}")
         return {
-            "success": True,
-            "total_time_str": "Đã nhận",
-            "total_minutes": 0,
-            "top_apps": [],
-            "critique": f"📱 <b>[AI SCREEN TIME ANALYSIS]</b>\n\n{raw_text if 'raw_text' in locals() else str(e)}"
+            "success": False,
+            "error": str(e),
+            "critique": f"❌ Không thể phân tích ảnh: {e}"
         }
 
 def call_openai(api_key, prompt):
