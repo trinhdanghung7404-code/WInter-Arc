@@ -514,6 +514,42 @@ class WinterArcBot:
             review_text = ai_service.generate_monthly_review(monthly_data)
             self.bot.send_message(message.chat.id, review_text)
 
+        @self.bot.message_handler(content_types=['photo'])
+        def handle_photo(message):
+            from . import ai_service
+            if not ai_service.is_ai_enabled():
+                self.bot.reply_to(message, "⚠️ Gemini AI chưa được bật hoặc chưa cài API Key.")
+                return
+            
+            try:
+                self.bot.send_chat_action(message.chat.id, "typing")
+                self.bot.reply_to(message, "🔍 <i>Đang đọc ảnh chụp màn hình Screen Time của bạn...</i>", parse_mode="HTML")
+                
+                # Lấy ảnh kích thước cao nhất
+                file_info = self.bot.get_file(message.photo[-1].file_id)
+                downloaded_file = self.bot.download_file(file_info.file_path)
+                
+                analysis = ai_service.analyze_screentime_image(downloaded_file, mime_type="image/jpeg")
+                
+                # Lưu vào storage
+                today_str = date.today().strftime("%Y-%m-%d")
+                storage = app_logic.load_storage()
+                day_rec = storage.setdefault("history", {}).setdefault(today_str, {})
+                day_rec["screentime"] = {
+                    "total_time_str": analysis.get("total_time_str", ""),
+                    "total_minutes": analysis.get("total_minutes", 0),
+                    "top_apps": analysis.get("top_apps", []),
+                    "updated_at": datetime.now().strftime("%H:%M:%S")
+                }
+                app_logic.save_storage(storage)
+                
+                critique_msg = analysis.get("critique", "📱 Đã phân tích ảnh thành công!")
+                keyboard, _ = self.build_task_keyboard()
+                self.bot.send_message(message.chat.id, critique_msg, reply_markup=keyboard)
+            except Exception as e:
+                print(f"[Photo Handler Error]: {e}")
+                self.bot.send_message(message.chat.id, f"❌ Lỗi khi phân tích ảnh: {e}")
+
         @self.bot.message_handler(func=lambda m: m.text and not m.text.startswith('/'))
         def handle_user_chat(message):
             from . import ai_service

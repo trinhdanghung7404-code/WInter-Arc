@@ -93,6 +93,119 @@ def call_gemini(api_key, prompt):
             
     raise Exception(last_err or "Gemini API temporarily busy, please try again in a few seconds.")
 
+def call_gemini_vision(api_key, image_bytes, prompt, mime_type="image/jpeg"):
+    import base64
+    models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
+    last_err = None
+    headers = {"Content-Type": "application/json", "User-Agent": "WinterArc/1.0"}
+    persona = get_active_persona()
+    
+    b64_data = base64.b64encode(image_bytes).decode("utf-8")
+    
+    payload = json.dumps({
+        "contents": [
+            {
+                "parts": [
+                    {"text": f"{persona}\n\nTask:\n{prompt}"},
+                    {
+                        "inline_data": {
+                            "mime_type": mime_type,
+                            "data": b64_data
+                        }
+                    }
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.3,
+            "maxOutputTokens": 1000
+        }
+    }).encode("utf-8")
+
+    for model in models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+        try:
+            req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                candidates = data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts:
+                        return parts[0].get("text", "").strip()
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="ignore")
+            try:
+                err_body = json.loads(err_body).get("error", {}).get("message", err_body)
+            except Exception:
+                pass
+            last_err = f"Gemini ({e.code}): {err_body}"
+            if e.code in (503, 429, 404):
+                continue
+        except Exception as e:
+            last_err = str(e)
+            
+    raise Exception(last_err or "Gemini Vision API error.")
+
+def analyze_screentime_image(image_bytes, mime_type="image/jpeg"):
+    """
+    Phân tích ảnh chụp màn hình Screen Time trên iPhone bằng Gemini Vision:
+    - Trích xuất tổng thời gian sử dụng hôm nay (ví dụ: 4h 15m -> 255 phút).
+    - Trích xuất danh sách các app dùng nhiều nhất.
+    - AI Coach đánh giá kỷ luật theo Persona đã chọn (David Goggins, Stoic, Custom...).
+    """
+    api_key, _ = get_ai_config()
+    if not api_key:
+        return {
+            "success": False,
+            "error": "Chưa cấu hình Gemini API Key"
+        }
+
+    prompt = (
+        "You are an expert AI Discipline Coach analyzing an iPhone Screen Time (Thời gian sử dụng màn hình) screenshot.\n"
+        "Your task:\n"
+        "1. Carefully read and extract the TOTAL screen time for today (e.g. '3h 45m', '4 giờ 12 phút', etc.) and convert it into total minutes (integer).\n"
+        "2. List the Top Apps shown and their exact usage times (e.g. TikTok, Facebook, YouTube, Games, Safari, etc.).\n"
+        "3. Write a fierce, motivating, or reflective critique according to your Persona in Vietnamese:\n"
+        "   - Highlight whether their phone usage is disciplined (< 3h/day is good, > 4h/day is slacking/doomscrolling).\n"
+        "   - Call out excessive social media/entertainment usage specifically.\n"
+        "   - Give them actionable advice for the rest of the day/tomorrow.\n"
+        "   - Format your critique with clean Telegram HTML (<b>, <i>, <code>).\n\n"
+        "Return ONLY a JSON object with this exact structure:\n"
+        "```json\n"
+        "{\n"
+        '  "total_time_str": "4h 15m",\n'
+        '  "total_minutes": 255,\n'
+        '  "top_apps": [\n'
+        '    {"name": "TikTok", "time": "1h 45m"},\n'
+        '    {"name": "Facebook", "time": "50m"}\n'
+        '  ],\n'
+        '  "critique": "📱 <b>[AI SCREEN TIME ANALYSIS]</b>\\n\\n..."\n'
+        "}\n"
+        "```"
+    )
+
+    try:
+        raw_text = call_gemini_vision(api_key, image_bytes, prompt, mime_type=mime_type)
+        clean_json_str = raw_text.strip()
+        if "```json" in clean_json_str:
+            clean_json_str = clean_json_str.split("```json")[1].split("```")[0].strip()
+        elif "```" in clean_json_str:
+            clean_json_str = clean_json_str.split("```")[1].split("```")[0].strip()
+
+        data = json.loads(clean_json_str)
+        data["success"] = True
+        return data
+    except Exception as e:
+        print(f"[AI ScreenTime Vision Error]: {e}")
+        return {
+            "success": True,
+            "total_time_str": "Đã nhận",
+            "total_minutes": 0,
+            "top_apps": [],
+            "critique": f"📱 <b>[AI SCREEN TIME ANALYSIS]</b>\n\n{raw_text if 'raw_text' in locals() else str(e)}"
+        }
+
 def call_openai(api_key, prompt):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {

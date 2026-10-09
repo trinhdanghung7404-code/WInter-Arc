@@ -50,6 +50,57 @@ def test_broadcast():
         "server_time_vn": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }), 200
 
+@app.route("/api/upload_screentime", methods=["POST"])
+def upload_screentime():
+    """
+    Endpoint nhận ảnh chụp màn hình Screen Time từ Apple Shortcuts (iPhone):
+    - Đọc ảnh qua Gemini Vision AI
+    - Lưu thời gian sử dụng vào storage hôm nay
+    - Bắn tin nhắn phân tích & đánh giá kỷ luật về Telegram
+    """
+    from src import ai_service
+    image_bytes = None
+    mime_type = "image/jpeg"
+
+    if "file" in request.files:
+        f = request.files["file"]
+        image_bytes = f.read()
+        mime_type = f.mimetype or "image/jpeg"
+    elif request.data:
+        image_bytes = request.data
+    else:
+        body = request.get_json(silent=True) or {}
+        if "image_base64" in body:
+            import base64
+            image_bytes = base64.b64decode(body["image_base64"])
+
+    if not image_bytes:
+        return jsonify({"error": "Không tìm thấy file ảnh"}), 400
+
+    analysis = ai_service.analyze_screentime_image(image_bytes, mime_type=mime_type)
+    
+    # Lưu vào storage
+    today_str = date.today().strftime("%Y-%m-%d")
+    storage = app_logic.load_storage()
+    day_rec = storage.setdefault("history", {}).setdefault(today_str, {})
+    day_rec["screentime"] = {
+        "total_time_str": analysis.get("total_time_str", ""),
+        "total_minutes": analysis.get("total_minutes", 0),
+        "top_apps": analysis.get("top_apps", []),
+        "updated_at": datetime.now().strftime("%H:%M:%S")
+    }
+    app_logic.save_storage(storage)
+
+    # Gửi tin nhắn về Telegram
+    critique_msg = analysis.get("critique", "📱 Đã nhận ảnh Screen Time!")
+    bot_instance.send_broadcast(critique_msg, with_buttons=True)
+
+    return jsonify({
+        "success": True,
+        "message": "Đã phân tích Screen Time và gửi về Telegram!",
+        "analysis": analysis
+    }), 200
+
 # ==============================================================================
 # API ĐỒNG BỘ DỮ LIỆU VỚI DESKTOP
 # ==============================================================================
