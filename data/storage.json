@@ -1,7 +1,7 @@
 {
   "streaks": {
-    "nonut": 3,
-    "winter_arc": 3
+    "nonut": 0,
+    "winter_arc": 6
   },
   "history": {
     "2026-10-07": {
@@ -93,23 +93,32 @@
       "focus_times": {},
       "notes": "",
       "tasks": {
-        "50_pushups_1557": true
+        "no_nut_1692": true
       }
     },
     "2026-10-10": {
       "focus_times": {},
       "notes": "",
-      "tasks": {}
+      "tasks": {
+        "50_pushups_1557": true,
+        "meeting_fp_0270": true,
+        "mua_l__i_nh___d_7058": true
+      }
     },
     "2026-10-11": {
       "focus_times": {},
       "notes": "",
-      "tasks": {}
+      "tasks": {
+        "50_pushups_1557": true,
+        "no_nut_1692": true
+      }
     },
     "2026-10-12": {
       "focus_times": {},
       "notes": "",
-      "tasks": {}
+      "tasks": {
+        "50_pushups_1557": true
+      }
     },
     "2026-10-13": {
       "focus_times": {},

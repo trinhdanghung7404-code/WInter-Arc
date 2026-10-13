@@ -849,7 +849,15 @@ def resolve_weather_meta(weather_code, is_day=1, hour=None):
     if hour is None:
         hour = datetime.now().hour
 
-    is_night = (is_day == 0) or (hour >= 19 or hour < 5)
+    # Ban ngày rõ ràng (06:00 - 18:00): Tuyệt đối KHÔNG bao giờ là ban đêm (chống lệch múi giờ / lỗi API)
+    if 6 <= hour < 18:
+        is_night = False
+    elif hour >= 19 or hour < 5:
+        is_night = True
+    else:
+        # Giờ chuyển giao (05:00 - 06:00 rạng sáng hoặc 18:00 - 19:00 chập tối): xét theo is_day từ API
+        is_night = (is_day == 0)
+
     is_early_morning = (not is_night) and (5 <= hour < 7)
     is_morning = (not is_night) and (7 <= hour < 12)
     is_afternoon = (not is_night) and (12 <= hour < 17)
@@ -1021,7 +1029,17 @@ def get_weather_data(force_refresh=False):
             temp = round(current.get("temperature_2m", 25))
             code = current.get("weather_code", 0)
             is_day = current.get("is_day", 1)
-            meta = resolve_weather_meta(code, is_day=is_day)
+
+            # Lấy giờ địa phương tại toạ độ từ Open-Meteo (đã có timezone=auto)
+            local_hour = None
+            cur_time_str = current.get("time", "")
+            if "T" in cur_time_str:
+                try:
+                    local_hour = int(cur_time_str.split("T")[1].split(":")[0])
+                except Exception:
+                    pass
+
+            meta = resolve_weather_meta(code, is_day=is_day, hour=local_hour)
             
             daily_times = daily.get("time", [])
             daily_codes = daily.get("weather_code", [])

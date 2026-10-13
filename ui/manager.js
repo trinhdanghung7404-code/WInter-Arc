@@ -908,6 +908,15 @@ function setupForm() {
   setupWeatherControls();
   setupAiPersonaControls();
 
+  // Tự động làm mới thời tiết mỗi 5 phút và khi người dùng chuyển tab/quay lại cửa sổ
+  setInterval(() => {
+    loadWeatherConfig();
+  }, 5 * 60 * 1000);
+
+  window.addEventListener("focus", () => {
+    loadWeatherConfig();
+  });
+
   // Test Telegram Ping
   const pingBtn = document.getElementById("btn-tg-ping-mgr");
   if (pingBtn) {
