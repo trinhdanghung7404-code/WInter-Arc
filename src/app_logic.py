@@ -63,6 +63,19 @@ def get_notes(target_date_str=None):
     storage = load_storage()
     return storage.get("history", {}).get(today_str, {}).get("notes", "")
 
+def update_daily_notes(notes_text, target_date_str=None):
+    today_str = target_date_str or date.today().strftime("%Y-%m-%d")
+    storage = load_storage()
+    history = storage.setdefault("history", {})
+    record = history.setdefault(today_str, {
+        "tasks": {},
+        "focus_times": {},
+        "notes": ""
+    })
+    record["notes"] = (notes_text or "").strip()
+    save_storage(storage)
+    return record["notes"]
+
 def load_all_protocols():
     """Đọc toàn bộ danh sách protocols từ file protocols.json (bao gồm cả các protocol cũ / đã xóa để lưu vết lịch sử)"""
     if not os.path.exists(PROTOCOLS_PATH):

@@ -296,6 +296,12 @@ class DesktopApi:
     def set_weather_location(self, city, lat=None, lon=None):
         return app_logic.update_weather_location(city, lat, lon)
 
+    def get_daily_notes(self, date_str=None):
+        return app_logic.get_notes(date_str)
+
+    def save_daily_notes(self, notes_text, date_str=None):
+        return app_logic.update_daily_notes(notes_text, date_str)
+
     def test_ai_coach(self, custom_prompt=None):
         from src import ai_service
         success, reply = ai_service.test_ai_connection(custom_prompt)

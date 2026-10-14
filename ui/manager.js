@@ -51,7 +51,9 @@ function getApi() {
     save_config: async (cfg) => true,
     get_weather: async (force) => ({ success: true, city: "Hanoi", temperature: 28, condition: "Clear Sky", icon: "☀️", humidity: 45, wind_speed: 10 }),
     search_city: async (q) => [],
-    set_weather_location: async (c, lat, lon) => ({ success: true, city: c, temperature: 28, condition: "Clear Sky", icon: "☀️" })
+    set_weather_location: async (c, lat, lon) => ({ success: true, city: c, temperature: 28, condition: "Clear Sky", icon: "☀️" }),
+    get_daily_notes: async (d) => "",
+    save_daily_notes: async (text, d) => text
   };
 }
 
@@ -721,6 +723,66 @@ function setupRemindTimeControls() {
 }
 
 // -----------------------------------------------------------------------------
+// Daily Memo & Quick Notes (Bottom-Left Panel, Synced with /note)
+// -----------------------------------------------------------------------------
+async function loadDailyNotes() {
+  const memoEl = document.getElementById("daily-memo-input");
+  const dateTag = document.getElementById("daily-notes-date-tag");
+  if (!memoEl) return;
+  try {
+    const api = getApi();
+    if (api.get_daily_notes) {
+      const notes = await api.get_daily_notes();
+      memoEl.value = notes || "";
+    }
+    if (dateTag) {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      dateTag.innerText = `Today (${dd}/${mm})`;
+    }
+  } catch (err) {
+    console.error("Load daily notes error:", err);
+  }
+}
+
+async function saveDailyNotes() {
+  const memoEl = document.getElementById("daily-memo-input");
+  const saveBtn = document.getElementById("btn-save-daily-memo");
+  const statusEl = document.getElementById("daily-notes-status");
+  if (!memoEl) return;
+  const content = memoEl.value.trim();
+  try {
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerText = "Saving...";
+    }
+    const api = getApi();
+    if (api.save_daily_notes) {
+      await api.save_daily_notes(content);
+    }
+    showToast("Daily notes saved successfully!");
+    if (statusEl) {
+      statusEl.innerText = "✓ Saved just now";
+      setTimeout(() => { if (statusEl) statusEl.innerText = ""; }, 3000);
+    }
+  } catch (err) {
+    alert("Error saving daily notes: " + err.message);
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerText = "Save Note";
+    }
+  }
+}
+
+function setupDailyNotesControls() {
+  const saveBtn = document.getElementById("btn-save-daily-memo");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", saveDailyNotes);
+  }
+}
+
 // Form Handling & Setup
 // -----------------------------------------------------------------------------
 function setupForm() {
@@ -898,15 +960,17 @@ function setupForm() {
     loadProtocols();
     loadTelegramConfig();
     loadWeatherConfig();
-    showToast("Protocols & Weather refreshed");
+    loadDailyNotes();
+    showToast("Protocols, Weather & Notes refreshed");
   });
 
   // Save Telegram & AI
   document.getElementById("btn-save-tg").addEventListener("click", saveTelegramConfig);
 
-  // Setup Weather & AI Persona Controls
+  // Setup Weather, AI Persona & Daily Notes Controls
   setupWeatherControls();
   setupAiPersonaControls();
+  setupDailyNotesControls();
 
   // Tự động làm mới thời tiết mỗi 5 phút và khi người dùng chuyển tab/quay lại cửa sổ
   setInterval(() => {
@@ -1013,6 +1077,7 @@ window.addEventListener("pywebviewready", () => {
   loadProtocols();
   loadTelegramConfig();
   loadWeatherConfig();
+  loadDailyNotes();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1020,4 +1085,5 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProtocols();
   loadTelegramConfig();
   loadWeatherConfig();
+  loadDailyNotes();
 });

@@ -108,6 +108,12 @@ class ManagerApi:
     def set_weather_location(self, city, lat=None, lon=None):
         return app_logic.update_weather_location(city, lat, lon)
 
+    def get_daily_notes(self, date_str=None):
+        return app_logic.get_notes(date_str)
+
+    def save_daily_notes(self, notes_text, date_str=None):
+        return app_logic.update_daily_notes(notes_text, date_str)
+
 def main():
     print("[MANAGER] Starting Winter Arc Protocol Manager...")
     api = ManagerApi()

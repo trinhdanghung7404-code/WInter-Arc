@@ -301,7 +301,8 @@ body {
 }
 
 .form-field input[type="text"],
-.form-field input[type="number"] {
+.form-field input[type="number"],
+.form-field textarea {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
@@ -309,11 +310,21 @@ body {
   padding: 8px 12px;
   font-size: 0.78rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  width: 100%;
 }
 
-.form-field input:focus {
+.form-field textarea {
+  resize: vertical;
+  min-height: 68px;
+  line-height: 1.45;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
   border-color: var(--ice-blue);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.18);
 }
 
 .text-center {
@@ -1687,6 +1698,72 @@ body {
   color: #fff;
   box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
 }
+
+/* ==============================================================================
+   BOTTOM-LEFT: DAILY MEMO & QUICK NOTES PANEL
+   ============================================================================== */
+.daily-notes-panel {
+  margin-top: 14px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.daily-notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-notes-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.daily-notes-title strong {
+  font-size: 0.74rem;
+  letter-spacing: 0.5px;
+  color: #38bdf8;
+}
+
+.daily-notes-panel textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 0.74rem;
+  font-family: inherit;
+  line-height: 1.45;
+  outline: none;
+  resize: vertical;
+  min-height: 64px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.daily-notes-panel textarea:focus {
+  border-color: var(--ice-blue);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.18);
+}
+
+.daily-notes-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-notes-status {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
 
 
 
