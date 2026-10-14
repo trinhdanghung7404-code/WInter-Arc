@@ -558,3 +558,56 @@ def test_ai_connection(custom_prompt=None):
         return True, reply
     except Exception as e:
         return False, str(e)
+
+def generate_vocab_card_details(word):
+    """
+    Sử dụng Gemini AI để tự động tra cứu từ vựng:
+    - Phiên âm IPA (phonetic)
+    - Loại từ (pos: noun, verb, adjective, adverb...)
+    - Nghĩa tiếng Việt chuẩn, súc tích (meaning)
+    - Câu ví dụ tiếng Anh thực tế (example)
+    """
+    word = (word or "").strip()
+    if not word:
+        return {"success": False, "error": "Empty word"}
+        
+    prompt = (
+        f"You are an expert bilingual lexicographer (English - Vietnamese). "
+        f"Analyze the English vocabulary word: \"{word}\".\n"
+        f"Provide the exact details in clean JSON format with these exact keys:\n"
+        f"{{\n"
+        f"  \"word\": \"{word}\",\n"
+        f"  \"phonetic\": \"/IPA pronunciation/\",\n"
+        f"  \"pos\": \"part of speech (noun/verb/adjective/adverb)\",\n"
+        f"  \"meaning\": \"Concise and accurate Vietnamese definition\",\n"
+        f"  \"example\": \"One natural, clear example sentence in English demonstrating this word\"\n"
+        f"}}\n"
+        f"Return ONLY valid raw JSON without markdown backticks."
+    )
+    
+    try:
+        raw_text = generate_ai_text(prompt)
+        clean_json = raw_text.strip()
+        if clean_json.startswith("```"):
+            clean_json = re.sub(r"^```(?:json)?\n?", "", clean_json)
+            clean_json = re.sub(r"\n?```$", "", clean_json)
+        data = json.loads(clean_json.strip())
+        return {
+            "success": True,
+            "word": data.get("word", word),
+            "phonetic": data.get("phonetic", ""),
+            "pos": data.get("pos", ""),
+            "meaning": data.get("meaning", ""),
+            "example": data.get("example", "")
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "word": word,
+            "phonetic": "",
+            "pos": "",
+            "meaning": "",
+            "example": ""
+        }
+

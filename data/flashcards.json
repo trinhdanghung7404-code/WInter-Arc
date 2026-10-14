@@ -1,0 +1,128 @@
+{
+  "decks": [
+    {
+      "id": "deck_toefl_core",
+      "name": "TOEFL Academic Core",
+      "description": "Essential high-frequency academic vocabulary for reading & listening",
+      "created_at": "2026-10-14",
+      "cards": [
+        {
+          "id": "c_resilient",
+          "word": "Resilient",
+          "phonetic": "/rɪˈzɪl.jənt/",
+          "pos": "adjective",
+          "meaning": "Kiên cường, phục hồi nhanh chóng sau khó khăn",
+          "example": "He proved to be remarkably resilient in the face of intense challenges.",
+          "learned": false
+        },
+        {
+          "id": "c_ubiquitous",
+          "word": "Ubiquitous",
+          "phonetic": "/juːˈbɪk.wə.təs/",
+          "pos": "adjective",
+          "meaning": "Phổ biến khắp nơi, đâu đâu cũng thấy",
+          "example": "Smartphones and internet access have become ubiquitous worldwide.",
+          "learned": false
+        },
+        {
+          "id": "c_mitigate",
+          "word": "Mitigate",
+          "phonetic": "/ˈmɪt.ɪ.ɡeɪt/",
+          "pos": "verb",
+          "meaning": "Làm dịu bớt, giảm nhẹ mức độ nghiêm trọng",
+          "example": "Immediate measures were taken to mitigate the environmental impact.",
+          "learned": false
+        },
+        {
+          "id": "c_pragmatic",
+          "word": "Pragmatic",
+          "phonetic": "/præɡˈmæt.ɪk/",
+          "pos": "adjective",
+          "meaning": "Thực tế, thực dụng, chú trọng giải pháp thực tiễn",
+          "example": "She took a pragmatic approach to solving the budget crisis.",
+          "learned": false
+        },
+        {
+          "id": "c_substantiate",
+          "word": "Substantiate",
+          "phonetic": "/səbˈstæn.ʃi.eɪt/",
+          "pos": "verb",
+          "meaning": "Chứng minh, xác thực bằng chứng cứ xác đáng",
+          "example": "The scientist needed further empirical data to substantiate her hypothesis.",
+          "learned": false
+        },
+        {
+          "id": "c_juxtapose",
+          "word": "Juxtapose",
+          "phonetic": "/ˌdʒʌk.stəˈpoʊz/",
+          "pos": "verb",
+          "meaning": "Đặt cạnh nhau để so sánh, đối chiếu sự khác biệt",
+          "example": "The exhibition juxtaposes contemporary art with classical paintings.",
+          "learned": false
+        },
+        {
+          "id": "c_ambiguous",
+          "word": "Ambiguous",
+          "phonetic": "/æmˈbɪɡ.ju.əs/",
+          "pos": "adjective",
+          "meaning": "Mơ hồ, nước đôi, có thể hiểu theo nhiều nghĩa",
+          "example": "The contract's wording was ambiguous and led to disputes.",
+          "learned": false
+        },
+        {
+          "id": "c_inevitable",
+          "word": "Inevitable",
+          "phonetic": "/ɪnˈev.ə.t̬ə.bəl/",
+          "pos": "adjective",
+          "meaning": "Không thể tránh khỏi, chắc chắn sẽ xảy ra",
+          "example": "Change is an inevitable part of every technological revolution.",
+          "learned": false
+        }
+      ]
+    },
+    {
+      "id": "deck_winter_discipline",
+      "name": "Winter Arc & Discipline Mindset",
+      "description": "Vocabulary and principles for unwavering mental toughness",
+      "created_at": "2026-10-14",
+      "cards": [
+        {
+          "id": "c_relentless",
+          "word": "Relentless",
+          "phonetic": "/rɪˈlent.ləs/",
+          "pos": "adjective",
+          "meaning": "Không ngừng nghỉ, kiên trì không nao núng",
+          "example": "A warrior maintains a relentless pursuit of self-mastery every day.",
+          "learned": false
+        },
+        {
+          "id": "c_fortitude",
+          "word": "Fortitude",
+          "phonetic": "/ˈfɔːr.t̬ə.tuːd/",
+          "pos": "noun",
+          "meaning": "Sự dũng cảm, nghị lực chịu đựng gian khổ",
+          "example": "He faced the grueling winter training with quiet fortitude.",
+          "learned": false
+        },
+        {
+          "id": "c_stoic",
+          "word": "Stoic",
+          "phonetic": "/ˈstoʊ.ɪk/",
+          "pos": "adjective",
+          "meaning": "Khắc kỷ, bình thản kiên cường trước nghịch cảnh",
+          "example": "Maintain a stoic calm when external circumstances become chaotic.",
+          "learned": false
+        },
+        {
+          "id": "c_perseverance",
+          "word": "Perseverance",
+          "phonetic": "/ˌpɝː.səˈvɪr.əns/",
+          "pos": "noun",
+          "meaning": "Sự bền bỉ, kiên trì tới cùng bất chấp khó khăn",
+          "example": "Success in the Winter Arc demands pure perseverance over motivation.",
+          "learned": false
+        }
+      ]
+    }
+  ]
+}

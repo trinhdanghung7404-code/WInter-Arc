@@ -963,6 +963,19 @@ function setupForm() {
     showToast("Protocols & Weather refreshed");
   });
 
+  // Open Flashcards Window
+  const fcBtn = document.getElementById("btn-open-flashcards");
+  if (fcBtn) {
+    fcBtn.addEventListener("click", async () => {
+      const api = getApi();
+      if (api.open_flashcards) {
+        await api.open_flashcards();
+      } else {
+        window.open("flashcards.html", "_blank");
+      }
+    });
+  }
+
   // Save Telegram & AI
   document.getElementById("btn-save-tg").addEventListener("click", saveTelegramConfig);
 

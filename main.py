@@ -302,6 +302,17 @@ class DesktopApi:
     def save_daily_notes(self, notes_text, date_str=None):
         return app_logic.update_daily_notes(notes_text, date_str)
 
+    def open_flashcards(self):
+        try:
+            fc_script = os.path.join(BASE_DIR, "flashcards_app.py")
+            python_exe = sys.executable
+            import subprocess
+            subprocess.Popen([python_exe, fc_script])
+            return True
+        except Exception as e:
+            print(f"Error opening flashcards: {e}")
+            return False
+
     def test_ai_coach(self, custom_prompt=None):
         from src import ai_service
         success, reply = ai_service.test_ai_connection(custom_prompt)

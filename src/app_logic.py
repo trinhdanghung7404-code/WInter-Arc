@@ -1206,4 +1206,136 @@ def update_weather_location(city_name, lat=None, lon=None):
     
     return get_weather_data(force_refresh=True)
 
+# ==============================================================================
+# FLASHCARDS & VOCABULARY ENGINE
+# ==============================================================================
+FLASHCARDS_PATH = os.path.join(DATA_DIR, "flashcards.json")
+
+def load_flashcards():
+    if not os.path.exists(FLASHCARDS_PATH):
+        return {"decks": []}
+    try:
+        with open(FLASHCARDS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"[FLASHCARDS LOAD ERROR]: {e}")
+        return {"decks": []}
+
+def save_flashcards(data):
+    with open(FLASHCARDS_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def get_flashcard_decks():
+    data = load_flashcards()
+    decks = data.get("decks", [])
+    for d in decks:
+        cards = d.get("cards", [])
+        d["total_cards"] = len(cards)
+        d["learned_count"] = sum(1 for c in cards if c.get("learned"))
+    return decks
+
+def get_deck_by_id(deck_id):
+    data = load_flashcards()
+    for d in data.get("decks", []):
+        if d.get("id") == deck_id:
+            cards = d.get("cards", [])
+            d["total_cards"] = len(cards)
+            d["learned_count"] = sum(1 for c in cards if c.get("learned"))
+            return d
+    return None
+
+def create_deck(name, description=""):
+    data = load_flashcards()
+    decks = data.setdefault("decks", [])
+    deck_id = "deck_" + re.sub(r'[^a-z0-9]', '_', name.lower()).strip('_')[:20] + f"_{int(time.time()) % 10000}"
+    new_deck = {
+        "id": deck_id,
+        "name": name.strip(),
+        "description": description.strip(),
+        "created_at": date.today().strftime("%Y-%m-%d"),
+        "cards": []
+    }
+    decks.append(new_deck)
+    save_flashcards(data)
+    return new_deck
+
+def update_deck(deck_id, name, description=""):
+    data = load_flashcards()
+    for d in data.get("decks", []):
+        if d.get("id") == deck_id:
+            d["name"] = name.strip()
+            d["description"] = description.strip()
+            save_flashcards(data)
+            return d
+    return None
+
+def delete_deck(deck_id):
+    data = load_flashcards()
+    data["decks"] = [d for d in data.get("decks", []) if d.get("id") != deck_id]
+    save_flashcards(data)
+    return True
+
+def add_card_to_deck(deck_id, word, meaning, example="", phonetic="", pos=""):
+    data = load_flashcards()
+    for d in data.get("decks", []):
+        if d.get("id") == deck_id:
+            card_id = "c_" + re.sub(r'[^a-z0-9]', '_', word.lower()).strip('_')[:15] + f"_{int(time.time()) % 10000}"
+            new_card = {
+                "id": card_id,
+                "word": word.strip(),
+                "phonetic": phonetic.strip(),
+                "pos": pos.strip(),
+                "meaning": meaning.strip(),
+                "example": example.strip(),
+                "learned": False
+            }
+            d.setdefault("cards", []).append(new_card)
+            save_flashcards(data)
+            return new_card
+    return None
+
+def update_card_in_deck(deck_id, card_id, word, meaning, example="", phonetic="", pos="", learned=False):
+    data = load_flashcards()
+    for d in data.get("decks", []):
+        if d.get("id") == deck_id:
+            for c in d.get("cards", []):
+                if c.get("id") == card_id:
+                    c["word"] = word.strip()
+                    c["meaning"] = meaning.strip()
+                    c["example"] = example.strip()
+                    c["phonetic"] = phonetic.strip()
+                    c["pos"] = pos.strip()
+                    c["learned"] = bool(learned)
+                    save_flashcards(data)
+                    return c
+    return None
+
+def delete_card_from_deck(deck_id, card_id):
+    data = load_flashcards()
+    for d in data.get("decks", []):
+        if d.get("id") == deck_id:
+            d["cards"] = [c for c in d.get("cards", []) if c.get("id") != card_id]
+            save_flashcards(data)
+            return True
+    return False
+
+def toggle_card_learned(deck_id, card_id):
+    data = load_flashcards()
+    for d in data.get("decks", []):
+        if d.get("id") == deck_id:
+            for c in d.get("cards", []):
+                if c.get("id") == card_id:
+                    c["learned"] = not c.get("learned", False)
+                    save_flashcards(data)
+                    return c.get("learned")
+    return False
+
+def ai_suggest_vocab_card(word):
+    try:
+        from src import ai_service
+        return ai_service.generate_vocab_card_details(word)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 

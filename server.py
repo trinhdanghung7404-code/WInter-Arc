@@ -135,7 +135,8 @@ def sync_data():
         return jsonify({
             "protocols": app_logic.load_protocols(),
             "storage": app_logic.load_storage(),
-            "config": app_logic.load_config()
+            "config": app_logic.load_config(),
+            "flashcards": app_logic.load_flashcards()
         }), 200
 
     if request.method == "POST":
@@ -145,6 +146,8 @@ def sync_data():
             scheduler_instance.setup_schedule()
         if "storage" in body:
             app_logic.save_storage(body["storage"])
+        if "flashcards" in body:
+            app_logic.save_flashcards(body["flashcards"])
         if "config" in body:
             # Chỉ cập nhật các trường an toàn, giữ nguyên telegram token/chat nếu có
             cfg = app_logic.load_config()
