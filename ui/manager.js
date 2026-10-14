@@ -960,17 +960,15 @@ function setupForm() {
     loadProtocols();
     loadTelegramConfig();
     loadWeatherConfig();
-    loadDailyNotes();
-    showToast("Protocols, Weather & Notes refreshed");
+    showToast("Protocols & Weather refreshed");
   });
 
   // Save Telegram & AI
   document.getElementById("btn-save-tg").addEventListener("click", saveTelegramConfig);
 
-  // Setup Weather, AI Persona & Daily Notes Controls
+  // Setup Weather & AI Persona Controls
   setupWeatherControls();
   setupAiPersonaControls();
-  setupDailyNotesControls();
 
   // Tự động làm mới thời tiết mỗi 5 phút và khi người dùng chuyển tab/quay lại cửa sổ
   setInterval(() => {
@@ -1077,7 +1075,6 @@ window.addEventListener("pywebviewready", () => {
   loadProtocols();
   loadTelegramConfig();
   loadWeatherConfig();
-  loadDailyNotes();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1085,5 +1082,4 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProtocols();
   loadTelegramConfig();
   loadWeatherConfig();
-  loadDailyNotes();
 });
