@@ -1,7 +1,7 @@
 {
   "streaks": {
-    "nonut": 1,
-    "winter_arc": 7
+    "nonut": 0,
+    "winter_arc": 12
   },
   "history": {
     "2026-10-07": {
@@ -132,11 +132,41 @@
       "focus_times": {},
       "notes": "",
       "tasks": {
+        "50_pushups_1557": true,
         "do_fp_9403": true,
+        "no_nut_1692": true,
         "reading_toefl_9372": true
       }
     },
     "2026-10-15": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "50_pushups_1557": true,
+        "no_nut_1692": false
+      }
+    },
+    "2026-10-16": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "50_pushups_1557": false,
+        "no_nut_1692": true
+      }
+    },
+    "2026-10-17": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {}
+    },
+    "2026-10-18": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "50_pushups_1557": true
+      }
+    },
+    "2026-10-19": {
       "focus_times": {},
       "notes": "",
       "tasks": {}

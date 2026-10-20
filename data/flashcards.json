@@ -1,6 +1,194 @@
 {
   "decks": [
     {
+      "id": "deck_day_1",
+      "name": "Day 1",
+      "description": "20 từ vựng cốt lõi TOEFL: Lịch sử, Khảo cổ, Mỹ thuật, Tự nhiên & Động/Tính từ đa năng",
+      "created_at": "2026-10-20",
+      "cards": [
+        {
+          "id": "c_integral",
+          "word": "Integral",
+          "phonetic": "/ˈɪn.tɪ.ɡrəl/",
+          "pos": "adjective",
+          "meaning": "Thiết yếu, cốt lõi, không thể thiếu. (Đồng nghĩa TOEFL: Essential, Vital, Fundamental)",
+          "example": "An integral part of the ancient social and economic structure.",
+          "learned": false
+        },
+        {
+          "id": "c_subjugate",
+          "word": "Subjugate",
+          "phonetic": "/ˈsʌb.dʒə.ɡeɪt/",
+          "pos": "verb",
+          "meaning": "Chinh phục, khuất phục, đô hộ. (Đồng nghĩa TOEFL: Conquer, Defeat, Overpower)",
+          "example": "The invading empire sought to subjugate neighboring tribes.",
+          "learned": false
+        },
+        {
+          "id": "c_synonymous",
+          "word": "Synonymous",
+          "phonetic": "/sɪˈnɑː.nə.məs/",
+          "pos": "adjective",
+          "meaning": "Đồng nghĩa với, tương đương với. (Đồng nghĩa TOEFL: Equivalent to, Identified with)",
+          "example": "His leadership became synonymous with unwavering discipline and victory.",
+          "learned": false
+        },
+        {
+          "id": "c_excavate",
+          "word": "Excavate",
+          "phonetic": "/ˈek.skə.veɪt/",
+          "pos": "verb",
+          "meaning": "Khai quật, đào bới đất đá để tìm cổ vật. (Đồng nghĩa TOEFL: Dig up, Unearth)",
+          "example": "Archaeologists are excavating the ruins of an ancient buried city.",
+          "learned": false
+        },
+        {
+          "id": "c_decipher",
+          "word": "Decipher",
+          "phonetic": "/dɪˈsaɪ.fɚ/",
+          "pos": "verb",
+          "meaning": "Giải mã, đọc hiểu chữ viết cổ hoặc mật mã. (Đồng nghĩa TOEFL: Decode, Interpret, Understand)",
+          "example": "Scholars worked tirelessly to decipher inscribed clay tablets.",
+          "learned": false
+        },
+        {
+          "id": "c_refined",
+          "word": "Refined",
+          "phonetic": "/rɪˈfaɪnd/",
+          "pos": "adjective",
+          "meaning": "Tinh tế, tao nhã, trau chuốt về gu thẩm mỹ/cách sống. (Đồng nghĩa TOEFL: Elegant, Cultured, Sophisticated)",
+          "example": "She was admired for her refined sensibility and patronage of the arts.",
+          "learned": false
+        },
+        {
+          "id": "c_eclectic",
+          "word": "Eclectic",
+          "phonetic": "/ekˈlek.tɪk/",
+          "pos": "adjective",
+          "meaning": "Pha trộn nhiều phong cách, đa dạng nguồn gốc. (Đồng nghĩa TOEFL: Diverse, Varied, Mixture)",
+          "example": "The art style was eclectic, blending Gothic, Greek, and Japanese motifs.",
+          "learned": false
+        },
+        {
+          "id": "c_denote",
+          "word": "Denote",
+          "phonetic": "/dɪˈnoʊt/",
+          "pos": "verb",
+          "meaning": "Biểu thị, chỉ ra, là dấu hiệu của cái gì. (Đồng nghĩa TOEFL: Signify, Indicate, Represent)",
+          "example": "In Victorian society, refined taste often denoted superior moral character.",
+          "learned": false
+        },
+        {
+          "id": "c_adorn",
+          "word": "Adorn",
+          "phonetic": "/əˈdɔːrn/",
+          "pos": "verb",
+          "meaning": "Trang trí, tô điểm, làm đẹp. (Đồng nghĩa TOEFL: Decorate, Beautify, Ornament)",
+          "example": "Intricate geometric patterns adorn the surfaces of the handcrafted furniture.",
+          "learned": false
+        },
+        {
+          "id": "c_departure",
+          "word": "Departure",
+          "phonetic": "/dɪˈpɑːr.tʃɚ/",
+          "pos": "noun",
+          "meaning": "Sự rẽ hướng, từ bỏ lối mòn / phong cách cũ (departure from sth). (Đồng nghĩa TOEFL: Deviation, Change from)",
+          "example": "The modern aesthetic marked a radical departure from traditional ornateness.",
+          "learned": false
+        },
+        {
+          "id": "c_industrious",
+          "word": "Industrious",
+          "phonetic": "/ɪnˈdʌs.tri.əs/",
+          "pos": "adjective",
+          "meaning": "Cần cù, siêng năng, chăm chỉ. (Đồng nghĩa TOEFL: Hardworking, Diligent)",
+          "example": "Beavers are absolutely industrious creatures known for building complex dams.",
+          "learned": false
+        },
+        {
+          "id": "c_penchant",
+          "word": "Penchant",
+          "phonetic": "/ˈpen.tʃənt/",
+          "pos": "noun",
+          "meaning": "Sở thích, thói quen thiên về cái gì (penchant for sth). (Đồng nghĩa TOEFL: Inclination, Tendency, Fondness)",
+          "example": "The animal species has an undeniable penchant for building massive dams.",
+          "learned": false
+        },
+        {
+          "id": "c_exemplary",
+          "word": "Exemplary",
+          "phonetic": "/ɪɡˈzem.plɚ.i/",
+          "pos": "adjective",
+          "meaning": "Gương mẫu, mẫu mực, hoàn hảo. (Đồng nghĩa TOEFL: Model, Ideal, Praiseworthy)",
+          "example": "His exemplary discipline set a high standard for the entire team.",
+          "learned": false
+        },
+        {
+          "id": "c_inconspicuous",
+          "word": "Inconspicuous",
+          "phonetic": "/ˌɪn.kənˈspɪk.ju.əs/",
+          "pos": "adjective",
+          "meaning": "Kín đáo, khó nhận thấy, không nổi bật. (Đồng nghĩa TOEFL: Unnoticeable, Hidden)",
+          "example": "The comet nucleus is an inconspicuous chunk of ice drifting in deep space.",
+          "learned": false
+        },
+        {
+          "id": "c_distinct",
+          "word": "Distinct",
+          "phonetic": "/dɪˈstɪŋkt/",
+          "pos": "adjective",
+          "meaning": "Riêng biệt, tách biệt, khác nhau rõ rệt. (Đồng nghĩa TOEFL: Separate, Different, Definite)",
+          "example": "Comets typically display two distinct tails: a dust tail and an ion tail.",
+          "learned": false
+        },
+        {
+          "id": "c_graphic",
+          "word": "Graphic",
+          "phonetic": "/ˈɡræf.ɪk/",
+          "pos": "adjective",
+          "meaning": "Sinh động, rõ ràng như thấy trước mắt (về bằng chứng, miêu tả). (Đồng nghĩa TOEFL: Vivid, Clear, Detailed)",
+          "example": "The fossil layer provides graphic proof of past ecological shifts.",
+          "learned": false
+        },
+        {
+          "id": "c_flourish",
+          "word": "Flourish",
+          "phonetic": "/ˈflɝː.ɪʃ/",
+          "pos": "verb",
+          "meaning": "Phát triển rực rỡ, hưng thịnh, nở rộ. (Đồng nghĩa TOEFL: Thrive, Prosper, Bloom)",
+          "example": "Artistic movements and industrial innovation flourished in the nineteenth century.",
+          "learned": false
+        },
+        {
+          "id": "c_abundant",
+          "word": "Abundant",
+          "phonetic": "/əˈbʌn.dənt/",
+          "pos": "adjective",
+          "meaning": "Dồi dào, phong phú, nhiều vô kể. (Đồng nghĩa TOEFL: Plentiful, Ample, Copious)",
+          "example": "When food resources are abundant, insect populations multiply rapidly.",
+          "learned": false
+        },
+        {
+          "id": "c_resemble",
+          "word": "Resemble",
+          "phonetic": "/rɪˈzem.bəl/",
+          "pos": "verb",
+          "meaning": "Giống với, tương đồng với. (Đồng nghĩa TOEFL: Look like, Be similar to)",
+          "example": "The giant panda closely resembles bears in its physical morphology.",
+          "learned": false
+        },
+        {
+          "id": "c_reign_supreme",
+          "word": "Reign supreme",
+          "phonetic": "/reɪn suːˈpriːm/",
+          "pos": "idiom",
+          "meaning": "Thống trị tối cao, chiếm vị trí số một, giữ ngôi vương. (Đồng nghĩa TOEFL: Dominate, Be the most important)",
+          "example": "Despite diverse stylistic influences, surface ornament reigned supreme in the era.",
+          "learned": false
+        }
+      ]
+    },
+    {
       "id": "deck_toefl_core",
       "name": "TOEFL Academic Core",
       "description": "Essential high-frequency academic vocabulary for reading & listening",
