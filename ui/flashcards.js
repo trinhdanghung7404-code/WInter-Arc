@@ -53,15 +53,67 @@ function getApi() {
 }
 
 // -----------------------------------------------------------------------------
-// Audio Pronunciation (Web Speech API)
+// Audio Pronunciation (Multi-tier: Native Audio Stream + SpeechSynthesis Fallback)
 // -----------------------------------------------------------------------------
+let currentAudioPlayer = null;
+
 function speakWord(text) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  utterance.rate = 0.9;
-  window.speechSynthesis.speak(utterance);
+  if (!text) return;
+  const clean = text.trim();
+
+  // Tier 1: High-fidelity Native American English Dictionary Audio Stream
+  try {
+    if (currentAudioPlayer) {
+      currentAudioPlayer.pause();
+      currentAudioPlayer = null;
+    }
+    const audioUrl = "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(clean) + "&type=2";
+    currentAudioPlayer = new Audio(audioUrl);
+    
+    // Add visual feedback to speaker icon
+    const activeSpeakers = document.querySelectorAll(".btn-speak");
+    activeSpeakers.forEach(s => s.classList.add("speaking"));
+    currentAudioPlayer.onended = () => {
+      activeSpeakers.forEach(s => s.classList.remove("speaking"));
+    };
+    currentAudioPlayer.onerror = () => {
+      activeSpeakers.forEach(s => s.classList.remove("speaking"));
+      fallbackGoogleTTS(clean);
+    };
+
+    const playPromise = currentAudioPlayer.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        fallbackGoogleTTS(clean);
+      });
+    }
+    return;
+  } catch (err) {
+    fallbackGoogleTTS(clean);
+  }
+}
+
+function fallbackGoogleTTS(clean) {
+  try {
+    const gUrl = "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=" + encodeURIComponent(clean);
+    currentAudioPlayer = new Audio(gUrl);
+    const p = currentAudioPlayer.play();
+    if (p !== undefined) {
+      p.catch(() => fallbackSpeechSynthesis(clean));
+    }
+  } catch (e) {
+    fallbackSpeechSynthesis(clean);
+  }
+}
+
+function fallbackSpeechSynthesis(clean) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  }
 }
 
 // -----------------------------------------------------------------------------

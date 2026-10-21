@@ -189,6 +189,374 @@
       ]
     },
     {
+      "id": "deck_day_2",
+      "name": "Day 2",
+      "description": "40 từ vựng cốt lõi TOEFL: Kiến trúc đô thị, Kinh tế hạ tầng, Khảo cổ sinh thái & Bẫy nghĩa phụ",
+      "created_at": "2026-10-21",
+      "cards": [
+        {
+          "id": "c_monumental",
+          "word": "Monumental",
+          "phonetic": "/ˌmɑːn.jəˈmen.t̬əl/",
+          "pos": "adjective",
+          "meaning": "Khổng lồ, đồ sộ, mang tính tầm vóc. (Đồng nghĩa TOEFL: Enormous, Massive)",
+          "example": "The monumental gravitational load required steel girders instead of traditional masonry.\n(Tải trọng trọng lực khổng lồ đòi hỏi các dầm thép thay vì gạch đá truyền thống.)",
+          "learned": false
+        },
+        {
+          "id": "c_facade",
+          "word": "Facade",
+          "phonetic": "/fəˈsɑːd/",
+          "pos": "noun",
+          "meaning": "Mặt tiền tòa nhà, bề ngoài. (Đồng nghĩa TOEFL: Front wall, Exterior)",
+          "example": "Architects pierced the exterior facade with vast expanses of glass to admit natural light.\n(Các kiến trúc sư đã xẻ các khoảng mở trên mặt tiền để đón ánh sáng tự nhiên.)",
+          "learned": false
+        },
+        {
+          "id": "c_pierce",
+          "word": "Pierce",
+          "phonetic": "/pɪərs/",
+          "pos": "verb",
+          "meaning": "Xẻ lỗ, đục khoảng mở để lắp cửa sổ. (Đồng nghĩa TOEFL: Cut openings into, Penetrate)",
+          "example": "New engineering techniques allowed builders to pierce thick exterior walls with large windows.\n(Kỹ thuật công trình mới cho phép các thợ xây đục xẻ những bức tường dày để lắp cửa sổ lớn.)",
+          "learned": false
+        },
+        {
+          "id": "c_embellish",
+          "word": "Embellish",
+          "phonetic": "/ɪmˈbel.ɪʃ/",
+          "pos": "verb",
+          "meaning": "Trang trí hoa mỹ, tô điểm thêm thắt. (Đồng nghĩa TOEFL: Decorate, Adorn)",
+          "example": "Nineteenth-century builders loved to embellish public buildings with ornate classical arches.\n(Những người thợ xây thế kỷ 19 rất thích tô điểm các tòa nhà công cộng bằng các vòm cổ điển hoa mỹ.)",
+          "learned": false
+        },
+        {
+          "id": "c_imperative",
+          "word": "Imperative",
+          "phonetic": "/ɪmˈper.ə.t̬ɪv/",
+          "pos": "noun",
+          "meaning": "Sự cấp bách, việc bắt buộc phải làm. (Đồng nghĩa TOEFL: Necessity, Urgent requirement)",
+          "example": "Following the devastating urban fire, there was an urgent imperative to rebuild rapidly.\n(Sau vụ hỏa hoạn đô thị tàn khốc, có một nhu cầu cấp bách bắt buộc phải tái thiết nhanh chóng.)",
+          "learned": false
+        },
+        {
+          "id": "c_constrain",
+          "word": "Constrain",
+          "phonetic": "/kənˈstreɪn/",
+          "pos": "verb",
+          "meaning": "Giới hạn, kìm hãm, ràng buộc. (Đồng nghĩa TOEFL: Restrict, Limit)",
+          "example": "Early skyscraper heights were strictly constrained by the load-bearing limits of masonry.\n(Chiều cao của những tòa nhà chọc trời thời kỳ đầu bị giới hạn nghiêm ngặt bởi tải trọng chịu lực của tường gạch.)",
+          "learned": false
+        },
+        {
+          "id": "c_departure_arch",
+          "word": "Departure",
+          "phonetic": "/dɪˈpɑːr.tʃɚ/",
+          "pos": "noun",
+          "meaning": "Sự rẽ hướng, phá cách khỏi truyền thống (departure from sth). (Đồng nghĩa TOEFL: Radical change, Shift)",
+          "example": "The use of lightweight steel frames represented a radical departure from traditional masonry.\n(Việc sử dụng khung thép nhẹ đánh dấu một sự rẽ hướng/phá cách hoàn toàn khỏi lối xây gạch đá truyền thống.)",
+          "learned": false
+        },
+        {
+          "id": "c_aesthetic",
+          "word": "Aesthetic",
+          "phonetic": "/esˈθet̬.ɪk/",
+          "pos": "adjective",
+          "meaning": "Thuộc về thẩm mỹ nghệ thuật. (Đồng nghĩa TOEFL: Artistic, Visual beauty)",
+          "example": "Louis Sullivan pioneered the aesthetic articulation of the skyscraper with form follows function.\n(Louis Sullivan đã tiên phong thể hiện tính thẩm mỹ của nhà chọc trời với triết lý hình thức theo sau công năng.)",
+          "learned": false
+        },
+        {
+          "id": "c_curtain_wall",
+          "word": "Curtain wall",
+          "phonetic": "/ˈkɝː.tən ˌwɑːl/",
+          "pos": "noun",
+          "meaning": "Tường rèm (bức tường kính/gạch phi chịu lực, chỉ treo che nắng gió). (Đồng nghĩa TOEFL: Non-load-bearing wall)",
+          "example": "In modern skyscrapers, the outer curtain wall carries no structural weight and merely keeps out weather.\n(Trong các tòa nhà chọc trời hiện đại, tường rèm không gánh tải trọng kết cấu mà chỉ chắn gió mưa.)",
+          "learned": false
+        },
+        {
+          "id": "c_conceive",
+          "word": "Conceive",
+          "phonetic": "/kənˈsiːv/",
+          "pos": "verb",
+          "meaning": "Thai nghén ý tưởng, phác thảo thiết kế. (Đồng nghĩa TOEFL: Devise, Design, Envision)",
+          "example": "William Le Baron Jenney conceived the first structural steel skeleton for urban skyscrapers.\n(William Le Baron Jenney đã thai nghén ý tưởng về bộ khung thép kết cấu đầu tiên cho nhà chọc trời đô thị.)",
+          "learned": false
+        },
+        {
+          "id": "c_audacious",
+          "word": "Audacious",
+          "phonetic": "/ɑːˈdeɪ.ʃəs/",
+          "pos": "adjective",
+          "meaning": "Táo bạo, liều lĩnh phi thường. (Đồng nghĩa TOEFL: Bold, Daring)",
+          "example": "Building the Erie Canal through dense wilderness was an audacious engineering project for its era.\n(Việc xây dựng kênh đào Erie xuyên qua rừng rậm hoang vu là một dự án công trình táo bạo phi thường thời bấy giờ.)",
+          "learned": false
+        },
+        {
+          "id": "c_exorbitant",
+          "word": "Exorbitant",
+          "phonetic": "/ɪɡˈzɔːr.bə.t̬ənt/",
+          "pos": "adjective",
+          "meaning": "Đắt đỏ cắt cổ, vượt mức chịu đựng. (Đồng nghĩa TOEFL: Excessively high, Astronomical)",
+          "example": "Before the canal opened, overland transport costs across the mountains were prohibitively exorbitant.\n(Trước khi kênh đào mở ra, chi phí vận tải đường bộ qua núi đắt đỏ tới mức cắt cổ.)",
+          "learned": false
+        },
+        {
+          "id": "c_ramification",
+          "word": "Ramification",
+          "phonetic": "/ˌræm.ə.fəˈkeɪ.ʃən/",
+          "pos": "noun",
+          "meaning": "Hệ quả, tác động sâu rộng. (Đồng nghĩa TOEFL: Consequence, Outcome, Implication)",
+          "example": "The completion of the national transportation grid had profound economic ramifications.\n(Việc hoàn thành mạng lưới giao thông quốc gia đã mang lại những hệ quả kinh tế vô cùng sâu rộng.)",
+          "learned": false
+        },
+        {
+          "id": "c_sever",
+          "word": "Sever",
+          "phonetic": "/ˈsev.ɚ/",
+          "pos": "verb",
+          "meaning": "Cắt đứt, làm gián đoạn hoàn toàn. (Đồng nghĩa TOEFL: Cut off, Break apart)",
+          "example": "The new canal system severed the historic commercial reliance on southward-flowing rivers.\n(Hệ thống kênh đào mới đã cắt đứt sự phụ thuộc thương mại lịch sử vào các con sông chảy về phương Nam.)",
+          "learned": false
+        },
+        {
+          "id": "c_mercantile",
+          "word": "Mercantile",
+          "phonetic": "/ˈmɝː.kən.taɪl/",
+          "pos": "adjective",
+          "meaning": "Thuộc về buôn bán, thương mại. (Đồng nghĩa TOEFL: Commercial, Trade-related)",
+          "example": "New York rapidly evolved from a regional port into a bustling global mercantile capital.\n(New York nhanh chóng phát triển từ một cảng khu vực thành thủ phủ thương mại buôn bán sầm uất toàn cầu.)",
+          "learned": false
+        },
+        {
+          "id": "c_impervious",
+          "word": "Impervious",
+          "phonetic": "/ɪmˈpɝː.vi.əs/",
+          "pos": "adjective",
+          "meaning": "Không thấm nước, ngăn chặn rò rỉ. (Đồng nghĩa TOEFL: Impenetrable, Water-resistant)",
+          "example": "Workers sealed the bed of the canal with an impervious layer of puddled clay.\n(Công nhân đã trát đáy kênh đào bằng một lớp đất sét dầm không thấm nước để chống rò rỉ.)",
+          "learned": false
+        },
+        {
+          "id": "c_unprecedented",
+          "word": "Unprecedented",
+          "phonetic": "/ʌnˈpres.ə.den.t̬ɪd/",
+          "pos": "adjective",
+          "meaning": "Chưa từng có tiền lệ, vô tiền khoáng hậu. (Đồng nghĩa TOEFL: Novel, Never before seen)",
+          "example": "The Industrial Revolution fueled an unprecedented migration from rural areas to urban hubs.\n(Cách mạng Công nghiệp đã châm ngòi cho một làn sóng di cư chưa từng có tiền lệ từ nông thôn ra thành thị.)",
+          "learned": false
+        },
+        {
+          "id": "c_supremacy",
+          "word": "Supremacy",
+          "phonetic": "/suːˈprem.ə.si/",
+          "pos": "noun",
+          "meaning": "Vị thế bá chủ, uy thế tối cao. (Đồng nghĩa TOEFL: Dominance, Hegemony)",
+          "example": "Direct access to western trade routes cemented New York's enduring financial supremacy.\n(Việc tiếp cận trực tiếp các tuyến giao thương phía Tây đã củng cố vị thế bá chủ tài chính của New York.)",
+          "learned": false
+        },
+        {
+          "id": "c_aggregate",
+          "word": "Aggregate",
+          "phonetic": "/ˈæɡ.rɪ.ɡət/",
+          "pos": "adjective",
+          "meaning": "Tổng cộng, gộp lại toàn bộ. (Đồng nghĩa TOEFL: Total, Combined)",
+          "example": "The series of lock systems overcame an aggregate elevation change of 565 feet.\n(Chuỗi hệ thống âu tàu đã vượt qua mức chênh lệch độ cao tổng cộng lên tới 565 feet.)",
+          "learned": false
+        },
+        {
+          "id": "c_hinterland",
+          "word": "Hinterland",
+          "phonetic": "/ˈhɪn.t̬ɚ.lænd/",
+          "pos": "noun",
+          "meaning": "Vùng nội địa sâu xa, hậu phương cấp hàng. (Đồng nghĩa TOEFL: Inland region, Interior)",
+          "example": "The canal opened direct commercial access between Atlantic ports and the Midwestern hinterland.\n(Kênh đào đã mở ra sự kết nối thương mại trực tiếp giữa các cảng Đại Tây Dương và vùng nội địa Trung Tây.)",
+          "learned": false
+        },
+        {
+          "id": "c_terminus",
+          "word": "Terminus",
+          "phonetic": "/ˈtɝː.mə.nəs/",
+          "pos": "noun",
+          "meaning": "Điểm kết thúc, mốc ranh giới cuối. (Đồng nghĩa TOEFL: End point, Boundary)",
+          "example": "Widespread megafaunal extinctions occurred near the terminus of the Pleistocene epoch.\n(Các vụ tuyệt chủng động vật khổng lồ hàng loạt đã xảy ra gần giai đoạn cuối của kỷ Canh Tân.)",
+          "learned": false
+        },
+        {
+          "id": "c_abrupt",
+          "word": "Abrupt",
+          "phonetic": "/əˈbrʌpt/",
+          "pos": "adjective",
+          "meaning": "Đột ngột, diễn ra nhanh trong thời gian ngắn. (Đồng nghĩa TOEFL: Sudden, Rapid)",
+          "example": "The ice sheets retreated during a geologically abrupt interval of rapid warming.\n(Các dải băng tan rải rác trong một khoảng thời gian ngắn đột ngột xét theo niên đại địa chất.)",
+          "learned": false
+        },
+        {
+          "id": "c_oscillate",
+          "word": "Oscillate",
+          "phonetic": "/ˈɑː.səl.eɪt/",
+          "pos": "verb",
+          "meaning": "Dao động liên tục lên xuống, biến đổi thất thường. (Đồng nghĩa TOEFL: Fluctuate, Swing)",
+          "example": "The regional climate oscillated between freezing cold snaps and sudden warm spells.\n(Khí hậu khu vực dao động liên tục giữa những đợt rét buốt và các đợt ấm áp bất thường.)",
+          "learned": false
+        },
+        {
+          "id": "c_catalyst",
+          "word": "Catalyst",
+          "phonetic": "/ˈkæt̬.əl.ɪst/",
+          "pos": "noun",
+          "meaning": "Chất xúc tác, tác nhân chính châm ngòi. (Đồng nghĩa TOEFL: Driving force, Trigger)",
+          "example": "Intense human hunting acted as the primary catalyst for the collapse of ancient prey species.\n(Việc săn bắn cường độ cao của con người đóng vai trò là chất xúc tác chính châm ngòi cho sự sụp đổ của các loài thú.)",
+          "learned": false
+        },
+        {
+          "id": "c_sparse",
+          "word": "Sparse",
+          "phonetic": "/spɑːrs/",
+          "pos": "adjective",
+          "meaning": "Thưa thớt, rải rác, ít ỏi. (Đồng nghĩa TOEFL: Scarce, Thinly scattered)",
+          "example": "Despite widespread claims of overkill, mammoth kill sites remain exceedingly sparse.\n(Bất chấp các giả thuyết về săn bắn quá mức, các di chỉ giết voi ma mút vẫn cực kỳ thưa thớt.)",
+          "learned": false
+        },
+        {
+          "id": "c_unequivocal",
+          "word": "Unequivocal",
+          "phonetic": "/ˌʌn.ɪˈkwɪv.ə.kəl/",
+          "pos": "adjective",
+          "meaning": "Rõ ràng, không thể chối cãi, dứt khoát. (Đồng nghĩa TOEFL: Indisputable, Clear, Definite)",
+          "example": "Scientists seek unequivocal fossil evidence before declaring that humans caused the extinction.\n(Các nhà khoa học tìm kiếm bằng chứng hóa thạch không thể chối cãi trước khi kết luận con người gây ra tuyệt chủng.)",
+          "learned": false
+        },
+        {
+          "id": "c_synergistic",
+          "word": "Synergistic",
+          "phonetic": "/ˌsɪn.ɚˈdʒɪs.tɪk/",
+          "pos": "adjective",
+          "meaning": "Hiệp lực, cộng hưởng tác động. (Đồng nghĩa TOEFL: Combined, Collaborative)",
+          "example": "A synergistic model suggests that combined climate stress and human predation drove the extinctions.\n(Mô hình cộng hưởng tác động cho thấy sự kết hợp giữa áp lực khí hậu và săn bắn đã gây ra tuyệt chủng.)",
+          "learned": false
+        },
+        {
+          "id": "c_refugia",
+          "word": "Refugia",
+          "phonetic": "/rɪˈfjuː.dʒi.ə/",
+          "pos": "noun",
+          "meaning": "Khu vực trú ẩn sót lại của sinh vật khi khí hậu khắc nghiệt. (Đồng nghĩa TOEFL: Sheltered survival pockets)",
+          "example": "Isolated mountain pockets served as ecological refugia for cold-adapted species during global warming.\n(Các thung lũng núi biệt lập đóng vai trò là khu vực trú ẩn cho các loài thích nghi lạnh khi trái đất ấm lên.)",
+          "learned": false
+        },
+        {
+          "id": "c_mosaic",
+          "word": "Mosaic",
+          "phonetic": "/moʊˈzeɪ.ɪk/",
+          "pos": "adjective",
+          "meaning": "Nhiều mảng ghép đan xen, phong phú đa dạng. (Đồng nghĩa TOEFL: Diverse, Patchwork pattern)",
+          "example": "The prehistoric plains featured a rich mosaic of grassland and mixed coniferous forest.\n(Vùng đồng bằng thời tiền sử có thảm thực vật đan xen phong phú giữa đồng cỏ và rừng thông hỗn hợp.)",
+          "learned": false
+        },
+        {
+          "id": "c_naivete",
+          "word": "Naivete",
+          "phonetic": "/naɪˌiːvˈteɪ/",
+          "pos": "noun",
+          "meaning": "Sự thơ ngây, mất cảnh giác trước kẻ thù mới. (Đồng nghĩa TOEFL: Inexperience, Lack of wariness)",
+          "example": "Island prey animals displayed naive lack of fear, making them vulnerable to human hunters.\n(Động vật trên đảo thể hiện sự thơ ngây mất cảnh giác, khiến chúng dễ dàng bị các thợ săn hạ gục.)",
+          "learned": false
+        },
+        {
+          "id": "c_champion_v",
+          "word": "Champion",
+          "phonetic": "/ˈtʃæm.pi.ən/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Ủng hộ, bênh vực nhiệt liệt. (Đồng nghĩa TOEFL: Advocate, Promote)",
+          "example": "Architect Louis Sullivan championed the theory that architectural form should strictly follow function.\n(Kiến trúc sư Louis Sullivan đã nhiệt liệt ủng hộ lý thuyết rằng hình thức kiến trúc phải theo sau công năng.)",
+          "learned": false
+        },
+        {
+          "id": "c_harbor_v",
+          "word": "Harbor",
+          "phonetic": "/ˈhɑːr.bɚ/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Chứa chấp, mang trong mình, ấp ủ. (Đồng nghĩa TOEFL: Contain, House, Shelter)",
+          "example": "Astrobiologists believe Europa's thick ice crust may harbor microscopic extraterrestrial life.\n(Các nhà sinh học vũ trụ tin rằng lớp vỏ băng dày của Europa có thể chứa chấp/nuôi dưỡng sự sống vi sinh.)",
+          "learned": false
+        },
+        {
+          "id": "c_sound_adj",
+          "word": "Sound",
+          "phonetic": "/saʊnd/",
+          "pos": "adjective",
+          "meaning": "[Bẫy Reading] Vững chắc, đáng tin cậy, hợp lý logic. (Đồng nghĩa TOEFL: Solid, Reliable, Valid)",
+          "example": "The archaeologist's conclusion was based on sound empirical evidence gathered over a decade.\n(Kết luận của nhà khảo cổ dựa trên những bằng chứng thực nghiệm vững chắc và đáng tin cậy.)",
+          "learned": false
+        },
+        {
+          "id": "c_compromise_v",
+          "word": "Compromise",
+          "phonetic": "/ˈkɑːm.prə.maɪz/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Làm suy yếu, gây nguy hại, phá hỏng. (Đồng nghĩa TOEFL: Weaken, Damage, Endanger)",
+          "example": "Intense heat from the fire compromised the structural integrity of the iron beams.\n(Sức nóng khủng khiếp từ ngọn lửa đã làm suy yếu/nguy hại đến tính toàn vẹn kết cấu của các dầm sắt.)",
+          "learned": false
+        },
+        {
+          "id": "c_foster_v",
+          "word": "Foster",
+          "phonetic": "/ˈfɑː.stɚ/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Thúc đẩy, khuyến khích phát triển. (Đồng nghĩa TOEFL: Encourage, Promote, Stimulate)",
+          "example": "The completion of the canal fostered rapid urban growth along the trade corridor.\n(Việc hoàn thành kênh đào đã thúc đẩy sự phát triển đô thị nhanh chóng dọc theo hành lang giao thương.)",
+          "learned": false
+        },
+        {
+          "id": "c_dislodge_v",
+          "word": "Dislodge",
+          "phonetic": "/dɪsˈlɑːdʒ/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Đánh bật ra khỏi vị trí, làm xê dịch. (Đồng nghĩa TOEFL: Displace, Remove, Knock out)",
+          "example": "Gravitational perturbations can dislodge icy comets from the outer reaches of the solar system.\n(Nhiễu loạn lực hấp dẫn có thể đánh bật các sao chổi băng giá ra khỏi vùng rìa ngoài của hệ mặt trời.)",
+          "learned": false
+        },
+        {
+          "id": "c_pristine_adj",
+          "word": "Pristine",
+          "phonetic": "/prɪˈstiːn/",
+          "pos": "adjective",
+          "meaning": "[Bẫy Reading] Nguyên sơ, chưa từng bị xâm phạm hay hư hại. (Đồng nghĩa TOEFL: Undamaged, Pure, Unspoiled)",
+          "example": "Deep underground ice cores preserve a pristine record of the ancient atmosphere.\n(Các lõi băng sâu dưới lòng đất lưu giữ một hồ sơ nguyên sơ chưa từng bị xâm phạm về bầu khí quyển cổ đại.)",
+          "learned": false
+        },
+        {
+          "id": "c_subsume_v",
+          "word": "Subsume",
+          "phonetic": "/səbˈsuːm/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Gộp vào, xếp vào một nhóm lớn hơn. (Đồng nghĩa TOEFL: Include, Absorb, Incorporate)",
+          "example": "Smaller independent craft shops were eventually subsumed into large industrial factories.\n(Các xưởng thủ công nhỏ lẻ độc lập cuối cùng đã bị gộp vào các nhà máy công nghiệp lớn.)",
+          "learned": false
+        },
+        {
+          "id": "c_stark_adj",
+          "word": "Stark",
+          "phonetic": "/stɑːrk/",
+          "pos": "adjective",
+          "meaning": "[Bẫy Reading] Rõ rệt, tương phản gay gắt, khắc nghiệt. (Đồng nghĩa TOEFL: Distinct, Sharp, Severe)",
+          "example": "There was a stark contrast between the ornate exterior and the functional interior of the building.\n(Có một sự tương phản rõ rệt gay gắt giữa vẻ ngoài hoa mỹ và nội thất chú trọng công năng của tòa nhà.)",
+          "learned": false
+        },
+        {
+          "id": "c_delineate_v",
+          "word": "Delineate",
+          "phonetic": "/dɪˈlɪn.i.eɪt/",
+          "pos": "verb",
+          "meaning": "[Bẫy Reading] Mô tả chi tiết, phân định rõ ranh giới. (Đồng nghĩa TOEFL: Describe, Outline, Trace)",
+          "example": "The survey carefully delineated the territorial boundaries between the two colonies.\n(Bản đồ trắc địa đã phân định ranh giới một cách chi tiết và rõ ràng giữa hai vùng thuộc địa.)",
+          "learned": false
+        }
+      ]
+    },
+    {
       "id": "deck_toefl_core",
       "name": "TOEFL Academic Core",
       "description": "Essential high-frequency academic vocabulary for reading & listening",

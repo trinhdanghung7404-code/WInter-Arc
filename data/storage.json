@@ -1,7 +1,7 @@
 {
   "streaks": {
-    "nonut": 0,
-    "winter_arc": 12
+    "nonut": 2,
+    "winter_arc": 1
   },
   "history": {
     "2026-10-07": {
@@ -167,6 +167,21 @@
       }
     },
     "2026-10-19": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "no_nut_1692": true
+      }
+    },
+    "2026-10-20": {
+      "focus_times": {},
+      "notes": "",
+      "tasks": {
+        "50_pushups_1557": true,
+        "no_nut_1692": true
+      }
+    },
+    "2026-10-21": {
       "focus_times": {},
       "notes": "",
       "tasks": {}
