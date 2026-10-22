@@ -437,9 +437,9 @@ function renderWordsTable(filterQuery = "") {
         <div class="word-row-meaning">${escapeHtml(card.meaning)}</div>
       </div>
       <div class="word-row-actions">
-        <button type="button" class="btn-row-action btn-speak-row" title="Listen" data-word="${escapeHtml(card.word)}">🔊</button>
-        <button type="button" class="btn-row-action btn-edit-row" title="Edit" data-id="${card.id}">✏️</button>
-        <button type="button" class="btn-row-action btn-del btn-del-row" title="Delete" data-id="${card.id}">🗑️</button>
+        <button type="button" class="btn-row-action btn-speak-row" title="Listen (S)" data-word="${escapeHtml(card.word)}">Audio</button>
+        <button type="button" class="btn-row-action btn-edit-row" title="Edit" data-id="${card.id}">Edit</button>
+        <button type="button" class="btn-row-action btn-del btn-del-row" title="Delete" data-id="${card.id}">Delete</button>
       </div>
     `;
 
@@ -526,7 +526,7 @@ async function triggerAiAutoFill() {
   const btn = document.getElementById("btn-ai-suggest-vocab");
   if (btn) {
     btn.disabled = true;
-    btn.innerText = "✨ AI Generating...";
+    btn.innerText = "Generating...";
   }
 
   try {
@@ -554,7 +554,7 @@ async function triggerAiAutoFill() {
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerText = "✨ AI Auto-fill (Gemini)";
+      btn.innerText = "AI Auto-fill";
     }
   }
 }
@@ -725,13 +725,6 @@ function applyTheme(themeName) {
   document.body.classList.remove("theme-warm-amber", "theme-warm-daylight", "theme-ice-frost");
   document.body.classList.add(`theme-${targetTheme}`);
   localStorage.setItem("fc_theme", targetTheme);
-
-  const logoEl = document.getElementById("fc-logo");
-  if (logoEl) {
-    if (targetTheme === "ice-frost") logoEl.innerText = "❄️";
-    else if (targetTheme === "warm-daylight") logoEl.innerText = "☀️";
-    else logoEl.innerText = "🔥";
-  }
 
   const themeSelect = document.getElementById("theme-select");
   if (themeSelect && themeSelect.value !== targetTheme) {

@@ -13,10 +13,9 @@
     <!-- Top Header -->
     <header class="fc-header">
       <div class="fc-brand">
-        <span class="fc-logo" id="fc-logo">🔥</span>
         <div>
-          <h1>WINTER ARC // VOCABULARY ENGINE</h1>
-          <p class="fc-subtitle">Master Academic & Discipline Vocabulary • Spaced Repetition</p>
+          <h1>WINTER ARC / VOCABULARY</h1>
+          <p class="fc-subtitle">Spaced Repetition System</p>
         </div>
       </div>
 
@@ -25,9 +24,9 @@
         <div class="theme-select-wrap">
           <label for="theme-select">THEME:</label>
           <select id="theme-select" class="theme-select">
-            <option value="warm-amber" selected>🔥 Nóng Sáng (Warm Amber)</option>
-            <option value="warm-daylight">☀️ Kem Sáng (Daylight)</option>
-            <option value="ice-frost">❄️ Xanh Băng (Ice Frost)</option>
+            <option value="warm-amber" selected>Warm Amber</option>
+            <option value="warm-daylight">Warm Daylight</option>
+            <option value="ice-frost">Ice Frost</option>
           </select>
         </div>
         <div class="deck-select-wrap">
@@ -36,24 +35,21 @@
             <!-- Rendered by JS -->
           </select>
         </div>
-        <button id="btn-new-deck" class="btn-deck-action" title="Create New Deck">➕ New Deck</button>
-        <button id="btn-delete-deck" class="btn-deck-action btn-danger" title="Delete Active Deck">🗑️</button>
+        <button id="btn-new-deck" class="btn-deck-action" title="Create New Deck">+ New</button>
+        <button id="btn-delete-deck" class="btn-deck-action btn-danger" title="Delete Active Deck">Delete</button>
       </div>
     </header>
 
     <!-- Mode Navigation Tabs -->
     <nav class="fc-mode-nav">
       <button type="button" class="fc-tab-btn active" data-tab="flip">
-        <span class="tab-icon">📇</span>
-        <span>Flashcard Mode (Đọc Thẻ)</span>
+        <span>Flashcard</span>
       </button>
       <button type="button" class="fc-tab-btn" data-tab="quiz">
-        <span class="tab-icon">🎯</span>
-        <span>Quiz Mode (Trắc Nghiệm)</span>
+        <span>Quiz</span>
       </button>
       <button type="button" class="fc-tab-btn" data-tab="list">
-        <span class="tab-icon">📚</span>
-        <span>Word Manager (Quản Lý Từ)</span>
+        <span>Word Manager</span>
       </button>
     </nav>
 
@@ -70,7 +66,7 @@
           <div class="flip-progress-wrap">
             <div id="flip-progress-bar" class="flip-progress-bar" style="width: 12%;"></div>
           </div>
-          <button type="button" id="btn-shuffle-cards" class="btn-tool-pill" title="Shuffle Cards">🔀 Shuffle</button>
+          <button type="button" id="btn-shuffle-cards" class="btn-tool-pill" title="Shuffle Cards">Shuffle</button>
         </div>
 
         <!-- 3D Card Scene -->
@@ -81,22 +77,22 @@
             <div class="card-face card-front">
               <div class="face-top-row">
                 <span class="pos-badge" id="card-front-pos">ADJECTIVE</span>
-                <button type="button" class="btn-speak" id="btn-speak-front" title="Pronounce word">🔊</button>
+                <button type="button" class="btn-speak" id="btn-speak-front" title="Pronounce word (S)">Audio</button>
               </div>
               <div class="face-center">
                 <h2 class="card-word" id="card-front-word">Resilient</h2>
                 <div class="card-phonetic" id="card-front-phonetic">/rɪˈzɪl.jənt/</div>
               </div>
               <div class="face-bottom-hint">
-                <span>Space / Click to Flip 🔄</span>
+                <span>Space / Click to Flip</span>
               </div>
             </div>
 
             <!-- BACK -->
             <div class="card-face card-back">
               <div class="face-top-row">
-                <span class="meaning-tag">VIETNAMESE DEFINITION</span>
-                <button type="button" class="btn-star-learned" id="btn-toggle-learned" title="Mark as Learned">⭐</button>
+                <span class="meaning-tag">DEFINITION</span>
+                <button type="button" class="btn-star-learned" id="btn-toggle-learned" title="Mark as Learned">Learned</button>
               </div>
               <div class="face-center">
                 <div class="card-meaning" id="card-back-meaning">Kiên cường, phục hồi nhanh chóng sau khó khăn</div>
@@ -106,7 +102,7 @@
                 </div>
               </div>
               <div class="face-bottom-hint">
-                <span>Space / Click to Flip Back 🔄</span>
+                <span>Space / Click to Flip Back</span>
               </div>
             </div>
 
@@ -116,7 +112,7 @@
         <!-- Flip Controls -->
         <div class="flip-controls">
           <button type="button" id="btn-prev-card" class="btn-nav-control" title="Previous (Left Arrow)">
-            <span>◀ Prev</span>
+            <span>Prev</span>
             <kbd>←</kbd>
           </button>
           <button type="button" id="btn-flip-trigger" class="btn-nav-control btn-primary-flip" title="Flip Card (Space)">
@@ -124,7 +120,7 @@
             <kbd>Space</kbd>
           </button>
           <button type="button" id="btn-next-card" class="btn-nav-control" title="Next (Right Arrow)">
-            <span>Next ▶</span>
+            <span>Next</span>
             <kbd>→</kbd>
           </button>
         </div>
@@ -145,14 +141,14 @@
             <span id="quiz-total-val">0</span>
           </div>
           <div class="quiz-question-counter" id="quiz-q-counter">Question 1 of 8</div>
-          <button type="button" id="btn-restart-quiz" class="btn-tool-pill">🔄 Restart Quiz</button>
+          <button type="button" id="btn-restart-quiz" class="btn-tool-pill">Restart Quiz</button>
         </div>
 
         <!-- Quiz Question Box -->
         <div class="quiz-question-box">
           <div class="quiz-q-top">
             <span class="pos-badge" id="quiz-q-pos">ADJECTIVE</span>
-            <button type="button" class="btn-speak" id="btn-quiz-speak" title="Pronounce">🔊</button>
+            <button type="button" class="btn-speak" id="btn-quiz-speak" title="Pronounce (S)">Audio</button>
           </div>
           <h2 class="quiz-q-word" id="quiz-q-word">Resilient</h2>
           <div class="quiz-q-phonetic" id="quiz-q-phonetic">/rɪˈzɪl.jənt/</div>
@@ -168,13 +164,12 @@
         <div class="quiz-feedback-box hidden" id="quiz-feedback-box">
           <div class="quiz-feedback-msg" id="quiz-feedback-msg">Correct! Well done.</div>
           <div class="quiz-feedback-example" id="quiz-feedback-example"></div>
-          <button type="button" id="btn-quiz-next" class="btn-primary-add" style="margin-top: 10px; width: 100%;">Next Question ▶ (Enter)</button>
+          <button type="button" id="btn-quiz-next" class="btn-primary-add" style="margin-top: 10px; width: 100%;">Next Question (Enter)</button>
         </div>
 
         <!-- Quiz Finished View -->
         <div class="quiz-finish-box hidden" id="quiz-finish-box">
-          <div class="finish-trophy">🏆</div>
-          <h2 class="finish-title">QUIZ COMPLETED!</h2>
+          <h2 class="finish-title">QUIZ COMPLETED</h2>
           <div class="finish-stats-row">
             <div class="finish-stat-card">
               <span class="stat-num" id="finish-score">8/10</span>
@@ -186,8 +181,8 @@
             </div>
           </div>
           <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-            <button type="button" id="btn-finish-restart" class="btn-primary-add" style="width: auto; padding: 10px 24px;">Practice Again 🔄</button>
-            <button type="button" id="btn-finish-to-flip" class="btn-tool-pill" style="padding: 10px 20px; font-size: 0.8rem;">Review Cards 📇</button>
+            <button type="button" id="btn-finish-restart" class="btn-primary-add" style="width: auto; padding: 10px 24px;">Practice Again</button>
+            <button type="button" id="btn-finish-to-flip" class="btn-tool-pill" style="padding: 10px 20px; font-size: 0.8rem;">Review Cards</button>
           </div>
         </div>
 
@@ -204,7 +199,7 @@
           <div class="manager-form-card">
             <div class="section-title-row">
               <h3 id="card-form-title">ADD VOCABULARY CARD</h3>
-              <button type="button" id="btn-cancel-card-edit" class="btn-cancel-edit hidden">✕ Cancel</button>
+              <button type="button" id="btn-cancel-card-edit" class="btn-cancel-edit hidden">Cancel</button>
             </div>
             <form id="card-crud-form" onsubmit="return false;">
               <input type="hidden" id="editing-card-id" value="" />
@@ -212,7 +207,7 @@
               <div class="form-field">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                   <label>English Word:</label>
-                  <button type="button" id="btn-ai-suggest-vocab" class="btn-ai-chip">✨ AI Auto-fill (Gemini)</button>
+                  <button type="button" id="btn-ai-suggest-vocab" class="btn-ai-chip">AI Auto-fill</button>
                 </div>
                 <input type="text" id="input-card-word" placeholder="e.g. Ubiquitous, Mitigate, Resilient..." required />
               </div>
@@ -225,10 +220,10 @@
                 <div class="form-field">
                   <label>Part of Speech:</label>
                   <select id="input-card-pos" class="deck-select">
-                    <option value="adjective">Adjective (Tính từ)</option>
-                    <option value="noun">Noun (Danh từ)</option>
-                    <option value="verb">Verb (Động từ)</option>
-                    <option value="adverb">Adverb (Trạng từ)</option>
+                    <option value="adjective">Adjective</option>
+                    <option value="noun">Noun</option>
+                    <option value="verb">Verb</option>
+                    <option value="adverb">Adverb</option>
                     <option value="idiom">Idiom / Phrase</option>
                   </select>
                 </div>
@@ -255,7 +250,7 @@
                 <h3>DECK VOCABULARY</h3>
                 <span id="deck-card-count-badge" class="count-badge">0 cards</span>
               </div>
-              <input type="text" id="input-search-words" class="input-search-box" placeholder="🔍 Search word or meaning..." />
+              <input type="text" id="input-search-words" class="input-search-box" placeholder="Search word or meaning..." />
             </div>
 
             <div class="words-table-container" id="words-table-container">
