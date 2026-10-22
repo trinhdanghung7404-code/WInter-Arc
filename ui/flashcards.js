@@ -716,9 +716,47 @@ function escapeHtml(text) {
 }
 
 // -----------------------------------------------------------------------------
+// Theme Management (Warm Amber / Warm Daylight / Ice Frost)
+// -----------------------------------------------------------------------------
+function applyTheme(themeName) {
+  const validThemes = ["warm-amber", "warm-daylight", "ice-frost"];
+  const targetTheme = validThemes.includes(themeName) ? themeName : "warm-amber";
+  
+  document.body.classList.remove("theme-warm-amber", "theme-warm-daylight", "theme-ice-frost");
+  document.body.classList.add(`theme-${targetTheme}`);
+  localStorage.setItem("fc_theme", targetTheme);
+
+  const logoEl = document.getElementById("fc-logo");
+  if (logoEl) {
+    if (targetTheme === "ice-frost") logoEl.innerText = "❄️";
+    else if (targetTheme === "warm-daylight") logoEl.innerText = "☀️";
+    else logoEl.innerText = "🔥";
+  }
+
+  const themeSelect = document.getElementById("theme-select");
+  if (themeSelect && themeSelect.value !== targetTheme) {
+    themeSelect.value = targetTheme;
+  }
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem("fc_theme") || "warm-amber";
+  applyTheme(savedTheme);
+
+  const themeSelect = document.getElementById("theme-select");
+  if (themeSelect) {
+    themeSelect.value = savedTheme;
+    themeSelect.addEventListener("change", (e) => {
+      applyTheme(e.target.value);
+    });
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Initialize
 // -----------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
   setupEventListeners();
   loadDecks();
 });

@@ -13,7 +13,7 @@
     <!-- Top Header -->
     <header class="fc-header">
       <div class="fc-brand">
-        <span class="fc-logo">❄️</span>
+        <span class="fc-logo" id="fc-logo">🔥</span>
         <div>
           <h1>WINTER ARC // VOCABULARY ENGINE</h1>
           <p class="fc-subtitle">Master Academic & Discipline Vocabulary • Spaced Repetition</p>
@@ -22,6 +22,14 @@
 
       <!-- Deck Selector & Actions -->
       <div class="fc-deck-bar">
+        <div class="theme-select-wrap">
+          <label for="theme-select">THEME:</label>
+          <select id="theme-select" class="theme-select">
+            <option value="warm-amber" selected>🔥 Nóng Sáng (Warm Amber)</option>
+            <option value="warm-daylight">☀️ Kem Sáng (Daylight)</option>
+            <option value="ice-frost">❄️ Xanh Băng (Ice Frost)</option>
+          </select>
+        </div>
         <div class="deck-select-wrap">
           <label for="deck-select">DECK:</label>
           <select id="deck-select" class="deck-select">
