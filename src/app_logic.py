@@ -575,67 +575,102 @@ def get_day_performance(d, history):
 def calculate_winter_arc_streak(history):
     """
     Chính sách tính Streak Winter Arc chuẩn:
-    1. Quá khứ: Các ngày đã kết thúc (từ hôm qua trở về trước) đạt 100% -> Chuỗi Lửa 🔥
-    2. Các ngày quá khứ đạt 50% - 99% -> Chuỗi Xám ⚪ (tối đa 3 ngày liên tiếp)
-    3. Ngày hôm nay (đang diễn ra):
-       - Chuỗi đã đạt được từ quá khứ luôn được BẢO VỆ NGUYÊN VẸN!
-       - Nếu hôm nay hoàn thành 100% -> Tăng thêm +1 ngày Lửa 🔥!
-       - Không làm tụt chuỗi của các ngày trước thành chuỗi xám khi ngày hôm nay chưa kết thúc.
+    1. Quét lịch sử theo trình tự thời gian (forward timeline) từ quá khứ đến hôm qua:
+       - Ngày 100% -> Chuỗi Lửa 🔥, reset số ngày xám liên tiếp về 0.
+       - Ngày 50% - 99% -> Chuỗi Xám ⚪ (tối đa 3 ngày liên tiếp; nếu vượt quá 3 ngày liên tiếp thì chuỗi reset về 0).
+       - Ngày < 50% (lost) -> Chuỗi reset về 0.
+    2. Ngày hôm nay (đang diễn ra):
+       - Chuỗi đã đạt được từ quá khứ luôn được BẢO VỆ NGUYÊN VẸN (không bao giờ bị reset về 0 khi ngày chưa kết thúc)!
+       - Nếu hôm nay đã hoàn thành 100% -> Tăng thêm +1 ngày Lửa 🔥!
+       - Nếu hôm nay chưa hoàn thành hoặc mới đạt 50% -> Hiển thị bảo toàn chuỗi ngày hôm qua, khích lệ hoàn thành nốt.
     """
     today = date.today()
+    
+    # 1. Tìm mốc bắt đầu quét trong lịch sử
+    valid_dates = []
+    for k in history.keys():
+        try:
+            valid_dates.append(datetime.strptime(k, "%Y-%m-%d").date())
+        except Exception:
+            pass
+            
+    earliest_allowed = today - timedelta(days=90)
+    start_date = min(valid_dates) if valid_dates else earliest_allowed
+    if start_date > earliest_allowed:
+        start_date = earliest_allowed
+
+    streak = 0
+    consecutive_grey = 0
+    streak_type = "none"  # "fire", "grey", "none"
+    
+    curr = start_date
+    yesterday = today - timedelta(days=1)
+    
+    while curr <= yesterday:
+        rate, done, total, status = get_day_performance(curr, history)
+        if total > 0:
+            if status == "fire":
+                streak += 1
+                consecutive_grey = 0
+                streak_type = "fire"
+            elif status == "grey":
+                consecutive_grey += 1
+                if consecutive_grey > 3:
+                    streak = 0
+                    consecutive_grey = 0
+                    streak_type = "none"
+                else:
+                    streak += 1
+                    streak_type = "grey"
+            else:  # lost (< 50%)
+                streak = 0
+                consecutive_grey = 0
+                streak_type = "none"
+        curr += timedelta(days=1)
+        
+    past_streak = streak
+    past_type = streak_type
+    past_grey = consecutive_grey
+
+    # 2. Đánh giá trạng thái ngày hôm nay
     rate_today, done_today, total_today, status_today = get_day_performance(today, history)
     
-    # 1. Tính chuỗi của các ngày trong quá khứ đã khép lại (hôm qua trở về trước)
-    curr = today - timedelta(days=1)
-    past_streak = 0
-    consecutive_grey = 0
-    has_grey_in_past = False
-    
-    while True:
-        rate, done, total, status = get_day_performance(curr, history)
-        if total == 0:
-            break
-        if status == 'fire':
-            past_streak += 1
-            consecutive_grey = 0
-        elif status == 'grey':
-            has_grey_in_past = True
-            consecutive_grey += 1
-            if consecutive_grey > 3:
-                past_streak = 0
-                break
-            past_streak += 1
-        else: # lost (< 50%)
-            break
-        curr -= timedelta(days=1)
-
-    # 2. Kết hợp với trạng thái hôm nay
-    if status_today == 'fire':
+    if status_today == "fire":
         total_streak = past_streak + 1
-        streak_type = 'grey' if has_grey_in_past else 'fire'
-        badge = f"🔥 {total_streak} days undefeated" if streak_type == 'fire' else f"⚪ {total_streak} days (Grey {consecutive_grey}/3)"
-    elif past_streak > 0:
-        total_streak = past_streak
-        streak_type = 'grey' if has_grey_in_past else 'fire'
-        badge = f"🔥 {total_streak} days undefeated" if streak_type == 'fire' else f"⚪ {total_streak} days (Grey {consecutive_grey}/3)"
-    else:
-        if status_today == 'grey':
+        curr_streak_type = "fire"
+        curr_grey = 0
+        badge = f"🔥 {total_streak} days undefeated"
+    elif status_today == "grey":
+        if past_streak > 0:
+            total_streak = past_streak  # Bảo toàn chuỗi hôm qua
+            curr_streak_type = past_type
+            curr_grey = past_grey
+            badge = f"🔥 {total_streak} days undefeated" if past_type == "fire" else f"⚪ {total_streak} days (Grey {past_grey}/3)"
+        else:
             total_streak = 1
-            streak_type = 'grey'
+            curr_streak_type = "grey"
+            curr_grey = 1
             badge = "⚪ 1 day in progress"
+    else:  # status_today == "lost" hoặc mới bắt đầu ngày
+        if past_streak > 0:
+            total_streak = past_streak  # Bảo toàn chuỗi hôm qua khi ngày hôm nay chưa hoàn thành!
+            curr_streak_type = past_type
+            curr_grey = past_grey
+            badge = f"🔥 {total_streak} days undefeated" if past_type == "fire" else f"⚪ {total_streak} days (Grey {past_grey}/3)"
         else:
             total_streak = 0
-            streak_type = "none"
+            curr_streak_type = "none"
+            curr_grey = 0
             badge = "No streak yet"
 
-    warning = (streak_type == "grey" and consecutive_grey >= 2)
-    warning_msg = f"Warning: You have {consecutive_grey}/3 consecutive grey days. Push harder to protect your streak!" if warning else ""
+    warning = (curr_streak_type == "grey" and curr_grey >= 2)
+    warning_msg = f"Warning: You have {curr_grey}/3 consecutive grey days. Push harder to protect your streak!" if warning else ""
 
     return {
         "streak": total_streak,
-        "type": streak_type,
+        "type": curr_streak_type,
         "badge": badge,
-        "consecutive_grey": consecutive_grey,
+        "consecutive_grey": curr_grey,
         "warning": warning,
         "warning_msg": warning_msg,
         "today_status": status_today,
