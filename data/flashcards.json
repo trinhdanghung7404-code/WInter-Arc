@@ -557,6 +557,374 @@
       ]
     },
     {
+      "id": "deck_day_3",
+      "name": "Day 3",
+      "description": "40 từ vựng cốt lõi TOEFL: Triết học xã hội, Sinh học khí quyển, Địa chất núi lửa & Bẫy trái nghĩa/đa nghĩa",
+      "created_at": "2026-10-22",
+      "cards": [
+        {
+          "id": "c_primacy",
+          "word": "Primacy",
+          "phonetic": "/ˈpraɪ.mə.si/",
+          "pos": "noun",
+          "meaning": "Vị thế tối cao, ưu tiên hàng đầu. (Đồng nghĩa TOEFL: Supreme importance, Priority | ⚠️ Không phải: absence)",
+          "example": "Transcendentalist thinkers emphasized the primacy of intuition over empirical observation.\n(Các nhà tư tưởng thuyết siêu nghiệm nhấn mạnh vị thế tối cao của trực giác so với quan sát thực nghiệm.)",
+          "learned": false
+        },
+        {
+          "id": "c_exhort",
+          "word": "Exhort",
+          "phonetic": "/ɪɡˈzɔːrt/",
+          "pos": "verb",
+          "meaning": "Kêu gọi thiết tha, thúc giục hành động. (Đồng nghĩa TOEFL: Strongly urge, Encourage | ⚠️ Trái nghĩa với: forbid)",
+          "example": "Reformers exhorted citizens to resist unfair labor practices and fight for working-class rights.\n(Các nhà cải cách đã thiết tha kêu gọi công dân chống lại các thông lệ lao động bất công và đấu tranh vì quyền lợi công nhân.)",
+          "learned": false
+        },
+        {
+          "id": "c_inviolable",
+          "word": "Inviolable",
+          "phonetic": "/ɪnˈvaɪ.ə.lə.bəl/",
+          "pos": "adjective",
+          "meaning": "Bất khả xâm phạm, tuyệt đối. (Đồng nghĩa TOEFL: Sacred, Absolute | ⚠️ Trái nghĩa với: temporary/optional)",
+          "example": "Early legal scholars viewed natural human rights as an inviolable principle of constitutional law.\n(Các học giả pháp lý thời kỳ đầu xem các quyền tự nhiên của con người là một nguyên tắc bất khả xâm phạm của hiến pháp.)",
+          "learned": false
+        },
+        {
+          "id": "c_nascent",
+          "word": "Nascent",
+          "phonetic": "/ˈneɪ.sənt/",
+          "pos": "adjective",
+          "meaning": "Mới manh nha, non trẻ, vừa mới hình thành. (Đồng nghĩa TOEFL: Emerging, Budding, Early | ⚠️ Không phải già cỗi hay lâu đời)",
+          "example": "Government subsidies provided vital protection for the nation's nascent textile industry.\n(Các khoản trợ cấp của chính phủ đã mang lại sự bảo hộ thiết yếu cho ngành dệt may non trẻ mới manh nha của đất nước.)",
+          "learned": false
+        },
+        {
+          "id": "c_assuage",
+          "word": "Assuage",
+          "phonetic": "/əˈsweɪdʒ/",
+          "pos": "verb",
+          "meaning": "Xoa dịu nỗi sợ, làm dịu lo âu, làm lắng xuống. (Đồng nghĩa TOEFL: Soothe, Relieve, Calm | ⚠️ Trái nghĩa với: intensify)",
+          "example": "The factory owners built community housing to assuage parental anxieties about young workers' welfare.\n(Các chủ nhà máy đã xây dựng nhà ở cộng đồng nhằm xoa dịu nỗi lo âu của các bậc phụ huynh về phúc lợi của công nhân trẻ.)",
+          "learned": false
+        },
+        {
+          "id": "c_paternalistic",
+          "word": "Paternalistic",
+          "phonetic": "/pəˌtɝː.nəlˈɪs.tɪk/",
+          "pos": "adjective",
+          "meaning": "Gia trưởng, bao bọc nhưng kiểm soát độc đoán. (Đồng nghĩa TOEFL: Authoritarian yet protective | ⚠️ Không phải dân chủ tự do)",
+          "example": "Mill owners implemented a paternalistic management system that regulated workers' private lives.\n(Các chủ xưởng dệt đã thực thi một hệ thống quản lý mang tính gia trưởng nhằm kiểm soát chặt chẽ đời sống riêng tư của công nhân.)",
+          "learned": false
+        },
+        {
+          "id": "c_entice",
+          "word": "Entice",
+          "phonetic": "/ɪnˈtaɪs/",
+          "pos": "verb",
+          "meaning": "Thu hút, lôi cuốn bằng lợi ích hoặc phần thưởng. (Đồng nghĩa TOEFL: Lure, Attract, Tempt | ⚠️ Trái nghĩa với: repel)",
+          "example": "High cash wages enticed thousands of rural families to migrate into booming industrial cities.\n(Mức lương tiền mặt cao đã lôi cuốn hàng ngàn gia đình nông thôn di cư vào các thành phố công nghiệp đang bùng nổ.)",
+          "learned": false
+        },
+        {
+          "id": "c_progenitor",
+          "word": "Progenitor",
+          "phonetic": "/proʊˈdʒen.ə.t̬ɚ/",
+          "pos": "noun",
+          "meaning": "Người sáng lập, khởi xướng phong trào, tiền bối. (Đồng nghĩa TOEFL: Founder, Originator, Ancestor | ⚠️ Không phải: successor)",
+          "example": "Ralph Waldo Emerson is widely recognized as the primary progenitor of American Transcendentalism.\n(Ralph Waldo Emerson được thừa nhận rộng rãi là người khởi xướng nền móng cho chủ nghĩa Siêu nghiệm Mỹ.)",
+          "learned": false
+        },
+        {
+          "id": "c_tenet",
+          "word": "Tenet",
+          "phonetic": "/ˈten.ɪt/",
+          "pos": "noun",
+          "meaning": "Giáo lý cốt lõi, nguyên lý nền tảng, tín điều. (Đồng nghĩa TOEFL: Core principle, Dogma, Belief | ⚠️ Không phải ý kiến vu vơ)",
+          "example": "Self-reliance and individual liberty formed a central tenet of early democratic philosophy.\n(Tính tự lực và tự do cá nhân đã tạo thành một nguyên lý nền tảng của triết học dân chủ thời sơ khai.)",
+          "learned": false
+        },
+        {
+          "id": "c_disjointed",
+          "word": "Disjointed",
+          "phonetic": "/dɪsˈdʒɔɪn.t̬ɪd/",
+          "pos": "adjective",
+          "meaning": "Rời rạc, thiếu liên kết thống nhất, đứt gãy. (Đồng nghĩa TOEFL: Fragmented, Disconnected | ⚠️ Trái nghĩa với: integrated)",
+          "example": "Before modern assembly lines, manufacturing was a disjointed process spread across isolated workshops.\n(Trước khi có dây chuyền lắp ráp hiện đại, việc sản xuất là một quy trình rời rạc diễn ra rải rác ở nhiều phân xưởng cô lập.)",
+          "learned": false
+        },
+        {
+          "id": "c_senesce",
+          "word": "Senesce",
+          "phonetic": "/sɪˈnes/",
+          "pos": "verb",
+          "meaning": "Già cỗi, thoái hóa sinh học theo chu kỳ. (Đồng nghĩa TOEFL: Age, Deteriorate, Decline | ⚠️ Đừng chọn: grow rapidly)",
+          "example": "As autumn approaches, deciduous leaves gradually senesce, lose chlorophyll, and drop.\n(Khi mùa thu đến gần, những chiếc lá dần thoái hóa già cỗi, mất diệp lục và rụng xuống.)",
+          "learned": false
+        },
+        {
+          "id": "c_asymmetric",
+          "word": "Asymmetric",
+          "phonetic": "/ˌeɪ.sɪˈmet.rɪk/",
+          "pos": "adjective",
+          "meaning": "Bất đối xứng, phân bố lệch, không cân đối. (Đồng nghĩa TOEFL: Uneven, Lopsided, Unbalanced | ⚠️ Đừng chọn: balanced)",
+          "example": "The asymmetric distribution of landmasses between hemispheres influences global air circulation.\n(Sự phân bố bất đối xứng của các khối lục địa giữa hai bán cầu ảnh hưởng đến hoàn lưu khí quyển toàn cầu.)",
+          "learned": false
+        },
+        {
+          "id": "c_sluggish",
+          "word": "Sluggish",
+          "phonetic": "/ˈslʌɡ.ɪʃ/",
+          "pos": "adjective",
+          "meaning": "Chậm chạp, uể oải, phản ứng trễ. (Đồng nghĩa TOEFL: Slow-moving, Inactive | ⚠️ Trái nghĩa với: rapid/quick)",
+          "example": "During cold winter months, the reptile's metabolism becomes sluggish to conserve stored energy.\n(Trong những tháng mùa đông lạnh giá, quá trình trao đổi chất của loài bò sát trở nên chậm chạp để bảo tồn năng lượng tích trữ.)",
+          "learned": false
+        },
+        {
+          "id": "c_innervate",
+          "word": "Innervate",
+          "phonetic": "/ˈɪn.ɚ.veɪt/",
+          "pos": "verb",
+          "meaning": "Phân bố dây thần kinh, chi phối cảm giác/vận động. (Đồng nghĩa TOEFL: Supply with neural nerves | ⚠️ Thuộc hệ thần kinh, không phải cơ bắp)",
+          "example": "Specialized sensory neurons innervate the mammalian skin to detect subtle thermal variations.\n(Các nơ-ron cảm giác chuyên biệt phân bố dày đặc dưới da động vật có vú để phát hiện những biến đổi nhiệt tinh vi.)",
+          "learned": false
+        },
+        {
+          "id": "c_deciduous",
+          "word": "Deciduous",
+          "phonetic": "/dɪˈsɪdʒ.u.əs/",
+          "pos": "adjective",
+          "meaning": "Rụng lá theo mùa. (Đồng nghĩa TOEFL: Shedding leaves seasonally | ⚠️ Trái nghĩa với: evergreen)",
+          "example": "Temperate deciduous forests shed their canopy in winter to survive severe freezing conditions.\n(Rừng rụng lá ôn đới trút bỏ toàn bộ tán lá vào mùa đông để sống sót qua điều kiện băng giá khắc nghiệt.)",
+          "learned": false
+        },
+        {
+          "id": "c_precedence",
+          "word": "Precedence",
+          "phonetic": "/ˈpres.ə.dəns/",
+          "pos": "noun",
+          "meaning": "Quyền ưu tiên, vị thế đi trước (take precedence over). (Đồng nghĩa TOEFL: Priority, Superior rank | ⚠️ Không phải: subordination)",
+          "example": "In reproductive seasons, foraging for nesting materials often takes precedence over resting.\n(Trong mùa sinh sản, việc tìm kiếm vật liệu làm tổ thường chiếm quyền ưu tiên hàng đầu so với việc nghỉ ngơi.)",
+          "learned": false
+        },
+        {
+          "id": "c_proliferate",
+          "word": "Proliferate",
+          "phonetic": "/prəˈlɪf.ə.reɪt/",
+          "pos": "verb",
+          "meaning": "Sinh sôi nảy nở, nhân bản nhanh chóng. (Đồng nghĩa TOEFL: Multiply rapidly, Mushroom | ⚠️ Trái nghĩa với: dwindle)",
+          "example": "Toxic algae can proliferate explosively when agricultural runoff floods lakes with nitrates.\n(Tảo độc có thể sinh sôi nảy nở với tốc độ chóng mặt khi dòng nước thải nông nghiệp tràn vào hồ chứa nhiều nitrat.)",
+          "learned": false
+        },
+        {
+          "id": "c_mitigate_day3",
+          "word": "Mitigate",
+          "phonetic": "/ˈmɪt.ə.ɡeɪt/",
+          "pos": "verb",
+          "meaning": "Giảm nhẹ, làm dịu bớt hậu quả xấu. (Đồng nghĩa TOEFL: Alleviate, Lessen, Moderate | ⚠️ Trái nghĩa với: aggravate)",
+          "example": "Wetland conservation projects help mitigate coastal flooding caused by storm surges.\n(Các dự án bảo tồn vùng đất ngập nước giúp giảm nhẹ nguy cơ lũ lụt ven biển do nước dâng do bão gây ra.)",
+          "learned": false
+        },
+        {
+          "id": "c_fluctuation",
+          "word": "Fluctuation",
+          "phonetic": "/ˌflʌk.tʃuˈeɪ.ʃən/",
+          "pos": "noun",
+          "meaning": "Sự dao động, biến động liên tục. (Đồng nghĩa TOEFL: Variation, Oscillation | ⚠️ Trái nghĩa với: stability)",
+          "example": "Ice core records reveal periodic fluctuations in atmospheric carbon dioxide over millennia.\n(Hồ sơ lõi băng tiết lộ những dao động có tính chu kỳ của hàm lượng carbon dioxide trong khí quyển qua hàng thiên niên kỷ.)",
+          "learned": false
+        },
+        {
+          "id": "c_symbiotic",
+          "word": "Symbiotic",
+          "phonetic": "/ˌsɪm.baɪˈɑː.t̬ɪk/",
+          "pos": "adjective",
+          "meaning": "Cộng sinh, nương tựa lẫn nhau cùng có lợi. (Đồng nghĩa TOEFL: Mutually interdependent | ⚠️ Không phải ký sinh gây hại: parasitic)",
+          "example": "Corals rely on a symbiotic relationship with photosynthetic algae living inside their tissues.\n(San hô dựa vào mối quan hệ cộng sinh cùng có lợi với tảo quang hợp sống bên trong mô của chúng.)",
+          "learned": false
+        },
+        {
+          "id": "c_anomalous",
+          "word": "Anomalous",
+          "phonetic": "/əˈnɑː.mə.ləs/",
+          "pos": "adjective",
+          "meaning": "Bất thường, dị thường, khác biệt quy luật chung. (Đồng nghĩa TOEFL: Irregular, Atypical, Exceptional | ⚠️ Trái nghĩa với: normal/typical)",
+          "example": "Hawaii is an anomalous volcanic hotspot located far away from any tectonic plate boundaries.\n(Hawaii là một điểm nóng núi lửa bất thường nằm cách rất xa bất kỳ ranh giới mảng kiến tạo nào.)",
+          "learned": false
+        },
+        {
+          "id": "c_conduit",
+          "word": "Conduit",
+          "phonetic": "/ˈkɑːn.duː.ɪt/",
+          "pos": "noun",
+          "meaning": "Ống dẫn, đường dẫn dung nham/khí ngầm. (Đồng nghĩa TOEFL: Channel, Duct, Pipe | ⚠️ Không phải vật cản hay nút chặn)",
+          "example": "Molten magma ascends through a vertical volcanic conduit before erupting at the surface.\n(Mắc-ma nóng chảy dâng lên qua một ống dẫn núi lửa thẳng đứng trước khi phun trào lên bề mặt.)",
+          "learned": false
+        },
+        {
+          "id": "c_accrete",
+          "word": "Accrete",
+          "phonetic": "/əˈkriːt/",
+          "pos": "verb",
+          "meaning": "Bồi tụ, tích tụ bồi đắp dần theo thời gian. (Đồng nghĩa TOEFL: Accumulate, Slowly add on | ⚠️ Trái nghĩa với: erode)",
+          "example": "Over millions of years, ocean sediments accrete along the continental margin to form landmasses.\n(Trải qua hàng triệu năm, trầm tích đại dương bồi tụ dọc theo rìa lục địa để tạo thành các khối đất liền.)",
+          "learned": false
+        },
+        {
+          "id": "c_subsidence",
+          "word": "Subsidence",
+          "phonetic": "/səbˈsaɪ.dəns/",
+          "pos": "noun",
+          "meaning": "Sự sụt lún địa chất chìm xuống. (Đồng nghĩa TOEFL: Sinking, Settling downward | ⚠️ Trái nghĩa với: uplift)",
+          "example": "Heavy groundwater extraction caused severe land subsidence across the coastal delta.\n(Việc khai thác nước ngầm quá mức đã gây ra hiện tượng sụt lún mặt đất nghiêm trọng khắp vùng châu thổ ven biển.)",
+          "learned": false
+        },
+        {
+          "id": "c_stationary",
+          "word": "Stationary",
+          "phonetic": "/ˈsteɪ.ʃə.ner.i/",
+          "pos": "adjective",
+          "meaning": "Đứng yên một chỗ, bất động cố định. (Đồng nghĩa TOEFL: Fixed, Immobile, Unmoving | ⚠️ Trái nghĩa với: migrating/moving)",
+          "example": "While tectonic plates drift continuously, the deep mantle plume beneath remains relatively stationary.\n(Trong khi các mảng kiến tạo trôi dạt liên tục, chùm manti sâu bên dưới vẫn duy trì tương đối cố định tại một chỗ.)",
+          "learned": false
+        },
+        {
+          "id": "c_buoyant",
+          "word": "Buoyant",
+          "phonetic": "/ˈbɔɪ.ənt/",
+          "pos": "adjective",
+          "meaning": "Nhẹ hơn xung quanh, có xu hướng nổi lên. (Đồng nghĩa TOEFL: Capable of rising or floating | ⚠️ Không phải nhiễm từ: magnetic)",
+          "example": "Superheated rock deep within the mantle becomes buoyant and slowly rises toward the crust.\n(Đá siêu nóng sâu bên trong lớp manti trở nên nhẹ hơn vật chất xung quanh và từ từ nổi lên phía vỏ Trái Đất.)",
+          "learned": false
+        },
+        {
+          "id": "c_permeate",
+          "word": "Permeate",
+          "phonetic": "/ˈpɝː.mi.eɪt/",
+          "pos": "verb",
+          "meaning": "Thấm qua, len lỏi và lan tỏa khắp nơi. (Đồng nghĩa TOEFL: Penetrate, Diffuse through | ⚠️ Không phải đẩy lùi: repel)",
+          "example": "Acidic groundwater permeates porous limestone, gradually dissolving rock to carve underground caverns.\n(Nước ngầm có tính axit thấm qua đá vôi xốp, hòa tan đá dần dần để tạo nên những hang động ngầm khổng lồ.)",
+          "learned": false
+        },
+        {
+          "id": "c_topography",
+          "word": "Topography",
+          "phonetic": "/təˈpɑː.ɡrə.fi/",
+          "pos": "noun",
+          "meaning": "Địa hình bề mặt lồi lõm, đặc điểm địa thế. (Đồng nghĩa TOEFL: Terrain, Physical surface | ⚠️ Không phải khí hậu hay thời tiết)",
+          "example": "Satellite radar mapping revealed the rugged underwater topography of the mid-ocean ridge.\n(Bản đồ radar vệ tinh đã hé lộ địa hình nhấp nhô gồ ghề dưới đáy biển sâu của sống núi giữa đại dương.)",
+          "learned": false
+        },
+        {
+          "id": "c_decompression",
+          "word": "Decompression",
+          "phonetic": "/ˌdiː.kəmˈpreʃ.ən/",
+          "pos": "noun",
+          "meaning": "Sự giảm áp suất bao quanh (decompression melting = nóng chảy do tụt áp). (Đồng nghĩa TOEFL: Reduction of confining pressure | ⚠️ Không phải tăng nhiệt: heating)",
+          "example": "Mantle rocks melt due to decompression as they ascend toward zones of lower confining pressure.\n(Đá manti nóng chảy do sự giảm áp suất bên ngoài khi chúng dâng lên các vùng có áp suất giam giữ thấp hơn.)",
+          "learned": false
+        },
+        {
+          "id": "c_sedimentation",
+          "word": "Sedimentation",
+          "phonetic": "/ˌsed.ə.menˈteɪ.ʃən/",
+          "pos": "noun",
+          "meaning": "Sự lắng đọng bùn đất, quá trình tích tụ trầm tích. (Đồng nghĩa TOEFL: Deposition of particles | ⚠️ Không phải sự rửa trôi)",
+          "example": "Rapid river sedimentation filled the ancient estuary, transforming open water into fertile marshland.\n(Quá trình bồi lắng phù sa nhanh chóng đã lấp đầy cửa sông cổ đại, biến vùng nước mở thành đầm lầy màu mỡ.)",
+          "learned": false
+        },
+        {
+          "id": "c_irrefutable",
+          "word": "Irrefutable",
+          "phonetic": "/ˌɪr.ɪˈfjuː.t̬ə.bəl/",
+          "pos": "adjective",
+          "meaning": "[Bẫy ETS] Không thể chối cãi, xác thực tuyệt đối. (Đồng nghĩa TOEFL: Indisputable, Undeniable | ⚠️ Bẫy chọn nhầm: doubtful hoặc preliminary)",
+          "example": "Radioactive carbon dating provided irrefutable proof that the artifacts originated in the Bronze Age.\n(Phương pháp định tuổi bằng carbon phóng xạ đã cung cấp bằng chứng không thể chối cãi rằng các cổ vật xuất xứ từ thời Đồ Đồng.)",
+          "learned": false
+        },
+        {
+          "id": "c_dampen",
+          "word": "Dampen",
+          "phonetic": "/ˈdæm.pən/",
+          "pos": "verb",
+          "meaning": "[Bẫy ETS] Làm giảm bớt, dập tắt, kìm hãm. (Đồng nghĩa TOEFL: Suppress, Diminish, Subdue | ⚠️ Bẫy chọn nhầm: intensify / amplify)",
+          "example": "Severe winter blizzards dampened the military commander's plan for an immediate counter-offensive.\n(Trận bão tuyết dữ dội mùa đông đã dập tắt hoàn toàn kế hoạch phản công ngay lập tức của viên chỉ huy.)",
+          "learned": false
+        },
+        {
+          "id": "c_screed",
+          "word": "Screed",
+          "phonetic": "/skriːd/",
+          "pos": "noun",
+          "meaning": "[Bẫy ETS] Bài đả kích gay gắt, diễn văn chỉ trích giận dữ. (Đồng nghĩa TOEFL: Harangue, Harsh diatribe | ⚠️ Bẫy chọn nhầm: peaceful poem)",
+          "example": "The political activist published an angry screed condemning corruption in city government.\n(Nhà hoạt động chính trị đã xuất bản một bài đả kích gay gắt lên án nạn tham nhũng trong chính quyền thành phố.)",
+          "learned": false
+        },
+        {
+          "id": "c_precipitate",
+          "word": "Precipitate",
+          "phonetic": "/prɪˈsɪp.ə.teɪt/",
+          "pos": "verb",
+          "meaning": "[Bẫy ETS] Châm ngòi, thúc đẩy diễn ra nhanh đột ngột. (Đồng nghĩa TOEFL: Trigger, Bring about suddenly | ⚠️ Bẫy chọn nhầm: prevent / delay)",
+          "example": "The unexpected collapse of the central bank precipitated a nationwide economic crisis.\n(Sự sụp đổ bất ngờ của ngân hàng trung ương đã châm ngòi cho một cuộc khủng hoảng kinh tế toàn quốc.)",
+          "learned": false
+        },
+        {
+          "id": "c_meticulous",
+          "word": "Meticulous",
+          "phonetic": "/məˈtɪk.jə.ləs/",
+          "pos": "adjective",
+          "meaning": "[Bẫy ETS] Tỉ mỉ, cực kỳ kỹ lưỡng và cẩn thận. (Đồng nghĩa TOEFL: Painstaking, Precise | ⚠️ Bẫy chọn nhầm: hurried / careless)",
+          "example": "The biologist kept meticulous field notes detailing every behavioral pattern of the flock.\n(Nhà sinh vật học đã ghi chép thực địa cực kỳ tỉ mỉ đến từng chi tiết về mọi tập tính của đàn chim.)",
+          "learned": false
+        },
+        {
+          "id": "c_rebound",
+          "word": "Rebound",
+          "phonetic": "/rɪˈbaʊnd/",
+          "pos": "verb",
+          "meaning": "[Bẫy ETS] Phục hồi trở lại, bật dậy sau suy thoái. (Đồng nghĩa TOEFL: Snap back, Recover | ⚠️ Bẫy chọn nhầm: change color hoặc collapse)",
+          "example": "Thanks to strict conservation laws, the bison population rebounded dramatically over two decades.\n(Nhờ các luật bảo tồn nghiêm ngặt, số lượng đàn bò rừng đã hồi phục ngoạn mục trong suốt hai thập kỷ.)",
+          "learned": false
+        },
+        {
+          "id": "c_acute",
+          "word": "Acute",
+          "phonetic": "/əˈkjuːt/",
+          "pos": "adjective",
+          "meaning": "[Bẫy ETS] Cực kỳ nghiêm trọng, gay gắt, cấp bách (acute dilemma). (Đồng nghĩa TOEFL: Severe, Critical | ⚠️ Bẫy chọn nhầm: foreign hoặc mild)",
+          "example": "The arid desert settlement faced an acute water shortage during prolonged summer droughts.\n(Khu định cư giữa sa mạc khô hạn phải đối mặt với tình trạng thiếu hụt nguồn nước cực kỳ gay gắt trong các đợt hạn hán kéo dài.)",
+          "learned": false
+        },
+        {
+          "id": "c_exemplar",
+          "word": "Exemplar",
+          "phonetic": "/ɪɡˈzem.plɑːr/",
+          "pos": "noun",
+          "meaning": "[Bẫy ETS] Tấm gương mẫu mực, hình mẫu điển hình hoàn hảo. (Đồng nghĩa TOEFL: Model, Archetype | ⚠️ Bẫy chọn nhầm: exception)",
+          "example": "The ancient Greek Parthenon stands as the supreme exemplar of classical Doric architecture.\n(Đền Parthenon của Hy Lạp cổ đại sừng sững như một hình mẫu điển hình hoàn hảo nhất của kiến trúc Doric cổ điển.)",
+          "learned": false
+        },
+        {
+          "id": "c_profound",
+          "word": "Profound",
+          "phonetic": "/prəˈfaʊnd/",
+          "pos": "adjective",
+          "meaning": "[Bẫy ETS] Sâu sắc, tác động cực kỳ to lớn và sâu rộng. (Đồng nghĩa TOEFL: Deep, Far-reaching | ⚠️ Bẫy chọn nhầm: superficial)",
+          "example": "The invention of the steam locomotive exerted a profound impact on continental freight transport.\n(Việc phát minh ra đầu máy hơi nước đã tạo ra một tác động sâu rộng cực kỳ to lớn đối với vận tải hàng hóa liên lục địa.)",
+          "learned": false
+        },
+        {
+          "id": "c_elastic",
+          "word": "Elastic",
+          "phonetic": "/iˈlæs.tɪk/",
+          "pos": "adjective",
+          "meaning": "[Bẫy ETS] Có tính đàn hồi, co giãn, linh hoạt thích ứng. (Đồng nghĩa TOEFL: Stretchable, Resilient | ⚠️ Bẫy chọn nhầm: transparent hoặc fragile)",
+          "example": "Arterial walls are lined with elastic tissue that expands to absorb surges in blood pressure.\n(Thành động mạch được lót bằng các mô đàn hồi có khả năng co giãn linh hoạt để hấp thụ áp lực máu dâng cao.)",
+          "learned": false
+        }
+      ]
+    },
+    {
       "id": "deck_toefl_core",
       "name": "TOEFL Academic Core",
       "description": "Essential high-frequency academic vocabulary for reading & listening",
